@@ -51,6 +51,7 @@ export class User extends Document {
 
   generateVerificationToken!: () => string;
   accessToken!: (jwt: JwtService) => string;
+  refreshToken!: (jwt: JwtService) => string;
 }
 
 export var UserSchema = SchemaFactory.createForClass(User);
@@ -76,7 +77,16 @@ UserSchema.methods.generateVerificationToken = function (): string {
 UserSchema.methods.accessToken = function (jwt: JwtService): string {
   var payload = { _id: this._id, email: this.email };
   return jwt.sign(payload, {
-    expiresIn: process.env.JWT_SECRET_EXPIRES_IN,
-    secret: process.env.JWT_SECRET,
+    secret: process.env.ACCESS_TOKEN_SECRET,
+    expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN,
+  });
+};
+
+/** Genereate refresh token for JWT authentication. Long duration */
+UserSchema.methods.refreshToken = function (jwt: JwtService): string {
+  var payload = { _id: this._id, email: this.email };
+  return jwt.sign(payload, {
+    secret: process.env.REFRESH_TOKEN_SECRET,
+    expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN,
   });
 };
