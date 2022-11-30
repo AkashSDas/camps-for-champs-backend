@@ -6,7 +6,7 @@ import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common
 import { AuthService } from "./auth.service";
 import { SignupDto } from "./dto";
 import { LoginDto } from "./dto/login.dto";
-import { AccessTokenGuard } from "./guard/access-token.guard";
+import { AccessTokenGuard } from "./guard";
 
 @Controller("/v1/auth")
 export class AuthController {
@@ -34,6 +34,15 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     return await this.service.login(dto, res);
+  }
+
+  // ================================
+  // OTHER
+  // ================================
+
+  @Get("/logout")
+  logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    return this.service.logout(req, res);
   }
 
   // ================================

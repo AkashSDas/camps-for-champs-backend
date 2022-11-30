@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { loginCookieConfig } from "src/utils/auth.util";
 
 // eslint-disable-next-line prettier/prettier
@@ -66,5 +66,14 @@ export class AuthService {
 
     res.cookie("refreshToken", refreshToken, loginCookieConfig);
     return { user, accessToken };
+  }
+
+  // ================================
+  // OTHER
+  // ================================
+
+  logout(req: Request, res: Response) {
+    res.clearCookie("refreshToken", loginCookieConfig);
+    return { message: "Logged out", cookies: req.cookies };
   }
 }
