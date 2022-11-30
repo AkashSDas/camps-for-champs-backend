@@ -5,7 +5,7 @@ import { Body, Controller, Post, Res } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { SignupDto } from "./dto";
 
-Controller("/v1/auth");
+@Controller("/v1/auth")
 export class AuthController {
   constructor(private service: AuthService) {}
 
@@ -14,7 +14,7 @@ export class AuthController {
   // ================================
 
   @Post("/signup")
-  async signup(@Body() dto: SignupDto, @Res() res: Response) {
-    return this.service.signup(dto, res);
+  async signup(@Body() dto: SignupDto) {
+    return await this.service.signup(dto);
   }
 }
