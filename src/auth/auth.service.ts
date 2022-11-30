@@ -1,7 +1,8 @@
 import { Response } from "express";
 import { loginCookieConfig } from "src/utils/auth.util";
 
-import { HttpException, HttpStatus, Injectable, Res } from "@nestjs/common";
+// eslint-disable-next-line prettier/prettier
+import { HttpException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
 import { UserRepository } from "../user/user.repository";
@@ -17,7 +18,7 @@ export class AuthService {
   // SIGNUP
   // ================================
 
-  async signup(dto: SignupDto, @Res() res: Response) {
+  async signup(dto: SignupDto, res: Response) {
     try {
       var user = await this.repository.createUser({
         email: dto.email,
@@ -47,7 +48,7 @@ export class AuthService {
   // LOGIN
   // ================================
 
-  async login(dto: LoginDto, @Res() res: Response) {
+  async login(dto: LoginDto, res: Response) {
     var user = await this.repository.getUserWithSelect(
       { email: dto.email },
       "+password",

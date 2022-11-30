@@ -2,6 +2,7 @@ import * as argon from "argon2";
 import { isEmail } from "class-validator";
 import { createHash, randomBytes } from "crypto";
 import { Document, SchemaTypes } from "mongoose";
+import { AccessTokenPayload } from "src/auth/strategy";
 
 import { JwtService } from "@nestjs/jwt";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
@@ -77,7 +78,7 @@ UserSchema.methods.generateVerificationToken = function (): string {
 
 /** Genereate access token for JWT authentication. Short duration */
 UserSchema.methods.accessToken = function (jwt: JwtService): string {
-  var payload = { _id: this._id, email: this.email };
+  var payload: AccessTokenPayload = { email: this.email };
   return jwt.sign(payload, {
     secret: process.env.ACCESS_TOKEN_SECRET,
     expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN,

@@ -1,6 +1,7 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 
-import { Body, Controller, Post, Res } from "@nestjs/common";
+// eslint-disable-next-line prettier/prettier
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
 
 import { AuthService } from "./auth.service";
 import { SignupDto } from "./dto";
@@ -33,5 +34,15 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     return await this.service.login(dto, res);
+  }
+
+  // ================================
+  // TEST
+  // ================================
+
+  @UseGuards(AccessTokenGuard)
+  @Get("/test")
+  test(@Req() req: Request) {
+    return { user: req.user, message: "🌍 Secret operation" };
   }
 }
