@@ -1,8 +1,7 @@
 import { isEmail } from "class-validator";
-import crypto from "crypto";
+import { createHash, randomBytes } from "crypto";
 import { Document, SchemaTypes } from "mongoose";
 
-import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
@@ -12,7 +11,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
  */
 @Schema({ timestamps: true })
 export class User extends Document {
-  constructor(private jwt: JwtService, private config: ConfigService) {
+  constructor() {
     super();
   }
 
@@ -50,34 +49,34 @@ export class User extends Document {
   // INSTANCE METHODS
   // ============================
 
-  /**
-   * Generate a random token, hash it and set it as verification token
-   * along with its expiry date (10min from now)
-   *
-   * @returns the generated token
-   */
-  generateVerificationToken(): string {
-    var token = crypto.randomBytes(32).toString("hex");
-
-    this.verificationToken = crypto
-      .createHash("sha256")
-      .update(token)
-      .digest("hex");
-
-    // 10 minutes
-    this.verificationTokenExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
-
-    return token;
-  }
-
-  /** Genereate access token for JWT authentication. Short duration */
-  accessToken(): string {
-    var payload = { _id: this._id, email: this.email };
-    return this.jwt.sign(payload, {
-      expiresIn: this.config.get("JWT_SECRET_EXPIRES_IN"),
-      secret: this.config.get("JWT_SECRET"),
-    });
-  }
+  generateVerificationToken!: () => string;
+  accessToken!: (jwt: JwtService) => string;
 }
 
 export var UserSchema = SchemaFactory.createForClass(User);
+
+// ============================
+// INSTANCE METHODS
+// ============================
+
+/**
+ * Generate a random token, hash it and set it as verification token
+ * along with its expiry date (10min from now)
+ *
+ * @returns the generated token
+ */
+UserSchema.methods.generateVerificationToken = function (): string {
+  var token = randomBytes(32).toString("hex");
+  this.verificationToken = createHash("sha256").update(token).digest("hex");
+  this.verificationTokenExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10m
+  return token;
+};
+
+/** Genereate access token for JWT authentication. Short duration */
+UserSchema.methods.accessToken = function (jwt: JwtService): string {
+  var payload = { _id: this._id, email: this.email };
+  return jwt.sign(payload, {
+    expiresIn: process.env.JWT_SECRET_EXPIRES_IN,
+    secret: process.env.JWT_SECRET,
+  });
+};

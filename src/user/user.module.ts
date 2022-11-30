@@ -11,7 +11,7 @@ import { UserRepository } from "./user.repository";
     MongooseModule.forFeatureAsync([
       {
         name: User.name,
-        useFactory: function (repository: UserRepository) {
+        useFactory: function () {
           var schema = UserSchema;
 
           // PRE HOOK
@@ -25,7 +25,9 @@ import { UserRepository } from "./user.repository";
             if (this.isModified("email")) {
               let query = [];
               if (this.isModified("email")) query.push({ email: this.email });
-              let exists = await repository.exists({ $or: query });
+              let exists = await (this.constructor as any).exists({
+                $or: query,
+              });
               if (exists) return next(new Error("Duplicate"));
             }
 
@@ -39,7 +41,7 @@ import { UserRepository } from "./user.repository";
               return next(new Error("Email already exists"));
             }
 
-            if (err.name === "MongoError" && err.code === 11000) {
+            if (err.name == "MongoError" && err.code == 11000) {
               return next(new Error("Duplicate fields"));
             }
 
@@ -51,5 +53,7 @@ import { UserRepository } from "./user.repository";
       },
     ]),
   ],
+  exports: [UserRepository],
+  providers: [UserRepository],
 })
 export class UserModule {}
