@@ -101,3 +101,16 @@ UserSchema.methods.refreshToken = function (jwt: JwtService): string {
 UserSchema.methods.verifyPassword = function (pwd: string): Promise<boolean> {
   return argon.verify(this.password, pwd);
 };
+
+/**
+ * Generate a random token, hash it and set it as verification token
+ * along with its expiry date (10min from now)
+ *
+ * @returns the generated token
+ */
+UserSchema.methods.generateVerificationToken = function (): string {
+  var token = randomBytes(32).toString("hex");
+  this.verificationToken = createHash("sha256").update(token).digest("hex");
+  this.verificationTokenExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10m
+  return token;
+};

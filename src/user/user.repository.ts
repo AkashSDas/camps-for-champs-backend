@@ -24,4 +24,8 @@ export class UserRepository {
   async createUser(data: Partial<User>) {
     return await this.model.create(data);
   }
+
+  async saveUser(user: User) {
+    return await user.save();
+  }
 }

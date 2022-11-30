@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
 
 import { AuthService } from "./auth.service";
-import { SignupDto } from "./dto";
+import { SignupDto, VerifyEmailDto } from "./dto";
 import { LoginDto } from "./dto/login.dto";
 import { AccessTokenGuard, RefreshTokenGuard } from "./guard";
 
@@ -40,6 +40,15 @@ export class AuthController {
   @UseGuards(RefreshTokenGuard)
   accessToken(@Req() req: Request) {
     return this.service.accessToken(req);
+  }
+
+  // ================================
+  // EMAIL VERIFICATION
+  // ================================
+
+  @Post("/verify-email")
+  async verifyEmail(@Body() dto: VerifyEmailDto) {
+    return await this.service.verifyEmail(dto);
   }
 
   // ================================

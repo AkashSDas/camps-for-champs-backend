@@ -2,12 +2,12 @@ import { Request, Response } from "express";
 import { loginCookieConfig } from "src/utils/auth.util";
 
 // eslint-disable-next-line prettier/prettier
-import { HttpException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
 import { UserRepository } from "../user/user.repository";
 import { sendVerificationEmail } from "../utils/mail.util";
-import { SignupDto } from "./dto";
+import { SignupDto, VerifyEmailDto } from "./dto";
 import { LoginDto } from "./dto/login.dto";
 
 @Injectable()
@@ -89,6 +89,25 @@ export class AuthService {
     } catch (error) {
       throw new UnauthorizedException("Invalid or expired refresh token");
     }
+  }
+
+  // ================================
+  // EMAIL VERIFICATION
+  // ================================
+
+  async verifyEmail(dto: VerifyEmailDto) {
+    var user = await this.repository.getUser({ email: dto.email });
+    if (!user) throw new NotFoundException("User not found");
+    if (user.verified) {
+      throw new HttpException("Email already verified", HttpStatus.BAD_REQUEST);
+    }
+
+    var success = await sendVerificationEmail(user);
+    if (!success) {
+      throw new InternalServerErrorException("Failed to send email");
+    }
+
+    return { message: "Verification email sent" };
   }
 
   // ================================
