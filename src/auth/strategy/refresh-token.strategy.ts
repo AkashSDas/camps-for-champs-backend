@@ -1,19 +1,24 @@
 import { Request } from "express";
-import { ExtractJwt, Strategy } from "passport-jwt";
-import { UserRepository } from "src/user/user.repository";
+import { Strategy } from "passport-jwt";
 
 import { PassportStrategy } from "@nestjs/passport";
+
+export type RefreshTokenPayload = { _id: string; email: string };
+
+function cookieExtractor(req: Request) {
+  if (req.cookies?.refreshToken) {
+    var refreshToken = req.cookies.refreshToken;
+  }
+  return refreshToken;
+}
 
 export class RefreshTokenStrategy extends PassportStrategy(
   Strategy,
   "jwt-refresh",
 ) {
-  constructor(private repository: UserRepository) {
+  constructor() {
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([
-        ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ]),
-      ignoreException: false,
+      jwtFromRequest: cookieExtractor,
       secretOrKey: process.env.REFRESH_TOKEN_SECRET,
       passReqToCallback: true,
     });
@@ -23,8 +28,8 @@ export class RefreshTokenStrategy extends PassportStrategy(
    * The return value from here will be appened to req.user for routes
    * that are guarded by AuthGuard('jwt')
    */
-  async validate(req: Request, payload: any) {
-    var refreshToken = req.get("Authorization").replace("Bearer ", "");
-    return { ...payload, refreshToken };
+  async validate(req: Request, payload: RefreshTokenPayload) {
+    var refreshToken = req.cookies?.refreshToken;
+    return { user: { _id: payload._id, email: payload.email }, refreshToken };
   }
 }

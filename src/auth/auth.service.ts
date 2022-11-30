@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { loginCookieConfig } from "src/utils/auth.util";
 
 // eslint-disable-next-line prettier/prettier
-import { HttpException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
 import { UserRepository } from "../user/user.repository";
@@ -66,6 +66,29 @@ export class AuthService {
 
     res.cookie("refreshToken", refreshToken, loginCookieConfig);
     return { user, accessToken };
+  }
+
+  async accessToken(req: Request) {
+    var refreshToken = req.cookies?.refreshToken;
+    if (!refreshToken) {
+      throw new HttpException("No refresh token", HttpStatus.UNAUTHORIZED);
+    }
+
+    try {
+      let decoded = this.jwt.verify(refreshToken, {
+        secret: process.env.REFRESH_TOKEN_SECRET,
+      });
+      if (!decoded) {
+        throw new UnauthorizedException("Invalid or expired refresh token");
+      }
+
+      let user = await this.repository.getUser({ _id: decoded._id });
+      if (!user) throw new NotFoundException("User not found");
+      let accessToken = user.accessToken(this.jwt);
+      return { user, accessToken };
+    } catch (error) {
+      throw new UnauthorizedException("Invalid or expired refresh token");
+    }
   }
 
   // ================================

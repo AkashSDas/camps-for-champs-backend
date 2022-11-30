@@ -6,7 +6,7 @@ import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common
 import { AuthService } from "./auth.service";
 import { SignupDto } from "./dto";
 import { LoginDto } from "./dto/login.dto";
-import { AccessTokenGuard } from "./guard";
+import { AccessTokenGuard, RefreshTokenGuard } from "./guard";
 
 @Controller("/v1/auth")
 export class AuthController {
@@ -36,6 +36,12 @@ export class AuthController {
     return await this.service.login(dto, res);
   }
 
+  @Get("/access-token")
+  @UseGuards(RefreshTokenGuard)
+  accessToken(@Req() req: Request) {
+    return this.service.accessToken(req);
+  }
+
   // ================================
   // OTHER
   // ================================
@@ -49,8 +55,8 @@ export class AuthController {
   // TEST
   // ================================
 
-  @UseGuards(AccessTokenGuard)
   @Get("/test")
+  @UseGuards(AccessTokenGuard)
   test(@Req() req: Request) {
     return { user: req.user, message: "🌍 Secret operation" };
   }
