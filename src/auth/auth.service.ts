@@ -1,4 +1,7 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { Response } from "express";
+import { loginCookieConfig } from "src/utils/auth.util";
+
+import { HttpException, HttpStatus, Injectable, Res } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
 import { UserRepository } from "../user/user.repository";
@@ -13,23 +16,22 @@ export class AuthService {
   // SIGNUP
   // ================================
 
-  async signup(dto: SignupDto) {
-    // Create new user and send verification email
+  async signup(dto: SignupDto, @Res() res: Response) {
     try {
       var user = await this.repository.createUser({
         email: dto.email,
         password: dto.password,
       });
-      var success = await sendVerificationEmail(user);
-
-      // remove password from response. This should come after sendVerificationEmail because
-      // sendVerificationEmail does user.save() and if password is removed before that then
-      // it would save it as undefined
-      user.password = undefined;
+      let success = await sendVerificationEmail(user);
+      user.password = undefined; // remove password from response after email token is saved
 
       var message = success
         ? "Account created, verification email sent"
         : "Account created";
+
+      var accessToken = user.accessToken(this.jwt);
+      var refreshToken = user.refreshToken(this.jwt);
+      res.cookie("refreshToken", refreshToken, loginCookieConfig);
     } catch (error) {
       if (error instanceof Error && error.message == "Email already exists") {
         throw new HttpException("Email already exists", HttpStatus.BAD_REQUEST);
@@ -37,13 +39,6 @@ export class AuthService {
       throw error;
     }
 
-    var user = await this.repository.getUser({ email: dto.email });
-    var message = "login test";
-    {
-      let accessToken = user.accessToken(this.jwt);
-      var response = { accessToken, user, message };
-    }
-
-    return response;
+    return { message, user, accessToken };
   }
 }

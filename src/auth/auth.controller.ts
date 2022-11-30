@@ -14,7 +14,10 @@ export class AuthController {
   // ================================
 
   @Post("/signup")
-  async signup(@Body() dto: SignupDto) {
-    return await this.service.signup(dto);
+  async signup(
+    @Body() dto: SignupDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return await this.service.signup(dto, res);
   }
 }
