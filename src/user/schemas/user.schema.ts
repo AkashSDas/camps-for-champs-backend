@@ -1,3 +1,4 @@
+import * as argon from "argon2";
 import { isEmail } from "class-validator";
 import { createHash, randomBytes } from "crypto";
 import { Document, SchemaTypes } from "mongoose";
@@ -52,6 +53,7 @@ export class User extends Document {
   generateVerificationToken!: () => string;
   accessToken!: (jwt: JwtService) => string;
   refreshToken!: (jwt: JwtService) => string;
+  verifyPassword: (password: string) => Promise<boolean>;
 }
 
 export var UserSchema = SchemaFactory.createForClass(User);
@@ -89,4 +91,12 @@ UserSchema.methods.refreshToken = function (jwt: JwtService): string {
     secret: process.env.REFRESH_TOKEN_SECRET,
     expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN,
   });
+};
+
+/**
+ * @param pwd Password to be compared
+ * @returns true if password matches, false otherwise
+ */
+UserSchema.methods.verifyPassword = function (pwd: string): Promise<boolean> {
+  return argon.verify(this.password, pwd);
 };

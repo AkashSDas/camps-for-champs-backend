@@ -7,6 +7,7 @@ import { JwtService } from "@nestjs/jwt";
 import { UserRepository } from "../user/user.repository";
 import { sendVerificationEmail } from "../utils/mail.util";
 import { SignupDto } from "./dto";
+import { LoginDto } from "./dto/login.dto";
 
 @Injectable()
 export class AuthService {
@@ -40,5 +41,29 @@ export class AuthService {
     }
 
     return { message, user, accessToken };
+  }
+
+  // ================================
+  // LOGIN
+  // ================================
+
+  async login(dto: LoginDto, @Res() res: Response) {
+    var user = await this.repository.getUserWithSelect(
+      { email: dto.email },
+      "+password",
+    );
+    if (!user) throw new NotFoundException("User not found");
+
+    var isPasswordValid = await user.verifyPassword(dto.password);
+    user.password = undefined; // remove password from response
+    if (!isPasswordValid) {
+      throw new HttpException("Invalid password", HttpStatus.BAD_REQUEST);
+    }
+
+    var accessToken = user.accessToken(this.jwt);
+    var refreshToken = user.refreshToken(this.jwt);
+
+    res.cookie("refreshToken", refreshToken, loginCookieConfig);
+    return { user, accessToken };
   }
 }

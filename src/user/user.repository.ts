@@ -13,6 +13,10 @@ export class UserRepository {
     return this.model.findOne(filter);
   }
 
+  getUserWithSelect(filter: FilterQuery<User>, select: string) {
+    return this.model.findOne(filter).select(select);
+  }
+
   exists(filter: FilterQuery<User>) {
     return this.model.exists(filter);
   }

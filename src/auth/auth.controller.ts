@@ -4,6 +4,8 @@ import { Body, Controller, Post, Res } from "@nestjs/common";
 
 import { AuthService } from "./auth.service";
 import { SignupDto } from "./dto";
+import { LoginDto } from "./dto/login.dto";
+import { AccessTokenGuard } from "./guard/access-token.guard";
 
 @Controller("/v1/auth")
 export class AuthController {
@@ -19,5 +21,17 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     return await this.service.signup(dto, res);
+  }
+
+  // ================================
+  // LOGIN
+  // ================================
+
+  @Post("/login")
+  async login(
+    @Body() dto: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return await this.service.login(dto, res);
   }
 }
