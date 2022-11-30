@@ -73,7 +73,10 @@ export class AuthService {
   // ================================
 
   logout(req: Request, res: Response) {
-    res.clearCookie("refreshToken", loginCookieConfig);
-    return { message: "Logged out", cookies: req.cookies };
+    if (req.cookies?.refreshToken) {
+      res.clearCookie("refreshToken", loginCookieConfig);
+    }
+
+    return { message: "Logged out" };
   }
 }
