@@ -62,6 +62,25 @@ export class AuthController {
     return this.service.accessToken(req);
   }
 
+  @Get("/login/google")
+  @UseGuards(AuthGuard("google-login"))
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  loginWithGoogle() {}
+
+  @Get("/login/google/redirect")
+  @UseGuards(AuthGuard("google-login"))
+  loginWithGoogleRedirect(@Req() req: Request, @Res() res: Response) {
+    var jwt = (req.user as any)?.jwt;
+
+    if (jwt) {
+      return res.redirect(process.env.OAUTH_LOGIN_SUCCESS_REDIRECT_URL);
+    } else {
+      return res.redirect(
+        `${process.env.OAUTH_LOGIN_FAILURE_REDIRECT_URL}?info=signup-invalid`,
+      );
+    }
+  }
+
   // ================================
   // EMAIL VERIFICATION
   // ================================

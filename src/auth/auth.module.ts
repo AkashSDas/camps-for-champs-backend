@@ -6,7 +6,7 @@ import { JwtModule } from "@nestjs/jwt";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 // eslint-disable-next-line prettier/prettier
-import { AccessTokenStrategy, GoogleSignupStrategy, RefreshTokenStrategy } from "./strategy";
+import { AccessTokenStrategy, GoogleLoginStrategy, GoogleSignupStrategy, RefreshTokenStrategy } from "./strategy";
 
 @Module({
   imports: [UserModule, JwtModule.register({})],
@@ -16,6 +16,7 @@ import { AccessTokenStrategy, GoogleSignupStrategy, RefreshTokenStrategy } from 
     AccessTokenStrategy,
     RefreshTokenStrategy,
     GoogleSignupStrategy,
+    GoogleLoginStrategy,
   ],
 })
 export class AuthModule {}
