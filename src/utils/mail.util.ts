@@ -54,3 +54,29 @@ export async function sendVerificationEmail(user: User) {
 
   return success;
 }
+
+export async function sendForgotPasswordEmail(user: User) {
+  var token = user.generatePasswordResetToken();
+  await user.save({ validateModifiedOnly: true }); // save token
+
+  var url = `${process.env.BASE_URL}/api/v2/auth/reset-password/${token}`;
+  var opts: EmailOptions = {
+    to: user.email,
+    subject: "Reset your password",
+    text: `Please click on the link to reset your password: ${url}`,
+    html: `Please click on the link to reset your password: 🔗 <a href="${url}">Link</a>`,
+  };
+
+  try {
+    await sendEmail(opts);
+    var success = true;
+  } catch (error) {
+    // Resetting fields after failed sending email
+    user.passwordResetToken = undefined;
+    user.passwordResetTokenExpiresAt = undefined;
+    await user.save({ validateModifiedOnly: true });
+    var success = false;
+  }
+
+  return success;
+}

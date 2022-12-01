@@ -54,7 +54,8 @@ export class User extends Document {
   generateVerificationToken!: () => string;
   accessToken!: (jwt: JwtService) => string;
   refreshToken!: (jwt: JwtService) => string;
-  verifyPassword: (password: string) => Promise<boolean>;
+  verifyPassword!: (password: string) => Promise<boolean>;
+  generatePasswordResetToken!: () => string;
 }
 
 export var UserSchema = SchemaFactory.createForClass(User);
@@ -112,5 +113,18 @@ UserSchema.methods.generateVerificationToken = function (): string {
   var token = randomBytes(32).toString("hex");
   this.verificationToken = createHash("sha256").update(token).digest("hex");
   this.verificationTokenExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10m
+  return token;
+};
+
+/**
+ * Generate a random token, hash it and set it as password reset token
+ * along with its expiry date (10min from now)
+ *
+ * @returns the generated token
+ */
+UserSchema.methods.generatePasswordResetToken = function (): string {
+  var token = randomBytes(32).toString("hex");
+  this.passwordResetToken = createHash("sha256").update(token).digest("hex");
+  this.passwordResetTokenExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10m
   return token;
 };

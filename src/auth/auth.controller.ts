@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
 
 // eslint-disable-next-line prettier/prettier
-import { Body, Controller, Get, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
 
 import { AuthService } from "./auth.service";
-import { SignupDto, VerifyEmailDto } from "./dto";
+// eslint-disable-next-line prettier/prettier
+import { ForgotPasswordDto, PasswordResetDto, SignupDto, VerifyEmailDto } from "./dto";
 import { LoginDto } from "./dto/login.dto";
 import { AccessTokenGuard, RefreshTokenGuard } from "./guard";
 
@@ -54,6 +55,27 @@ export class AuthController {
   @Put("/confirm-email/:token")
   async confirmEmail(@Param("token") token: string) {
     return await this.service.confirmEmail(token);
+  }
+
+  // ================================
+  // FORGOT PASSWORD
+  // ================================
+
+  @Post("/forgot-password")
+  async forgotPassword(@Body() dto: ForgotPasswordDto) {
+    return await this.service.forgotPassword(dto.email);
+  }
+
+  @Put("/password-reset/:token")
+  async passwordReset(
+    @Param("token") token: string,
+    @Body() dto: PasswordResetDto,
+  ) {
+    if (dto.password !== dto.confirmPassword) {
+      throw new HttpException("Passwords do not match", HttpStatus.BAD_REQUEST);
+    }
+
+    return await this.service.passwordReset(token, dto.password);
   }
 
   // ================================

@@ -7,7 +7,8 @@ import { HttpException, HttpStatus, Injectable, InternalServerErrorException, No
 import { JwtService } from "@nestjs/jwt";
 
 import { UserRepository } from "../user/user.repository";
-import { sendVerificationEmail } from "../utils/mail.util";
+// eslint-disable-next-line prettier/prettier
+import { sendForgotPasswordEmail, sendVerificationEmail } from "../utils/mail.util";
 import { SignupDto, VerifyEmailDto } from "./dto";
 import { LoginDto } from "./dto/login.dto";
 
@@ -126,6 +127,38 @@ export class AuthService {
     await user.save({ validateModifiedOnly: true });
 
     return { message: "Email verified" };
+  }
+
+  // ================================
+  // FORGOT PASSWORD
+  // ================================
+
+  async forgotPassword(email: string) {
+    var user = await this.repository.getUser({ email });
+    if (!user) throw new NotFoundException("User not found");
+
+    var success = await sendForgotPasswordEmail(user);
+    if (!success) {
+      throw new InternalServerErrorException("Failed to send email");
+    }
+
+    return { message: "Password reset email sent" };
+  }
+
+  async passwordReset(token: string, password: string) {
+    var encryptedToken = createHash("sha256").update(token).digest("hex");
+    var user = await this.repository.getUser({
+      passwordResetToken: encryptedToken,
+      passwordResetTokenExpiresAt: { $gt: Date.now() },
+    });
+    if (!user) throw new NotFoundException("User not found");
+
+    user.password = password;
+    user.passwordResetToken = undefined;
+    user.passwordResetTokenExpiresAt = undefined;
+    await user.save({ validateModifiedOnly: true });
+
+    return { message: "Password reset" };
   }
 
   // ================================
