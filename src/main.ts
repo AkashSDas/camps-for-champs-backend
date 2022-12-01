@@ -11,6 +11,6 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true })); // Enable validation and strip out any properties that are not in the DTO
   app.use(cookieParser());
   app.enableCors({ credentials: true, origin: process.env.FRONTEND_URL });
-  await app.listen(8000);
+  await app.listen(5002);
 }
 bootstrap();
