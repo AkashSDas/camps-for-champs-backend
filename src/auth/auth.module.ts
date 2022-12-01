@@ -7,10 +7,17 @@ import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 // eslint-disable-next-line prettier/prettier
 import { AccessTokenStrategy, RefreshTokenStrategy } from "./strategy";
+// eslint-disable-next-line prettier/prettier
+import { GoogleSignupStrategy } from "./strategy/google.strategy";
 
 @Module({
   imports: [UserModule, JwtModule.register({})],
   controllers: [AuthController],
-  providers: [AuthService, AccessTokenStrategy, RefreshTokenStrategy],
+  providers: [
+    AuthService,
+    AccessTokenStrategy,
+    RefreshTokenStrategy,
+    GoogleSignupStrategy,
+  ],
 })
 export class AuthModule {}

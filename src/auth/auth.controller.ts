@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 
 // eslint-disable-next-line prettier/prettier
 import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
 
 import { AuthService } from "./auth.service";
 // eslint-disable-next-line prettier/prettier
@@ -23,6 +24,24 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     return await this.service.signup(dto, res);
+  }
+
+  // GOOGLE
+
+  @Get("/signup/google")
+  @UseGuards(AuthGuard("google-signup"))
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  async googleSignup() {}
+
+  @Get("/signup/google/redirect")
+  @UseGuards(AuthGuard("google-signup"))
+  async googleSignupRedirect(@Req() req: Request, @Res() res: Response) {
+    var jwt = (req.user as any)?.jwt;
+    if (jwt) {
+      return res.redirect(process.env.OAUTH_SIGNUP_SUCCESS_REDIRECT_URL);
+    } else {
+      return res.redirect(process.env.OAUTH_SIGNUP_FAILURE_REDIRECT_URL);
+    }
   }
 
   // ================================

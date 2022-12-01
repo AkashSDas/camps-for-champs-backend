@@ -6,3 +6,9 @@ export var loginCookieConfig: CookieOptions = {
   sameSite: "none",
   maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day
 };
+
+export enum OAuthProvider {
+  GOOGLE = "google",
+  FACEBOOK = "facebook",
+  TWITTER = "twitter",
+}
