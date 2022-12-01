@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 // eslint-disable-next-line prettier/prettier
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
 
 import { AuthService } from "./auth.service";
 import { SignupDto, VerifyEmailDto } from "./dto";
@@ -49,6 +49,11 @@ export class AuthController {
   @Post("/verify-email")
   async verifyEmail(@Body() dto: VerifyEmailDto) {
     return await this.service.verifyEmail(dto);
+  }
+
+  @Put("/confirm-email/:token")
+  async confirmEmail(@Param("token") token: string) {
+    return await this.service.confirmEmail(token);
   }
 
   // ================================

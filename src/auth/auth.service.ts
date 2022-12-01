@@ -1,3 +1,4 @@
+import { createHash } from "crypto";
 import { Request, Response } from "express";
 import { loginCookieConfig } from "src/utils/auth.util";
 
@@ -108,6 +109,23 @@ export class AuthService {
     }
 
     return { message: "Verification email sent" };
+  }
+
+  async confirmEmail(token: string) {
+    var encryptedToken = createHash("sha256").update(token).digest("hex");
+    var user = await this.repository.getUser({
+      verificationToken: encryptedToken,
+      verificationTokenExpiresAt: { $gt: Date.now() },
+    });
+    if (!user) throw new NotFoundException("User not found");
+
+    user.active = true;
+    user.verified = true;
+    user.verificationToken = undefined;
+    user.verificationTokenExpiresAt = undefined;
+    await user.save({ validateModifiedOnly: true });
+
+    return { message: "Email verified" };
   }
 
   // ================================
