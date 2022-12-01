@@ -3,9 +3,32 @@ import { isEmail } from "class-validator";
 import { createHash, randomBytes } from "crypto";
 import { Document, SchemaTypes } from "mongoose";
 import { AccessTokenPayload, RefreshTokenPayload } from "src/auth/strategy";
+import { OAuthProvider } from "src/utils/auth.util";
 
 import { JwtService } from "@nestjs/jwt";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+
+@Schema()
+class Image {
+  @Prop({ type: SchemaTypes.String })
+  id?: string;
+
+  @Prop({ type: SchemaTypes.String, required: true })
+  URL: string;
+}
+
+var imageSchema = SchemaFactory.createForClass(Image);
+
+@Schema()
+class OAuthProviderInfo {
+  @Prop({ type: SchemaTypes.String, required: true })
+  id: string;
+
+  @Prop({ type: SchemaTypes.String, required: true, enum: OAuthProvider })
+  provider: OAuthProvider;
+}
+
+var oauthProviderSchema = SchemaFactory.createForClass(OAuthProviderInfo);
 
 /**
  * @remark Since fields such as email are not required, they can be set to
@@ -46,6 +69,12 @@ export class User extends Document {
 
   @Prop({ type: SchemaTypes.Date, select: false })
   verificationTokenExpiresAt?: Date;
+
+  @Prop({ type: imageSchema })
+  profileImage?: Image;
+
+  @Prop({ type: [oauthProviderSchema], required: true, default: [] })
+  oauthProviders: OAuthProviderInfo[];
 
   // ============================
   // INSTANCE METHODS
