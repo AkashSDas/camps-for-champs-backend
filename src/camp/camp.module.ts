@@ -1,9 +1,11 @@
-import { Module } from "@nestjs/common";
+// eslint-disable-next-line prettier/prettier
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
 import { CampController } from "./camp.controller";
 import { CampRepository } from "./camp.repository";
 import { CampService } from "./camp.service";
+import { ValidateCampMiddleware } from "./middleware";
 import { Camp, CampSchema } from "./schemas";
 
 @Module({
@@ -13,4 +15,11 @@ import { Camp, CampSchema } from "./schemas";
   controllers: [CampController],
   providers: [CampService, CampRepository],
 })
-export class CampModule {}
+export class CampModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(ValidateCampMiddleware).forRoutes({
+      path: "v1/camp/:campId/*",
+      method: RequestMethod.ALL,
+    });
+  }
+}
