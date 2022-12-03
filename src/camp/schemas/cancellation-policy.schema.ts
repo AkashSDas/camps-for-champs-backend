@@ -8,12 +8,7 @@ export enum CancellationPolicyType {
 
 @Schema({ _id: false })
 export class CancellationPolicy {
-  @Prop({
-    type: String,
-    required: true,
-    enum: CancellationPolicyType,
-    default: CancellationPolicyType.FLEXIBLE,
-  })
+  @Prop({ type: String, required: true, enum: CancellationPolicyType })
   type: CancellationPolicyType;
 
   @Prop({ type: String, required: true, max: 512, trim: true })

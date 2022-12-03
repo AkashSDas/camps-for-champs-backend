@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
-enum TagCode {
+export enum TagCode {
   WEATHER = "weather",
   PRICE = "price",
   LOCATION = "location",
