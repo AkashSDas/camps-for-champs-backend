@@ -1,5 +1,6 @@
 export * from "./create-camp.dto";
 export * from "./details.dto";
+export * from "./image.dto";
 
 export * from "./time.dto";
 export * from "./activity.dto";

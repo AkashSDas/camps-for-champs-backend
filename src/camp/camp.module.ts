@@ -5,6 +5,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { CampController } from "./camp.controller";
 import { CampRepository } from "./camp.repository";
 import { CampService } from "./camp.service";
+import { CloudinaryProvider } from "./cloudinary.provider";
 import { ValidateCampMiddleware } from "./middleware";
 import { Camp, CampSchema } from "./schemas";
 
@@ -13,7 +14,7 @@ import { Camp, CampSchema } from "./schemas";
     MongooseModule.forFeature([{ name: Camp.name, schema: CampSchema }]),
   ],
   controllers: [CampController],
-  providers: [CampService, CampRepository],
+  providers: [CampService, CampRepository, CloudinaryProvider],
 })
 export class CampModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
