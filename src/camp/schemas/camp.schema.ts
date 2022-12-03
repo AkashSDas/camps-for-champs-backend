@@ -40,7 +40,7 @@ export class Camp extends Document {
     super();
   }
 
-  @Prop({ type: String, max: 128, unique: true, trim: true })
+  @Prop({ type: String, max: 128, trim: true })
   name?: string;
 
   @Prop({ type: String, max: 4096, trim: true })
