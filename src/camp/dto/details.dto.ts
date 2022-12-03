@@ -44,6 +44,7 @@ export class DetailsDto {
   checkOutTime?: TimeDto;
 
   @ValidateNested()
+  @Type(() => CancellationPolicyDto)
   @IsOptional()
   cancellationPolicy?: CancellationPolicyDto;
 
