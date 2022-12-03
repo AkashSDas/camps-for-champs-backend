@@ -1,9 +1,9 @@
-import { SchemaTypes } from "mongoose";
+import { Document, SchemaTypes } from "mongoose";
 import { User } from "src/user/schemas";
 
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
-import { Camp } from "./";
+import { Camp } from "./camp.schema";
 
 export enum CampBookingStatus {
   FULFILLED = "fulfilled",
@@ -25,6 +25,7 @@ class CampGuest {
 
 var campGuestSchema = SchemaFactory.createForClass(CampGuest);
 
+@Schema({ timestamps: true })
 export class CampBooking extends Document {
   @Prop({ type: SchemaTypes.ObjectId, ref: Camp.name, required: true })
   camp: string;
