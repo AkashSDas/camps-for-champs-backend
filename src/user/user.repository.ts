@@ -1,4 +1,5 @@
 import { FilterQuery, Model } from "mongoose";
+import { UserRole } from "src/utils/user.util";
 
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
@@ -26,6 +27,11 @@ export class UserRepository {
   }
 
   async saveUser(user: User) {
+    return await user.save();
+  }
+
+  async addRole(user: User, role: UserRole) {
+    user.roles.push(role);
     return await user.save();
   }
 }

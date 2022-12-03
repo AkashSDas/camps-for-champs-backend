@@ -1,19 +1,21 @@
 import * as argon from "argon2";
 import { isEmail } from "class-validator";
 import { createHash, randomBytes } from "crypto";
-import { Document, SchemaTypes } from "mongoose";
+import { Document } from "mongoose";
 import { AccessTokenPayload, RefreshTokenPayload } from "src/auth/strategy";
 import { OAuthProvider } from "src/utils/auth.util";
 
 import { JwtService } from "@nestjs/jwt";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
+import { UserRole } from "../../utils/user.util";
+
 @Schema()
 class Image {
-  @Prop({ type: SchemaTypes.String })
+  @Prop({ type: String })
   id?: string;
 
-  @Prop({ type: SchemaTypes.String, required: true })
+  @Prop({ type: String, required: true })
   URL: string;
 }
 
@@ -21,10 +23,10 @@ var imageSchema = SchemaFactory.createForClass(Image);
 
 @Schema()
 class OAuthProviderInfo {
-  @Prop({ type: SchemaTypes.String, required: true })
+  @Prop({ type: String, required: true })
   id: string;
 
-  @Prop({ type: SchemaTypes.String, required: true, enum: OAuthProvider })
+  @Prop({ type: String, required: true, enum: OAuthProvider })
   provider: OAuthProvider;
 }
 
@@ -40,34 +42,34 @@ export class User extends Document {
     super();
   }
 
-  @Prop({ type: SchemaTypes.String, max: 64, trim: true })
+  @Prop({ type: String, max: 64, trim: true })
   firstName?: string;
 
-  @Prop({ type: SchemaTypes.String, max: 64, trim: true })
+  @Prop({ type: String, max: 64, trim: true })
   lastName?: string;
 
-  @Prop({ type: SchemaTypes.String, validate: [isEmail, "Invalid"] })
+  @Prop({ type: String, validate: [isEmail, "Invalid"] })
   email?: string;
 
-  @Prop({ type: SchemaTypes.String, select: false })
+  @Prop({ type: String, select: false })
   password?: string;
 
-  @Prop({ type: SchemaTypes.String, select: false })
+  @Prop({ type: String, select: false })
   passwordResetToken?: string;
 
-  @Prop({ type: SchemaTypes.Date, select: false })
+  @Prop({ type: Date, select: false })
   passwordResetTokenExpiresAt?: Date;
 
-  @Prop({ type: SchemaTypes.Boolean, default: false })
+  @Prop({ type: Boolean, default: false })
   active: boolean;
 
-  @Prop({ type: SchemaTypes.Boolean, default: false })
+  @Prop({ type: Boolean, default: false })
   verified: boolean;
 
-  @Prop({ type: SchemaTypes.String, select: false })
+  @Prop({ type: String, select: false })
   verificationToken?: string;
 
-  @Prop({ type: SchemaTypes.Date, select: false })
+  @Prop({ type: Date, select: false })
   verificationTokenExpiresAt?: Date;
 
   @Prop({ type: imageSchema })
@@ -76,10 +78,12 @@ export class User extends Document {
   @Prop({ type: [oauthProviderSchema], required: true, default: [] })
   oauthProviders: OAuthProviderInfo[];
 
+  @Prop({ type: [String], default: [], enum: UserRole })
+  roles: UserRole[];
+
   // ============================
   // INSTANCE METHODS
   // ============================
-
   generateVerificationToken!: () => string;
   accessToken!: (jwt: JwtService) => string;
   refreshToken!: (jwt: JwtService) => string;
