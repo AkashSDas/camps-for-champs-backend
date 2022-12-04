@@ -1,9 +1,8 @@
 import { Document, SchemaTypes } from "mongoose";
+import { Camp } from "src/camp/schemas";
 import { User } from "src/user/schemas";
 
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-
-import { Camp } from "./camp.schema";
 
 @Schema()
 export class CampWishlist extends Document {
@@ -14,4 +13,4 @@ export class CampWishlist extends Document {
   camp: string;
 }
 
-export var campWishlist = SchemaFactory.createForClass(CampWishlist);
+export var CampWishlistSchema = SchemaFactory.createForClass(CampWishlist);
