@@ -93,4 +93,16 @@ export class CampService {
   async getCampsWithStatus(status: CampStatus) {
     return await this.campRepository.getCampsWithStatus(status);
   }
+
+  async deleteCamp(camp: Camp) {
+    // Remove all images
+    var images = [];
+    for (let i = 0; i < camp.images.length; i++) {
+      images.push(cloudinary.v2.uploader.destroy(camp.images[i].id));
+    }
+    await Promise.all(images);
+
+    // Remove camp
+    await camp.remove();
+  }
 }

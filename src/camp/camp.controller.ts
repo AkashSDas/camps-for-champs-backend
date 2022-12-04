@@ -121,4 +121,13 @@ export class CampController {
     var camps = await this.service.getCampsWithStatus(CampStatus.ACTIVE);
     return { camps };
   }
+
+  @Delete("/:campId/remove")
+  @Roles(UserRole.ADMIN)
+  @UseGuards(AccessTokenGuard, RoleGuard)
+  async deleteCamp(@Res({ passthrough: true }) res: Response) {
+    var camp: Camp = res.locals.camp;
+    await this.service.deleteCamp(camp);
+    return { message: "Camp deleted" };
+  }
 }
