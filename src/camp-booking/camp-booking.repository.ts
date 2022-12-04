@@ -29,4 +29,8 @@ export class CampBookingRepository {
       campUnit: dto.campUnit,
     });
   }
+
+  async getAllForUser(userId: string) {
+    return this.model.find({ user: userId }).populate("camp");
+  }
 }

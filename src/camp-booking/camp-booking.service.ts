@@ -20,4 +20,8 @@ export class CampBookingService {
     var booking = await this.campBookingRepository.create(dto, camp, user);
     return booking;
   }
+
+  async getAllBookingsForUser(userId: string) {
+    return this.campBookingRepository.getAllForUser(userId);
+  }
 }
