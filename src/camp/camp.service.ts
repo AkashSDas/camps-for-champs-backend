@@ -44,9 +44,10 @@ export class CampService {
       `${CAMP_IMG_DIR}/${camp._id}/${imageId}`,
     );
 
-    camp.images = camp.images.filter(function removeImage(image) {
+    var idx = camp.images.findIndex(function removeImage(image) {
       return image.id != imageId;
     });
+    camp.images.splice(idx, 1);
 
     await camp.save();
   }
