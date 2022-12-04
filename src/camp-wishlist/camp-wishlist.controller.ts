@@ -1,7 +1,7 @@
 import { Request } from "express";
 import { AccessTokenGuard } from "src/auth/guard";
 
-import { Controller, Param, Post, Req, UseGuards } from "@nestjs/common";
+import { Controller, Get, Param, Post, Req, UseGuards } from "@nestjs/common";
 
 import { CampWishlistService } from "./camp-wishlist.service";
 
@@ -13,11 +13,17 @@ export class CampWishlistController {
    * @remark Camp is not checked whether it exists or not.
    */
   @UseGuards(AccessTokenGuard)
-  @Post(":campId/wishlist")
+  @Post("/camp/:campId/wishlist")
   async toggleCampWishlistStatus(
     @Param("campId") campId: string,
     @Req() req: Request,
   ) {
     return this.service.toggleCampWishlistStatus((req.user as any)._id, campId);
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @Get("/user/:userId")
+  async getUserWishlist(@Param("userId") userId: string) {
+    return await this.service.getUserWishlist(userId);
   }
 }

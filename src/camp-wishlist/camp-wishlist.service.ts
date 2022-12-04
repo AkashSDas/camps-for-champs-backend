@@ -35,4 +35,9 @@ export class CampWishlistService {
       return { action: "added", wishlist };
     }
   }
+
+  async getUserWishlist(userId: string) {
+    var userObjectId = new Types.ObjectId(userId);
+    return await this.campWishlistRepository.getWithCamp(userObjectId);
+  }
 }

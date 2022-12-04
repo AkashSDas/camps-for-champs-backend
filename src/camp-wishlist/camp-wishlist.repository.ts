@@ -22,4 +22,8 @@ export class CampWishlistRepository {
   delete(userId: Types.ObjectId, campId: Types.ObjectId) {
     return this.wishlist.deleteOne({ user: userId, camp: campId });
   }
+
+  getWithCamp(userId: Types.ObjectId) {
+    return this.wishlist.find({ user: userId }).populate("camp");
+  }
 }
