@@ -5,7 +5,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 
 import { DetailsDto } from "./dto";
-import { Camp } from "./schemas";
+import { Camp, CampStatus } from "./schemas";
 
 @Injectable()
 export class CampRepository {
@@ -33,5 +33,13 @@ export class CampRepository {
 
   exists(id: Types.ObjectId) {
     return this.camp.exists({ _id: id });
+  }
+
+  async getCamps() {
+    return await this.camp.find();
+  }
+
+  async getCampsWithStatus(status: CampStatus) {
+    return await this.camp.find({ status });
   }
 }

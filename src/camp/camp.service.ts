@@ -85,4 +85,12 @@ export class CampService {
     await camp.save();
     return camp;
   }
+
+  async getCamps() {
+    return await this.campRepository.getCamps();
+  }
+
+  async getCampsWithStatus(status: CampStatus) {
+    return await this.campRepository.getCampsWithStatus(status);
+  }
 }
