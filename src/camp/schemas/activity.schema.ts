@@ -12,7 +12,7 @@ export enum ActivityType {
 @Schema({ _id: false })
 export class Activity {
   @Prop({ type: String, required: true, enum: ActivityType })
-  type: string;
+  type: ActivityType;
 
   @Prop({ type: Number, required: true, min: 0, default: 0 })
   price: number;
