@@ -1,6 +1,7 @@
 import { Request } from "express";
 
-import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
+// eslint-disable-next-line prettier/prettier
+import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 
 import { CampBookingService } from "./camp-booking.service";
@@ -28,5 +29,12 @@ export class CampBookingController {
     );
 
     return { bookings };
+  }
+
+  @Delete("/:bookingId")
+  @UseGuards(AuthGuard("jwt"))
+  async cancelBooking(@Param("bookingId") id) {
+    var booking = await this.service.cancelBooking(id);
+    return { booking };
   }
 }

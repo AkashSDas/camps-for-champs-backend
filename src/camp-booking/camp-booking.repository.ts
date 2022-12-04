@@ -1,4 +1,4 @@
-import { Model } from "mongoose";
+import { FilterQuery, Model, UpdateQuery } from "mongoose";
 import { Camp } from "src/camp/schemas";
 import { User } from "src/user/schemas";
 
@@ -32,5 +32,13 @@ export class CampBookingRepository {
 
   async getAllForUser(userId: string) {
     return this.model.find({ user: userId }).populate("camp");
+  }
+
+  exists(filter: FilterQuery<CampBooking>) {
+    return this.model.exists(filter);
+  }
+
+  update(filter: FilterQuery<CampBooking>, update: UpdateQuery<CampBooking>) {
+    return this.model.findOneAndUpdate(filter, update, { new: true });
   }
 }

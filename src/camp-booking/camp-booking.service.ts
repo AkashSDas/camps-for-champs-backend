@@ -5,6 +5,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 
 import { CampBookingRepository } from "./camp-booking.repository";
 import { BookACampDto } from "./dto";
+import { CampBookingStatus } from "./schema";
 
 @Injectable()
 export class CampBookingService {
@@ -23,5 +24,22 @@ export class CampBookingService {
 
   async getAllBookingsForUser(userId: string) {
     return this.campBookingRepository.getAllForUser(userId);
+  }
+
+  async cancelBooking(bookingId: string) {
+    // Check if the booking exists
+    var booking = await this.campBookingRepository.exists({
+      _id: bookingId,
+      status: CampBookingStatus.PENDING,
+    });
+    if (!booking) throw new NotFoundException("Booking does not exist");
+
+    // Cancel booking
+    var updatedBooking = await this.campBookingRepository.update(
+      { _id: bookingId },
+      { $set: { status: CampBookingStatus.CANCELLED } },
+    );
+
+    return updatedBooking;
   }
 }
