@@ -10,7 +10,7 @@ import { UserRole } from "src/utils/user.util";
 import { BadRequestException, Body, Controller, Delete, NotFoundException, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
 
 import { CampService } from "./camp.service";
-import { DetailsDto, ImageDto } from "./dto";
+import { DetailsDto, ImageDto, ReorderCampImagesDto } from "./dto";
 import { Camp } from "./schemas";
 
 @Controller("/v1/camp")
@@ -38,7 +38,7 @@ export class CampController {
     return await this.service.updateCampDetails(dto, res.locals.camp as Camp);
   }
 
-  @Put("/:campId/image")
+  @Post("/:campId/image")
   @Roles(UserRole.ADMIN)
   @UseGuards(AccessTokenGuard, RoleGuard)
   async addCampImage(
@@ -69,5 +69,17 @@ export class CampController {
 
     await this.service.removeCampImage(id, camp);
     return { message: "Image deleted" };
+  }
+
+  @Put("/:campId/image")
+  @Roles(UserRole.ADMIN)
+  @UseGuards(AccessTokenGuard, RoleGuard)
+  async reorderCampImages(
+    @Body() dto: ReorderCampImagesDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    var camp: Camp = res.locals.camp;
+    camp = await this.service.reorderCampImages(dto.ids, camp);
+    return { message: "Images reordered", camp };
   }
 }

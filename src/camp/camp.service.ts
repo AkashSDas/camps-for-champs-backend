@@ -3,7 +3,8 @@ import { UploadedFile } from "express-fileupload";
 import { User } from "src/user/schemas";
 import { CAMP_IMG_DIR } from "src/utils/cloudinary.util";
 
-import { Injectable } from "@nestjs/common";
+// eslint-disable-next-line prettier/prettier
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 
 import { CampRepository } from "./camp.repository";
 import { DetailsDto, ImageDto } from "./dto";
@@ -48,5 +49,27 @@ export class CampService {
     });
 
     await camp.save();
+  }
+
+  async reorderCampImages(ids: string[], camp: Camp) {
+    var images = camp.images;
+    var newImages = [];
+
+    if (ids.length != images.length) {
+      throw new BadRequestException("Invalid ids");
+    }
+
+    for (let i = 0; i < ids.length; i++) {
+      var image = images.find(function findImage(image) {
+        return image.id == `${CAMP_IMG_DIR}/${camp._id}/${ids[i]}`;
+      });
+
+      if (!image) throw new NotFoundException("Image not found");
+      newImages.push(image);
+    }
+
+    camp.images = newImages;
+    await camp.save();
+    return camp;
   }
 }
