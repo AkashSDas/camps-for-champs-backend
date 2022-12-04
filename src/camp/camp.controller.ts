@@ -94,4 +94,13 @@ export class CampController {
     camp = await this.service.updateCampLocation(dto, camp);
     return { message: "Location updated", camp };
   }
+
+  @Put("/:campId/publish")
+  @Roles(UserRole.ADMIN)
+  @UseGuards(AccessTokenGuard, RoleGuard)
+  async publishCamp(@Res({ passthrough: true }) res: Response) {
+    var camp: Camp = res.locals.camp;
+    camp = await this.service.publishCamp(camp);
+    return { message: "Camp published", camp };
+  }
 }

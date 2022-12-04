@@ -8,7 +8,7 @@ import { BadRequestException, Injectable, NotFoundException } from "@nestjs/comm
 
 import { CampRepository } from "./camp.repository";
 import { DetailsDto, ImageDto, LocationDto } from "./dto";
-import { Camp } from "./schemas";
+import { Camp, CampStatus } from "./schemas";
 
 @Injectable()
 export class CampService {
@@ -76,6 +76,12 @@ export class CampService {
 
   async updateCampLocation(dto: LocationDto, camp: Camp) {
     camp.location = dto;
+    await camp.save();
+    return camp;
+  }
+
+  async publishCamp(camp: Camp) {
+    camp.status = CampStatus.ACTIVE;
     await camp.save();
     return camp;
   }
