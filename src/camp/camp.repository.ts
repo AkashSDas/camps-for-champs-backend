@@ -1,4 +1,4 @@
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { User } from "src/user/schemas";
 
 import { Injectable } from "@nestjs/common";
@@ -29,5 +29,9 @@ export class CampRepository {
       { $set: { ...dto } },
       { new: true },
     );
+  }
+
+  exists(id: Types.ObjectId) {
+    return this.camp.exists({ _id: id });
   }
 }

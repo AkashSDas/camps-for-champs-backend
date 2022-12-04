@@ -15,6 +15,7 @@ import { Camp, CampSchema } from "./schemas";
   ],
   controllers: [CampController],
   providers: [CampService, CampRepository, CloudinaryProvider],
+  exports: [CampRepository],
 })
 export class CampModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
