@@ -7,7 +7,7 @@ import { CAMP_IMG_DIR } from "src/utils/cloudinary.util";
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 
 import { CampRepository } from "./camp.repository";
-import { DetailsDto, ImageDto } from "./dto";
+import { DetailsDto, ImageDto, LocationDto } from "./dto";
 import { Camp } from "./schemas";
 
 @Injectable()
@@ -70,6 +70,12 @@ export class CampService {
     }
 
     camp.images = newImages;
+    await camp.save();
+    return camp;
+  }
+
+  async updateCampLocation(dto: LocationDto, camp: Camp) {
+    camp.location = dto;
     await camp.save();
     return camp;
   }

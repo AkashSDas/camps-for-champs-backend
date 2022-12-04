@@ -10,7 +10,7 @@ import { UserRole } from "src/utils/user.util";
 import { BadRequestException, Body, Controller, Delete, NotFoundException, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
 
 import { CampService } from "./camp.service";
-import { DetailsDto, ImageDto, ReorderCampImagesDto } from "./dto";
+import { DetailsDto, ImageDto, LocationDto, ReorderCampImagesDto } from "./dto";
 import { Camp } from "./schemas";
 
 @Controller("/v1/camp")
@@ -81,5 +81,17 @@ export class CampController {
     var camp: Camp = res.locals.camp;
     camp = await this.service.reorderCampImages(dto.ids, camp);
     return { message: "Images reordered", camp };
+  }
+
+  @Put("/:campId/location")
+  @Roles(UserRole.ADMIN)
+  @UseGuards(AccessTokenGuard, RoleGuard)
+  async updateCampLocation(
+    @Body() dto: LocationDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    var camp: Camp = res.locals.camp;
+    camp = await this.service.updateCampLocation(dto, camp);
+    return { message: "Location updated", camp };
   }
 }
