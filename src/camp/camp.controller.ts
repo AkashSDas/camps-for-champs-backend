@@ -3,13 +3,15 @@ import { UploadedFile } from "express-fileupload";
 import { AccessTokenGuard } from "src/auth/guard";
 import { Roles } from "src/user/decorator";
 import { RoleGuard } from "src/user/guard";
+import { CAMP_IMG_DIR } from "src/utils/cloudinary.util";
 import { UserRole } from "src/utils/user.util";
 
 // eslint-disable-next-line prettier/prettier
-import { BadRequestException, Body, Controller, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, NotFoundException, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
 
 import { CampService } from "./camp.service";
 import { DetailsDto, ImageDto } from "./dto";
+import { Camp } from "./schemas";
 
 @Controller("/v1/camp")
 export class CampController {
@@ -33,7 +35,7 @@ export class CampController {
     @Body() dto: DetailsDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    return await this.service.updateCampDetails(dto, res.locals.camp);
+    return await this.service.updateCampDetails(dto, res.locals.camp as Camp);
   }
 
   @Put("/:campId/image")
@@ -44,9 +46,28 @@ export class CampController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    var camp = res.locals.camp;
+    var camp: Camp = res.locals.camp;
     var image = req.files?.campImage as UploadedFile;
     if (!image) throw new BadRequestException("No image was uploaded");
     return await this.service.addCampImage(dto, camp, image);
+  }
+
+  @Delete("/:campId/image/:imageId")
+  @Roles(UserRole.ADMIN)
+  @UseGuards(AccessTokenGuard, RoleGuard)
+  async removeCampImage(
+    @Param("imageId") id: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    var camp: Camp = res.locals.camp;
+
+    // Check if the image exists
+    var image = camp.images.find(
+      (image) => image.id == `${CAMP_IMG_DIR}/${camp._id}/${id}`,
+    );
+    if (!image) throw new NotFoundException("Image not found");
+
+    await this.service.removeCampImage(id, camp);
+    return { message: "Image deleted" };
   }
 }

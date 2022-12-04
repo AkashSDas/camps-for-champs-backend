@@ -37,4 +37,16 @@ export class CampService {
     camp = await camp.save();
     return { camp, image: camp.images[camp.images.length - 1] };
   }
+
+  async removeCampImage(imageId: string, camp: Camp) {
+    await cloudinary.v2.uploader.destroy(
+      `${CAMP_IMG_DIR}/${camp._id}/${imageId}`,
+    );
+
+    camp.images = camp.images.filter(function removeImage(image) {
+      return image.id != imageId;
+    });
+
+    await camp.save();
+  }
 }
