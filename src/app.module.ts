@@ -7,6 +7,7 @@ import { CampWishlistModule } from "./camp-wishlist/camp-wishlist.module";
 import { CampModule } from "./camp/camp.module";
 import { SampleModule } from "./sample/sample.module";
 import { UserModule } from "./user/user.module";
+import { CampBookingModule } from './camp-booking/camp-booking.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { UserModule } from "./user/user.module";
     AuthModule,
     CampModule,
     CampWishlistModule,
+    CampBookingModule,
   ],
   controllers: [],
   providers: [],
