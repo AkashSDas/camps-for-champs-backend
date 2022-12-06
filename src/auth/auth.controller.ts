@@ -3,6 +3,8 @@ import { Request, Response } from "express";
 // eslint-disable-next-line prettier/prettier
 import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
+// eslint-disable-next-line prettier/prettier
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
 import { AuthService } from "./auth.service";
 // eslint-disable-next-line prettier/prettier
@@ -19,6 +21,9 @@ export class AuthController {
   // ================================
 
   @Post("/signup")
+  @ApiCreatedResponse({ description: "User created" })
+  @ApiBadRequestResponse({ description: "Email already exists" })
+  @ApiTags("auth")
   async signup(
     @Body() dto: SignupDto,
     @Res({ passthrough: true }) res: Response,
@@ -30,11 +35,17 @@ export class AuthController {
 
   @Get("/signup/google")
   @UseGuards(AuthGuard("google-signup"))
+  @ApiOkResponse({ description: "User created OR logged in" })
+  @ApiTags("auth")
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   async googleSignup() {}
 
   @Get("/signup/google/redirect")
   @UseGuards(AuthGuard("google-signup"))
+  @ApiOkResponse({
+    description: "User signed up OR logged in is redirect to front-end",
+  })
+  @ApiTags("auth")
   async googleSignupRedirect(@Req() req: Request, @Res() res: Response) {
     var jwt = (req.user as any)?.jwt;
     if (jwt) {
@@ -49,6 +60,10 @@ export class AuthController {
   // ================================
 
   @Post("/login")
+  @ApiOkResponse({
+    description: "User logged in with access and refresh tokens",
+  })
+  @ApiTags("auth")
   async login(
     @Body() dto: LoginDto,
     @Res({ passthrough: true }) res: Response,
@@ -58,17 +73,25 @@ export class AuthController {
 
   @Get("/access-token")
   @UseGuards(RefreshTokenGuard)
+  @ApiOkResponse({ description: "Access token refreshed" })
+  @ApiTags("auth")
   accessToken(@Req() req: Request) {
     return this.service.accessToken(req);
   }
 
   @Get("/login/google")
   @UseGuards(AuthGuard("google-login"))
+  @ApiOkResponse({ description: "User logged in" })
+  @ApiTags("auth")
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   loginWithGoogle() {}
 
   @Get("/login/google/redirect")
   @UseGuards(AuthGuard("google-login"))
+  @ApiOkResponse({
+    description: "User logged in is redirect to front-end",
+  })
+  @ApiTags("auth")
   loginWithGoogleRedirect(@Req() req: Request, @Res() res: Response) {
     var jwt = (req.user as any)?.jwt;
 
@@ -86,11 +109,15 @@ export class AuthController {
   // ================================
 
   @Post("/verify-email")
+  @ApiOkResponse({ description: "Email verification sent" })
+  @ApiTags("auth")
   async verifyEmail(@Body() dto: VerifyEmailDto) {
     return await this.service.verifyEmail(dto);
   }
 
   @Put("/confirm-email/:token")
+  @ApiOkResponse({ description: "Email verified" })
+  @ApiTags("auth")
   async confirmEmail(@Param("token") token: string) {
     return await this.service.confirmEmail(token);
   }
@@ -100,11 +127,15 @@ export class AuthController {
   // ================================
 
   @Post("/forgot-password")
+  @ApiOkResponse({ description: "Password reset email sent" })
+  @ApiTags("auth")
   async forgotPassword(@Body() dto: ForgotPasswordDto) {
     return await this.service.forgotPassword(dto.email);
   }
 
   @Put("/password-reset/:token")
+  @ApiOkResponse({ description: "Password reset" })
+  @ApiTags("auth")
   async passwordReset(
     @Param("token") token: string,
     @Body() dto: PasswordResetDto,
@@ -121,6 +152,8 @@ export class AuthController {
   // ================================
 
   @Get("/logout")
+  @ApiOkResponse({ description: "User logged out" })
+  @ApiTags("auth")
   logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     return this.service.logout(req, res);
   }
@@ -130,6 +163,8 @@ export class AuthController {
   // ================================
 
   @Get("/test")
+  @ApiOkResponse({ description: "Test" })
+  @ApiTags("auth")
   @UseGuards(AccessTokenGuard)
   test(@Req() req: Request) {
     return { user: req.user, message: "🌍 Secret operation" };
