@@ -23,6 +23,7 @@ async function bootstrap() {
     .setTitle("Camps for Champs")
     .setDescription("RESTful back-end for main operations of Camps for Champs")
     .setVersion("1.0")
+    .addBearerAuth()
     .build();
   var document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api", app, document);

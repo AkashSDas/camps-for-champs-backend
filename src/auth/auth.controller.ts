@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 // eslint-disable-next-line prettier/prettier
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiHeaders, ApiOkResponse, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 import { AuthService } from "./auth.service";
 // eslint-disable-next-line prettier/prettier
@@ -23,6 +23,7 @@ export class AuthController {
   @Post("/signup")
   @ApiCreatedResponse({ description: "User created" })
   @ApiBadRequestResponse({ description: "Email already exists" })
+  @ApiBody({ type: SignupDto, description: "Signup credentials" })
   @ApiTags("auth")
   async signup(
     @Body() dto: SignupDto,
@@ -63,6 +64,8 @@ export class AuthController {
   @ApiOkResponse({
     description: "User logged in with access and refresh tokens",
   })
+  @ApiBadRequestResponse({ description: "Invalid credentials" })
+  @ApiBody({ type: LoginDto, description: "Login credentials" })
   @ApiTags("auth")
   async login(
     @Body() dto: LoginDto,
@@ -110,13 +113,19 @@ export class AuthController {
 
   @Post("/verify-email")
   @ApiOkResponse({ description: "Email verification sent" })
+  @ApiBody({ type: VerifyEmailDto, description: "Verify email" })
+  @ApiBadRequestResponse({ description: "Email not found" })
+  @ApiBearerAuth("jwt")
   @ApiTags("auth")
   async verifyEmail(@Body() dto: VerifyEmailDto) {
     return await this.service.verifyEmail(dto);
   }
 
   @Put("/confirm-email/:token")
-  @ApiOkResponse({ description: "Email verified" })
+  @ApiResponse({ status: 302, description: "Redirect to login page" })
+  @ApiBody({ type: PasswordResetDto, description: "Password reset" })
+  @ApiBadRequestResponse({ description: "Invalid token" })
+  @ApiBearerAuth("jwt")
   @ApiTags("auth")
   async confirmEmail(@Param("token") token: string) {
     return await this.service.confirmEmail(token);
@@ -128,6 +137,9 @@ export class AuthController {
 
   @Post("/forgot-password")
   @ApiOkResponse({ description: "Password reset email sent" })
+  @ApiBody({ type: ForgotPasswordDto, description: "Forgot password" })
+  @ApiBadRequestResponse({ description: "Email not found" })
+  @ApiBearerAuth("jwt")
   @ApiTags("auth")
   async forgotPassword(@Body() dto: ForgotPasswordDto) {
     return await this.service.forgotPassword(dto.email);
@@ -135,6 +147,10 @@ export class AuthController {
 
   @Put("/password-reset/:token")
   @ApiOkResponse({ description: "Password reset" })
+  @ApiHeaders([{ name: "Content-Type", description: "application/json" }])
+  @ApiBearerAuth("jwt")
+  @ApiBody({ type: PasswordResetDto, description: "Password reset" })
+  @ApiBadRequestResponse({ description: "Passwords do not match" })
   @ApiTags("auth")
   async passwordReset(
     @Param("token") token: string,
@@ -153,6 +169,7 @@ export class AuthController {
 
   @Get("/logout")
   @ApiOkResponse({ description: "User logged out" })
+  @ApiBearerAuth("jwt")
   @ApiTags("auth")
   logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     return this.service.logout(req, res);
