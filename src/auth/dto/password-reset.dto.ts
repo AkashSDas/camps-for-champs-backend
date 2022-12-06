@@ -1,5 +1,7 @@
 import { IsNotEmpty, IsString, Length, Matches } from "class-validator";
 
+import { ApiProperty } from "@nestjs/swagger";
+
 export class PasswordResetDto {
   @IsNotEmpty()
   @IsString()
@@ -8,6 +10,7 @@ export class PasswordResetDto {
     /^(?=(.*[a-z]){3,})(?=(.*[A-Z]){2,})(?=(.*[0-9]){2,})(?=(.*[!@#$%^&*()\-__+.]){1,}).{8,}$/,
     { message: "password is weak" },
   )
+  @ApiProperty({ type: String, example: "testingTEST123@" })
   password: string;
 
   @IsNotEmpty()
@@ -17,5 +20,6 @@ export class PasswordResetDto {
     /^(?=(.*[a-z]){3,})(?=(.*[A-Z]){2,})(?=(.*[0-9]){2,})(?=(.*[!@#$%^&*()\-__+.]){1,}).{8,}$/,
     { message: "password is weak" },
   )
+  @ApiProperty({ type: String, example: "testingTEST123@" })
   confirmPassword: string;
 }
