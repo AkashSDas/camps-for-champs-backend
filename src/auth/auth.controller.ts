@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 // eslint-disable-next-line prettier/prettier
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 // eslint-disable-next-line prettier/prettier
 import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiHeaders, ApiOkResponse, ApiResponse, ApiTags } from "@nestjs/swagger";
@@ -61,6 +61,7 @@ export class AuthController {
   // ================================
 
   @Post("/login")
+  @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
     description: "User logged in with access and refresh tokens",
   })
