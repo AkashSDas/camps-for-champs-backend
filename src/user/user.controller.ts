@@ -1,5 +1,7 @@
+import { Request } from "express";
+
 // eslint-disable-next-line prettier/prettier
-import { BadRequestException, Body, Controller, Put, Req, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, Put, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 
 import { AddRoleDto } from "./dto";
@@ -8,6 +10,12 @@ import { UserService } from "./user.service";
 @Controller("/v1/user")
 export class UserController {
   constructor(private service: UserService) {}
+
+  @Get("/me")
+  @UseGuards(AuthGuard("jwt"))
+  async me(@Req() req: Request) {
+    return { user: req.user };
+  }
 
   // ===============================
   // Roles
