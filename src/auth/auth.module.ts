@@ -9,6 +9,8 @@ import { AuthService } from "./auth.service";
 import { AccessTokenStrategy, GoogleLoginStrategy, GoogleSignupStrategy, RefreshTokenStrategy } from "./strategy";
 import { FacebookLoginStrategy } from "./strategy/facebook-login.strategy";
 import { FacebookSignupStrategy } from "./strategy/facebook-signup.strategy";
+import { TwitterLoginStrategy } from "./strategy/twitter-login.strategy";
+import { TwitterSignupStrategy } from "./strategy/twitter-signup.strategy";
 
 @Module({
   imports: [UserModule, JwtModule.register({})],
@@ -21,6 +23,8 @@ import { FacebookSignupStrategy } from "./strategy/facebook-signup.strategy";
     GoogleLoginStrategy,
     FacebookSignupStrategy,
     FacebookLoginStrategy,
+    TwitterSignupStrategy,
+    TwitterLoginStrategy,
   ],
 })
 export class AuthModule {}
