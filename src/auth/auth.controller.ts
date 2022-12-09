@@ -101,6 +101,28 @@ export class AuthController {
     return this.service.socialSignup(req.user as User, res);
   }
 
+  // Twitter
+
+  @Get("/signup/twitter")
+  @UseGuards(AuthGuard("twitter-signup"))
+  @ApiOkResponse({ description: "User created OR logged in" })
+  @ApiTags("auth")
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  twitterSignup() {}
+
+  @Get("/signup/twitter/redirect")
+  @UseGuards(AuthGuard("twitter-signup"))
+  @ApiOkResponse({
+    description: "User signed up OR logged in is redirect to front-end",
+  })
+  @ApiTags("auth")
+  async twitterSignupRedirect(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.service.socialSignup(req.user as User, res);
+  }
+
   // ================================
   // LOGIN
   // ================================
@@ -170,6 +192,30 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
+    return this.service.socialLogin(req.user as User, res);
+  }
+
+  // Twitter
+
+  @Get("/login/twitter")
+  @UseGuards(AuthGuard("twitter-login"))
+  @ApiOkResponse({ description: "User logged in" })
+  @ApiTags("auth")
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  loginWithTwitter() {}
+
+  @Get("/login/twitter/redirect")
+  @UseGuards(AuthGuard("twitter-login"))
+  @UseFilters(InvalidOAuthLoginFilter)
+  @ApiOkResponse({
+    description: "User logged in is redirect to front-end",
+  })
+  @ApiTags("auth")
+  loginWithTwitterRedirect(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    console.log(req.user);
     return this.service.socialLogin(req.user as User, res);
   }
 

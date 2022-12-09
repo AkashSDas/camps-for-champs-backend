@@ -219,6 +219,8 @@ export class AuthService {
     if (req.cookies?.refreshToken) {
       res.clearCookie("refreshToken", loginCookieConfig);
     }
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    if (req.logOut) req.logOut(function successfulOAuthLogout() {});
 
     return { message: "Logged out" };
   }
