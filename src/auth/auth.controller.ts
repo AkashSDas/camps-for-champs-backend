@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { User } from "src/user/schemas";
 
 // eslint-disable-next-line prettier/prettier
-import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Post, Put, Req, Res, UseFilters, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 // eslint-disable-next-line prettier/prettier
 import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiHeaders, ApiOkResponse, ApiResponse, ApiTags } from "@nestjs/swagger";
@@ -11,6 +11,7 @@ import { AuthService } from "./auth.service";
 // eslint-disable-next-line prettier/prettier
 import { CompleteOAuthDto, ForgotPasswordDto, PasswordResetDto, SignupDto, VerifyEmailDto } from "./dto";
 import { LoginDto } from "./dto/login.dto";
+import { InvalidOAuthLoginFilter } from "./filter/invalid-oauth-signup.filter";
 import { AccessTokenGuard, RefreshTokenGuard } from "./guard";
 
 @Controller("/v2/auth")
@@ -160,6 +161,7 @@ export class AuthController {
 
   @Get("/login/facebook/redirect")
   @UseGuards(AuthGuard("facebook-login"))
+  @UseFilters(InvalidOAuthLoginFilter)
   @ApiOkResponse({
     description: "User logged in is redirect to front-end",
   })
