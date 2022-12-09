@@ -55,6 +55,28 @@ export class AuthController {
     return this.service.socialSignup(req.user as User, res);
   }
 
+  // Facebook
+
+  @Get("/facebook/google")
+  @UseGuards(AuthGuard("facebook-signup"))
+  @ApiOkResponse({ description: "User created OR logged in" })
+  @ApiTags("auth")
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  async facebookSignup() {}
+
+  @Get("/signup/facebook/redirect")
+  @UseGuards(AuthGuard("facebook-signup"))
+  @ApiOkResponse({
+    description: "User signed up OR logged in is redirect to front-end",
+  })
+  @ApiTags("auth")
+  async facebookSignupRedirect(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.service.socialSignup(req.user as User, res);
+  }
+
   // ================================
   // LOGIN
   // ================================
@@ -82,6 +104,8 @@ export class AuthController {
     return this.service.accessToken(req);
   }
 
+  // Google
+
   @Get("/login/google")
   @UseGuards(AuthGuard("google-login"))
   @ApiOkResponse({ description: "User logged in" })
@@ -96,6 +120,28 @@ export class AuthController {
   })
   @ApiTags("auth")
   loginWithGoogleRedirect(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.service.socialLogin(req.user as User, res);
+  }
+
+  // Facebook
+
+  @Get("/login/facebook")
+  @UseGuards(AuthGuard("facebook-login"))
+  @ApiOkResponse({ description: "User logged in" })
+  @ApiTags("auth")
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  loginWithFacebook() {}
+
+  @Get("/login/facebook/redirect")
+  @UseGuards(AuthGuard("facebook-login"))
+  @ApiOkResponse({
+    description: "User logged in is redirect to front-end",
+  })
+  @ApiTags("auth")
+  loginWithFacebookRedirect(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
