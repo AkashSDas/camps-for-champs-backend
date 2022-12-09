@@ -47,6 +47,15 @@ export class AuthService {
     return { message, user, accessToken };
   }
 
+  async socialSignup(user: User, res: Response) {
+    // Checking for user for OAuth provider
+    if (user) {
+      return res.redirect(process.env.OAUTH_SIGNUP_SUCCESS_REDIRECT_URL);
+    }
+
+    return res.redirect(process.env.OAUTH_SIGNUP_FAILURE_REDIRECT_URL);
+  }
+
   // ================================
   // LOGIN
   // ================================
@@ -95,7 +104,8 @@ export class AuthService {
   }
 
   async socialLogin(user: User, res: Response) {
-    if (user) {
+    // Checking for user and required fields
+    if (user && user.email) {
       let refreshToken = user.refreshToken(this.jwt);
       res.cookie("refreshToken", refreshToken, loginCookieConfig);
       return res.redirect(process.env.OAUTH_LOGIN_SUCCESS_REDIRECT_URL);

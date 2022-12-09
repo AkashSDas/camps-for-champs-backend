@@ -48,13 +48,11 @@ export class AuthController {
     description: "User signed up OR logged in is redirect to front-end",
   })
   @ApiTags("auth")
-  async googleSignupRedirect(@Req() req: Request, @Res() res: Response) {
-    var jwt = (req.user as any)?.jwt;
-    if (jwt) {
-      return res.redirect(process.env.OAUTH_SIGNUP_SUCCESS_REDIRECT_URL);
-    } else {
-      return res.redirect(process.env.OAUTH_SIGNUP_FAILURE_REDIRECT_URL);
-    }
+  async googleSignupRedirect(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.service.socialSignup(req.user as User, res);
   }
 
   // ================================
