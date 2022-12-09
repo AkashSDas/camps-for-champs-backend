@@ -1,4 +1,3 @@
-import { Request } from "express";
 import { Profile, Strategy } from "passport-twitter";
 import { UserRepository } from "src/user/user.repository";
 import { OAuthProvider } from "src/utils/auth.util";
@@ -17,13 +16,13 @@ export class TwitterLoginStrategy extends PassportStrategy(
       consumerSecret: process.env.TWITTER_OAUTH_CLIENT_KEY_SECRET,
       callbackURL: process.env.TWITTER_OAUTH_CALLBACK_URL_FOR_LOGIN,
       includeEmail: true,
+      scope: ["email"],
     });
   }
 
   async validate(
-    _req: Request,
-    _accessToken: string,
-    _refreshToken: string,
+    _token: string,
+    _tokenSecret: string,
     profile: Profile,
     done: any,
   ) {

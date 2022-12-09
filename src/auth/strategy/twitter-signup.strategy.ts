@@ -23,8 +23,8 @@ export class TwitterSignupStrategy extends PassportStrategy(
 
   async validate(
     _req: Request,
-    _accessToken: string,
-    _refreshToken: string,
+    _token: string,
+    _tokenSecret: string,
     profile: Profile,
     done: any,
   ) {

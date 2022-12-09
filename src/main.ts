@@ -1,5 +1,6 @@
 import * as cookieParser from "cookie-parser";
 import * as fileUpload from "express-fileupload";
+import * as session from "express-session";
 import * as morgan from "morgan";
 
 import { ValidationPipe } from "@nestjs/common";
@@ -18,6 +19,13 @@ async function bootstrap() {
   app.use(cookieParser());
   app.use(morgan("dev"));
   app.use(fileUpload({ useTempFiles: true, tempFileDir: "/tmp/" }));
+  app.use(
+    session({
+      secret: process.env.COOKIE_SESSION_SECRET,
+      resave: true,
+      saveUninitialized: true,
+    }),
+  );
 
   var config = new DocumentBuilder()
     .setTitle("Camps for Champs")
