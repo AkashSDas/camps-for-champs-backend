@@ -50,6 +50,8 @@ export class AuthService {
   async socialSignup(user: User, res: Response) {
     // Checking for user for OAuth provider
     if (user) {
+      let refreshToken = user.refreshToken(this.jwt);
+      res.cookie("refreshToken", refreshToken, loginCookieConfig);
       return res.redirect(process.env.OAUTH_SIGNUP_SUCCESS_REDIRECT_URL);
     }
 

@@ -40,7 +40,7 @@ export class AuthController {
   @ApiOkResponse({ description: "User created OR logged in" })
   @ApiTags("auth")
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  async googleSignup() {}
+  googleSignup() {}
 
   @Get("/signup/google/redirect")
   @UseGuards(AuthGuard("google-signup"))
@@ -57,12 +57,12 @@ export class AuthController {
 
   // Facebook
 
-  @Get("/facebook/google")
+  @Get("/signup/facebook")
   @UseGuards(AuthGuard("facebook-signup"))
   @ApiOkResponse({ description: "User created OR logged in" })
   @ApiTags("auth")
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  async facebookSignup() {}
+  facebookSignup() {}
 
   @Get("/signup/facebook/redirect")
   @UseGuards(AuthGuard("facebook-signup"))
