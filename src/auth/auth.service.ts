@@ -162,7 +162,7 @@ export class AuthService {
     return { message: "Verification email sent" };
   }
 
-  async confirmEmail(token: string) {
+  async confirmEmail(token: string, res: Response) {
     var encryptedToken = createHash("sha256").update(token).digest("hex");
     var user = await this.repository.getUser({
       verificationToken: encryptedToken,
@@ -175,8 +175,7 @@ export class AuthService {
     user.verificationToken = undefined;
     user.verificationTokenExpiresAt = undefined;
     await user.save({ validateModifiedOnly: true });
-
-    return { message: "Email verified" };
+    return res.redirect(`${process.env.FRONTEND_URL}?info=email-confirmed`);
   }
 
   // ================================

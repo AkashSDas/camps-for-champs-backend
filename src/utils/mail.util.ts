@@ -59,7 +59,7 @@ export async function sendForgotPasswordEmail(user: User) {
   var token = user.generatePasswordResetToken();
   await user.save({ validateModifiedOnly: true }); // save token
 
-  var url = `${process.env.BASE_URL}/api/v2/auth/reset-password/${token}`;
+  var url = `${process.env.FRONTEND_URL}/auth/reset-password/${token}`;
   var opts: EmailOptions = {
     to: user.email,
     subject: "Reset your password",

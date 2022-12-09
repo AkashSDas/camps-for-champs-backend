@@ -234,13 +234,16 @@ export class AuthController {
   }
 
   @Put("/confirm-email/:token")
-  @ApiResponse({ status: 302, description: "Redirect to login page" })
+  @ApiResponse({ status: 302, description: "Redirect to home page" })
   @ApiBody({ type: PasswordResetDto, description: "Password reset" })
   @ApiBadRequestResponse({ description: "Invalid token" })
   @ApiBearerAuth("jwt")
   @ApiTags("auth")
-  async confirmEmail(@Param("token") token: string) {
-    return await this.service.confirmEmail(token);
+  async confirmEmail(
+    @Param("token") token: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return await this.service.confirmEmail(token, res);
   }
 
   // ================================
@@ -248,6 +251,7 @@ export class AuthController {
   // ================================
 
   @Post("/forgot-password")
+  @HttpCode(HttpStatus.OK)
   @ApiOkResponse({ description: "Password reset email sent" })
   @ApiBody({ type: ForgotPasswordDto, description: "Forgot password" })
   @ApiBadRequestResponse({ description: "Email not found" })
