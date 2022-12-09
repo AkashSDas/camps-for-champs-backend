@@ -261,7 +261,7 @@ export class AuthController {
     return await this.service.forgotPassword(dto.email);
   }
 
-  @Put("/password-reset/:token")
+  @Put("/reset-password/:token")
   @ApiOkResponse({ description: "Password reset" })
   @ApiHeaders([{ name: "Content-Type", description: "application/json" }])
   @ApiBearerAuth("jwt")
