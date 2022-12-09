@@ -13,7 +13,7 @@ import { CampService } from "./camp.service";
 import { DetailsDto, ImageDto, LocationDto, ReorderCampImagesDto } from "./dto";
 import { Camp, CampStatus } from "./schemas";
 
-@Controller("/v1/camp")
+@Controller("/v2/camp")
 export class CampController {
   constructor(private service: CampService) {}
 

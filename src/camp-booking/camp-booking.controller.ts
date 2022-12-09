@@ -7,7 +7,7 @@ import { AuthGuard } from "@nestjs/passport";
 import { CampBookingService } from "./camp-booking.service";
 import { BookACampDto } from "./dto";
 
-@Controller("/v1/camp-booking")
+@Controller("/v2/camp-booking")
 export class CampBookingController {
   constructor(private service: CampBookingService) {}
 

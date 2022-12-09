@@ -5,7 +5,7 @@ import { Controller, Get, Param, Post, Req, UseGuards } from "@nestjs/common";
 
 import { CampWishlistService } from "./camp-wishlist.service";
 
-@Controller("/v1/camp-wishlist")
+@Controller("/v2/camp-wishlist")
 export class CampWishlistController {
   constructor(private service: CampWishlistService) {}
 
