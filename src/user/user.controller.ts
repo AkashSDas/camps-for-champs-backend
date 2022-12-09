@@ -7,7 +7,7 @@ import { AuthGuard } from "@nestjs/passport";
 import { AddRoleDto } from "./dto";
 import { UserService } from "./user.service";
 
-@Controller("/v1/user")
+@Controller("/v2/user")
 export class UserController {
   constructor(private service: UserService) {}
 

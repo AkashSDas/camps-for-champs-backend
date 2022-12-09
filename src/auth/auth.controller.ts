@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { User } from "src/user/schemas";
 
 // eslint-disable-next-line prettier/prettier
 import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
@@ -12,7 +13,7 @@ import { ForgotPasswordDto, PasswordResetDto, SignupDto, VerifyEmailDto } from "
 import { LoginDto } from "./dto/login.dto";
 import { AccessTokenGuard, RefreshTokenGuard } from "./guard";
 
-@Controller("/v1/auth")
+@Controller("/v2/auth")
 export class AuthController {
   constructor(private service: AuthService) {}
 
@@ -96,16 +97,11 @@ export class AuthController {
     description: "User logged in is redirect to front-end",
   })
   @ApiTags("auth")
-  loginWithGoogleRedirect(@Req() req: Request, @Res() res: Response) {
-    var jwt = (req.user as any)?.jwt;
-
-    if (jwt) {
-      return res.redirect(process.env.OAUTH_LOGIN_SUCCESS_REDIRECT_URL);
-    } else {
-      return res.redirect(
-        `${process.env.OAUTH_LOGIN_FAILURE_REDIRECT_URL}?info=signup-invalid`,
-      );
-    }
+  loginWithGoogleRedirect(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.service.socialLogin(req.user as User, res);
   }
 
   // ================================

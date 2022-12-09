@@ -1,5 +1,6 @@
 import { createHash } from "crypto";
 import { Request, Response } from "express";
+import { User } from "src/user/schemas";
 import { loginCookieConfig } from "src/utils/auth.util";
 
 // eslint-disable-next-line prettier/prettier
@@ -91,6 +92,18 @@ export class AuthService {
     } catch (error) {
       throw new UnauthorizedException("Invalid or expired refresh token");
     }
+  }
+
+  async socialLogin(user: User, res: Response) {
+    if (user) {
+      let refreshToken = user.refreshToken(this.jwt);
+      res.cookie("refreshToken", refreshToken, loginCookieConfig);
+      return res.redirect(process.env.OAUTH_LOGIN_SUCCESS_REDIRECT_URL);
+    }
+
+    return res.redirect(
+      `${process.env.OAUTH_LOGIN_FAILURE_REDIRECT_URL}?info=signup-invalid`,
+    );
   }
 
   // ================================
