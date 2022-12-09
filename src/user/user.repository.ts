@@ -38,4 +38,8 @@ export class UserRepository {
   findAndSet(filter: FilterQuery<User>, update: Partial<User>) {
     return this.model.findOneAndUpdate(filter, update, { new: true });
   }
+
+  deleteUser(filter: FilterQuery<User>) {
+    return this.model.deleteOne(filter);
+  }
 }

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { User } from "src/user/schemas";
 
 // eslint-disable-next-line prettier/prettier
-import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 // eslint-disable-next-line prettier/prettier
 import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiHeaders, ApiOkResponse, ApiResponse, ApiTags } from "@nestjs/swagger";
@@ -31,6 +31,18 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     return await this.service.signup(dto, res);
+  }
+
+  @Delete("/cancel-oauth")
+  @UseGuards(AuthGuard("jwt"))
+  @ApiOkResponse({ description: "OAuth cancelled" })
+  @ApiTags("auth")
+  async cancelOAuth(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    var user = req.user as User;
+    return await this.service.cancelOAuth(user, req, res);
   }
 
   @Put("/complete-oauth")

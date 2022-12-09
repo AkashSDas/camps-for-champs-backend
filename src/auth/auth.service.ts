@@ -47,6 +47,17 @@ export class AuthService {
     return { message, user, accessToken };
   }
 
+  async cancelOAuth(user: User, req: Request, res: Response) {
+    var deletedUser = await this.repository.deleteUser(user._id);
+    if (!deletedUser) throw new NotFoundException("User not found");
+
+    if (req.cookies?.refreshToken) {
+      res.clearCookie("refreshToken", loginCookieConfig);
+    }
+
+    return { user: deletedUser };
+  }
+
   async completeOAuth(userId: string, dto: CompleteOAuthDto, res: Response) {
     var user = await this.repository.findAndSet(
       { _id: userId },
