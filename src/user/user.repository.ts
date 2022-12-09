@@ -34,4 +34,8 @@ export class UserRepository {
     user.roles.push(role);
     return await user.save();
   }
+
+  findAndSet(filter: FilterQuery<User>, update: Partial<User>) {
+    return this.model.findOneAndUpdate(filter, update, { new: true });
+  }
 }

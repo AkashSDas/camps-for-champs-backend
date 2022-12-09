@@ -10,7 +10,7 @@ import { JwtService } from "@nestjs/jwt";
 import { UserRepository } from "../user/user.repository";
 // eslint-disable-next-line prettier/prettier
 import { sendForgotPasswordEmail, sendVerificationEmail } from "../utils/mail.util";
-import { SignupDto, VerifyEmailDto } from "./dto";
+import { CompleteOAuthDto, SignupDto, VerifyEmailDto } from "./dto";
 import { LoginDto } from "./dto/login.dto";
 
 @Injectable()
@@ -45,6 +45,20 @@ export class AuthService {
     }
 
     return { message, user, accessToken };
+  }
+
+  async completeOAuth(userId: string, dto: CompleteOAuthDto, res: Response) {
+    var user = await this.repository.findAndSet(
+      { _id: userId },
+      { email: dto.email },
+    );
+    if (!user) throw new NotFoundException("User not found");
+
+    // Logging in the user
+    var accessToken = user.accessToken(this.jwt);
+    var refreshToken = user.refreshToken(this.jwt);
+    res.cookie("refreshToken", refreshToken, loginCookieConfig);
+    return { user, accessToken };
   }
 
   async socialSignup(user: User, res: Response) {

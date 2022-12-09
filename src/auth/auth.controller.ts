@@ -9,7 +9,7 @@ import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiH
 
 import { AuthService } from "./auth.service";
 // eslint-disable-next-line prettier/prettier
-import { ForgotPasswordDto, PasswordResetDto, SignupDto, VerifyEmailDto } from "./dto";
+import { CompleteOAuthDto, ForgotPasswordDto, PasswordResetDto, SignupDto, VerifyEmailDto } from "./dto";
 import { LoginDto } from "./dto/login.dto";
 import { AccessTokenGuard, RefreshTokenGuard } from "./guard";
 
@@ -31,6 +31,17 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     return await this.service.signup(dto, res);
+  }
+
+  @Put("/complete-oauth")
+  @UseGuards(AuthGuard("jwt"))
+  async completeOAuth(
+    @Body() dto: CompleteOAuthDto,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    var user = req.user as User;
+    return await this.service.completeOAuth(user._id, dto, res);
   }
 
   // GOOGLE
