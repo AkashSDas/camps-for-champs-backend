@@ -106,7 +106,6 @@ export class CampController {
 
   @Get("/:campId/info")
   getCamp(@Res({ passthrough: true }) res: Response) {
-    console.log(res.locals.camp);
     return { camp: res.locals.camp };
   }
 

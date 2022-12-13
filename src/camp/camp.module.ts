@@ -20,7 +20,7 @@ import { Camp, CampSchema } from "./schemas";
 export class CampModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(ValidateCampMiddleware).forRoutes({
-      path: "v1/camp/:campId/*",
+      path: "v2/camp/:campId/*",
       method: RequestMethod.ALL,
     });
   }
