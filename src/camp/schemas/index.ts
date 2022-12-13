@@ -1,4 +1,3 @@
-export * from "./tag.schema";
 export * from "./cancellation-policy.schema";
 export * from "./image.schema";
 export * from "./review.schema";

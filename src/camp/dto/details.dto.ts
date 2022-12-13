@@ -3,7 +3,7 @@ import { Type } from "class-transformer";
 import { ArrayMaxSize, IsArray, IsEnum, IsInt, IsNumber, IsOptional, IsString, Length, Min, ValidateNested } from "class-validator";
 
 import { Amenity, CampAccessibilityType } from "../schemas";
-import { ActivityDto, CancellationPolicyDto, TagDto, TimeDto } from "./";
+import { ActivityDto, CancellationPolicyDto, TimeDto } from "./";
 
 export class DetailsDto {
   @IsString()
@@ -47,13 +47,6 @@ export class DetailsDto {
   @Type(() => CancellationPolicyDto)
   @IsOptional()
   cancellationPolicy?: CancellationPolicyDto;
-
-  @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => TagDto)
-  @ArrayMaxSize(6)
-  tags?: TagDto[];
 
   @IsNumber({ allowInfinity: false, allowNaN: false, maxDecimalPlaces: 2 })
   @Min(0)
