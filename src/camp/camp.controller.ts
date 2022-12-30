@@ -13,6 +13,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   NotFoundException,
   Param,
   Post,
@@ -59,6 +61,7 @@ export class CampController {
   }
 
   @Post("/:campId/image")
+  @HttpCode(HttpStatus.OK)
   @Roles(UserRole.ADMIN)
   @UseGuards(AccessTokenGuard, RoleGuard)
   async addCampImage(

@@ -12,7 +12,7 @@ import {
 
 import { CampRepository } from "./camp.repository";
 import { DetailsDto, ImageDto, LocationDto } from "./dto";
-import { Camp, CampStatus } from "./schemas";
+import { Camp, CampImageType, CampStatus } from "./schemas";
 import { Types } from "mongoose";
 
 @Injectable()
@@ -28,7 +28,24 @@ export class CampService {
     return await this.campRepository.updateCampDetails(_id, dto);
   }
 
+  // TODO: add way to remove image
   async addCampImage(dto: ImageDto, camp: Camp, image: UploadedFile) {
+    if (dto.type == CampImageType.LOCATION) {
+      let oldLocationImg = camp.images.find(
+        (image) => image.type == CampImageType.LOCATION,
+      );
+
+      if (oldLocationImg && oldLocationImg.id) {
+        // Remove camp location image
+        await cloudinary.v2.uploader.destroy(oldLocationImg.id);
+        let imgs = camp.images.filter(
+          (image) => image.type != CampImageType.LOCATION,
+        );
+
+        camp.images = imgs;
+      }
+    }
+
     var result = await cloudinary.v2.uploader.upload(image.tempFilePath, {
       folder: `${CAMP_IMG_DIR}/${camp._id}`,
     });
@@ -41,7 +58,11 @@ export class CampService {
     });
 
     camp = await camp.save();
-    return { camp, image: camp.images[camp.images.length - 1] };
+    return {
+      camp,
+      imageURL: result.secure_url,
+      image: camp.images[camp.images.length - 1],
+    };
   }
 
   async removeCampImage(imageId: string, camp: Camp) {
