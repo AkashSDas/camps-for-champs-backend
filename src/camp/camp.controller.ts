@@ -7,7 +7,20 @@ import { CAMP_IMG_DIR } from "src/utils/cloudinary.util";
 import { UserRole } from "src/utils/user.util";
 
 // eslint-disable-next-line prettier/prettier
-import { BadRequestException, Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Put,
+  Req,
+  Res,
+  UseGuards,
+} from "@nestjs/common";
 
 import { CampService } from "./camp.service";
 import { DetailsDto, ImageDto, LocationDto, ReorderCampImagesDto } from "./dto";
@@ -35,7 +48,14 @@ export class CampController {
     @Body() dto: DetailsDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    return await this.service.updateCampDetails(dto, res.locals.camp as Camp);
+    console.log("updateCampDetails", dto);
+    var updatedCamp = await this.service.updateCampDetails(
+      (res.locals.camp as Camp)._id,
+      dto,
+    );
+    console.log("updatedCamp", updatedCamp);
+
+    return { message: "Camp details updated", camp: updatedCamp };
   }
 
   @Post("/:campId/image")

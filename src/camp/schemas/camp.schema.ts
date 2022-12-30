@@ -4,12 +4,25 @@ import { User } from "src/user/schemas";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
 // eslint-disable-next-line prettier/prettier
-import { Activity, activitySchema, CancellationPolicy, cancellationPolicySchema, Image, imageSchema, locationSchema, Review, reviewSchema, timeSchema } from "./";
+import {
+  Activity,
+  activitySchema,
+  CancellationPolicy,
+  cancellationPolicySchema,
+  Image,
+  imageSchema,
+  locationSchema,
+  Review,
+  reviewSchema,
+  timeSchema,
+} from "./";
 import { Location } from "./location.schema";
 import { Time } from "./time.schema";
 
 export enum CampAccessibilityType {
   ROAD = "road",
+  WATER = "water",
+  AIR = "air",
 }
 
 export enum Amenity {

@@ -4,11 +4,16 @@ import { User } from "src/user/schemas";
 import { CAMP_IMG_DIR } from "src/utils/cloudinary.util";
 
 // eslint-disable-next-line prettier/prettier
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 
 import { CampRepository } from "./camp.repository";
 import { DetailsDto, ImageDto, LocationDto } from "./dto";
 import { Camp, CampStatus } from "./schemas";
+import { Types } from "mongoose";
 
 @Injectable()
 export class CampService {
@@ -19,8 +24,8 @@ export class CampService {
     return camp;
   }
 
-  async updateCampDetails(dto: DetailsDto, camp: Camp) {
-    return await this.campRepository.updateCampDetails(dto, camp);
+  async updateCampDetails(_id: Types.ObjectId, dto: DetailsDto) {
+    return await this.campRepository.updateCampDetails(_id, dto);
   }
 
   async addCampImage(dto: ImageDto, camp: Camp, image: UploadedFile) {

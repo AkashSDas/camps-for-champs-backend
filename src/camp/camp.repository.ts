@@ -23,9 +23,9 @@ export class CampRepository {
     return this.camp.findById(campId);
   }
 
-  updateCampDetails(dto: DetailsDto, camp: Camp) {
+  updateCampDetails(_id: Types.ObjectId, dto: DetailsDto) {
     return this.camp.findByIdAndUpdate(
-      camp._id,
+      _id,
       { $set: { ...dto } },
       { new: true },
     );
