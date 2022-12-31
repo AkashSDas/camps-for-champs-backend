@@ -55,7 +55,6 @@ export class CampController {
       (res.locals.camp as Camp)._id,
       dto,
     );
-    console.log("updatedCamp", updatedCamp);
 
     return { message: "Camp details updated", camp: updatedCamp };
   }
