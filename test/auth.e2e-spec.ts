@@ -103,4 +103,44 @@ describe("/v2/auth", () => {
       });
     });
   });
+
+  // =====================================
+  // Login
+  // =====================================
+
+  describe("email login", () => {
+    it("when user doesn't exists given a 404 response", async () => {
+      let response = await request(app.getHttpServer())
+        .post("/v2/auth/email-login")
+        .send({ email: "james@gmail.com", password: "testingTEST@123" });
+
+      expect(response.status).toEqual(404);
+      expect(response.body).toMatchSnapshot();
+    });
+
+    describe("when user exists", () => {
+      beforeEach(async () => {
+        await userModel.create({
+          email: "james@gmail.com",
+          passwordDigest: "testingTEST@123",
+        });
+      });
+
+      it.only("when user entered correct password then login the user", async () => {
+        let response = await request(app.getHttpServer())
+          .post("/v2/auth/email-login")
+          .send({ email: "james@gmail.com", password: "testingTEST@123" });
+
+        console.log(response.body);
+        expect(response.status).toEqual(200);
+        expect(response.body).toMatchSnapshot();
+
+        expect(
+          response.headers["set-cookie"].find((cookie: string) =>
+            cookie.includes("refreshToken"),
+          ),
+        ).toBeDefined();
+      });
+    });
+  });
 });

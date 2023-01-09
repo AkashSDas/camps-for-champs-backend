@@ -50,6 +50,7 @@ export class AuthController {
   // =====================================
 
   @Post("email-login")
+  @HttpCode(HttpStatus.OK)
   async emailAndPasswordLogin(
     @Res({ passthrough: true }) res: Response,
     @Body() dto: EmailAndPasswordLoginDto,

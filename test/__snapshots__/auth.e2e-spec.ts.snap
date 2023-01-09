@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`/v2/auth email login when user doesn't exists given a 404 response 1`] = `
+Object {
+  "error": "Not Found",
+  "message": "User doesn't exists",
+  "statusCode": 404,
+}
+`;
+
 exports[`/v2/auth email signup successful signup with valid data 1`] = `
 Object {
   "accessToken": Any<String>,
