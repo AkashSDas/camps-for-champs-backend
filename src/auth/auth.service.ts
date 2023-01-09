@@ -1,8 +1,9 @@
-import { Response } from "express";
+import { Types } from "mongoose";
+import { User } from "src/user/schema";
 import { UserRepository } from "src/user/user.repository";
 
 // eslint-disable-next-line prettier/prettier
-import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
 import { EmailAndPasswordSignupDto } from "./dto";
@@ -15,41 +16,38 @@ export class AuthService {
   // Signup
   // =====================================
 
-  async emailAndPasswordSignup(res: Response, dto: EmailAndPasswordSignupDto) {
+  async emailAndPasswordSignup(dto: EmailAndPasswordSignupDto) {
     // Create user
-    try {
-      var user = await this.repository.create({
-        email: dto.email,
-        passwordDigest: dto.password,
-      });
+    var user: (User & { _id: Types.ObjectId }) | Error =
+      await (async function createUser() {
+        try {
+          let user = await this.repository.create({
+            email: dto.email,
+            passwordDigest: dto.password,
+          });
 
-      if (!user) {
-        throw new InternalServerErrorException("Failed to create user");
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        let msg = error.message;
-        if (msg == "Email already exists" || msg == "Duplicate fields") {
-          throw new BadRequestException("User already exists");
+          if (!user) return Error("Failed to create user");
+          return user;
+        } catch (error) {
+          if (error instanceof Error) {
+            let msg = error.message;
+            if (msg == "Email already exists" || msg == "Duplicate fields") {
+              return Error("User already exists");
+            }
+          }
+
+          return Error("Failed to create user");
         }
-      }
+      })();
 
-      throw new InternalServerErrorException("Failed to create user");
-    }
-
-    // Login user
-    {
+    // Send result
+    if (user instanceof Error) {
+      return { user: null, error: user, accessToken: null, refreshToken: null };
+    } else {
       let accessToken = user.getAccessToken(this.jwt);
       let refreshToken = user.getRefreshToken(this.jwt);
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: Number(process.env.REFRESH_TOKEN_EXPIRES_IN),
-      });
-
       user.passwordDigest = undefined; // rm password has from response
-      return { user, accessToken, message: "Account created successfully" };
+      return { user, accessToken, refreshToken, error: null };
     }
   }
 }
