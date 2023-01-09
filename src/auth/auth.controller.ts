@@ -35,7 +35,7 @@ export class AuthController {
       httpOnly: true,
       secure: true,
       sameSite: "none",
-      maxAge: Number(process.env.REFRESH_TOKEN_EXPIRES_IN),
+      maxAge: Number(process.env.REFRESH_TOKEN_EXPIRES_IN.replace(/(m|h)/, "")),
     });
 
     return { user: result.user, accessToken: result.accessToken };

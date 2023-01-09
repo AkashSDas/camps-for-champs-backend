@@ -18,27 +18,28 @@ export class AuthService {
 
   async emailAndPasswordSignup(dto: EmailAndPasswordSignupDto) {
     // Create user
-    var user: (User & { _id: Types.ObjectId }) | Error =
-      await (async function createUser() {
-        try {
-          let user = await this.repository.create({
-            email: dto.email,
-            passwordDigest: dto.password,
-          });
+    // Using arrow function to use AuthSerivce's this context
+    var user: (User & { _id: Types.ObjectId }) | Error = await (async () => {
+      try {
+        let user = await this.repository.create({
+          email: dto.email,
+          passwordDigest: dto.password,
+        });
 
-          if (!user) return Error("Failed to create user");
-          return user;
-        } catch (error) {
-          if (error instanceof Error) {
-            let msg = error.message;
-            if (msg == "Email already exists" || msg == "Duplicate fields") {
-              return Error("User already exists");
-            }
+        if (!user) return Error("Failed to create user");
+        return user;
+      } catch (error) {
+        console.log(error);
+        if (error instanceof Error) {
+          let msg = error.message;
+          if (msg == "Email already exists" || msg == "Duplicate fields") {
+            return Error("User already exists");
           }
-
-          return Error("Failed to create user");
         }
-      })();
+
+        return Error("Failed to create user");
+      }
+    })();
 
     // Send result
     if (user instanceof Error) {
