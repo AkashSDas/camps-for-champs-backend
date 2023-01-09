@@ -2,9 +2,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { MongooseModule } from "@nestjs/mongoose";
 
-import { AuthController } from "./auth/auth.controller";
 import { AuthModule } from "./auth/auth.module";
-import { AuthService } from "./auth/auth.service";
 import { TestingModule } from "./testing/testing.module";
 import { UserModule } from "./user/user.module";
 
@@ -18,7 +16,7 @@ import { UserModule } from "./user/user.module";
     UserModule,
     AuthModule,
   ],
-  controllers: [AuthController],
-  providers: [AuthService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
