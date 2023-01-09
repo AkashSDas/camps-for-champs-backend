@@ -3,6 +3,7 @@ import { ConfigModule } from "@nestjs/config";
 import { MongooseModule } from "@nestjs/mongoose";
 
 import { TestingModule } from "./testing/testing.module";
+import { UserModule } from "./user/user.module";
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { TestingModule } from "./testing/testing.module";
 
     // Add your modules here
     TestingModule,
+    UserModule,
   ],
   controllers: [],
   providers: [],
