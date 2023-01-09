@@ -6,7 +6,14 @@ import { JwtService } from "@nestjs/jwt";
 
 import { User } from "../user/schema/index";
 import { UserRepository } from "../user/user.repository";
-import { EmailAndPasswordSignupDto } from "./dto";
+import { EmailAndPasswordLoginDto, EmailAndPasswordSignupDto } from "./dto";
+
+type EmailAndPasswordLogin = {
+  user?: User & { _id: Types.ObjectId };
+  error?: Error;
+  accessToken?: string;
+  refreshToken?: string;
+};
 
 @Injectable()
 export class AuthService {
@@ -48,6 +55,35 @@ export class AuthService {
       let refreshToken = user.getRefreshToken(this.jwt);
       user.passwordDigest = undefined; // rm password has from response
       return { user, accessToken, refreshToken, error: null };
+    }
+  }
+
+  // =====================================
+  // Login
+  // =====================================
+
+  async emailAndPasswordLogin(
+    dto: EmailAndPasswordLoginDto,
+  ): Promise<EmailAndPasswordLogin> {
+    var user = await this.repository.getWithSelect(
+      { email: dto.email },
+      "+passwordDigest",
+    );
+
+    if (!user) return { error: Error("User not found") };
+
+    {
+      // Verify password
+      let isPasswordValid = await user.verifyPassword(dto.password);
+      user.passwordDigest = undefined; // rm password digest from response
+      if (!isPasswordValid) return { user, error: Error("Wrong password") };
+    }
+
+    {
+      // Login user
+      let accessToken = user.getAccessToken(this.jwt);
+      let refreshToken = user.getAccessToken(this.jwt);
+      return { accessToken, refreshToken, user };
     }
   }
 }
