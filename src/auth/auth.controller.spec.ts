@@ -1,3 +1,4 @@
+import { BadRequestException } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { Test } from "@nestjs/testing";
 
@@ -47,9 +48,13 @@ describe("AuthController", () => {
     next.mockReset();
   });
 
-  describe("signup with email", () => {
+  // =====================================
+  // Signup
+  // =====================================
+
+  describe("email signup", () => {
     it("with successful signup it should return user, access token & have a refresh token in res.headers", async () => {
-      var response = await controller.emailAndPasswordSignup(
+      let response = await controller.emailAndPasswordSignup(
         res,
         userDtoStub(),
       );
@@ -58,6 +63,23 @@ describe("AuthController", () => {
       expect(response.user).toEqual(userStub());
       expect(response.accessToken).toEqual(accessTokenStub());
       expect(res.headers).toMatchObject({ refreshToken: refreshTokenStub() });
+    });
+
+    it("with user already exists error it should throw an error", async () => {
+      jest
+        .spyOn(service, "emailAndPasswordSignup")
+        .mockImplementationOnce(async () => {
+          return {
+            user: null,
+            refreshToken: null,
+            accessToken: null,
+            error: Error("User already exists"),
+          };
+        });
+
+      await expect(() =>
+        controller.emailAndPasswordSignup(res, userDtoStub()),
+      ).rejects.toThrow(new BadRequestException("User already exists"));
     });
   });
 });
