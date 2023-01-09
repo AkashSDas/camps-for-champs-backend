@@ -1,11 +1,11 @@
 import { Types } from "mongoose";
-import { User } from "src/user/schema";
-import { UserRepository } from "src/user/user.repository";
 
 // eslint-disable-next-line prettier/prettier
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
+import { User } from "../user/schema/index";
+import { UserRepository } from "../user/user.repository";
 import { EmailAndPasswordSignupDto } from "./dto";
 
 @Injectable()

@@ -3,12 +3,12 @@ import { isEmail } from "class-validator";
 import { createHash, randomBytes } from "crypto";
 import { Document } from "mongoose";
 import { generate } from "randomstring";
-import { AccessTokenPayload, RefreshTokenPayload } from "src/auth/strategy";
-import { UserRole } from "src/utils/user";
 
 import { JwtService } from "@nestjs/jwt";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
+import { AccessTokenPayload, RefreshTokenPayload } from "../../auth/strategy";
+import { UserRole } from "../../utils/user";
 import { OAuthProvider, oauthProvidersSchema } from "./oauth-provider.schema";
 
 @Schema({ timestamps: true })
