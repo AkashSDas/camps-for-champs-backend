@@ -1,7 +1,7 @@
 import { Response } from "express";
 
 // eslint-disable-next-line prettier/prettier
-import { BadRequestException, Body, Controller, InternalServerErrorException, Post, Res } from "@nestjs/common";
+import { BadRequestException, Body, Controller, HttpCode, HttpStatus, InternalServerErrorException, Post, Res } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
 import { AuthService } from "./auth.service";
@@ -16,6 +16,7 @@ export class AuthController {
   // =====================================
 
   @Post("email-signup")
+  @HttpCode(HttpStatus.CREATED)
   async emailAndPasswordSignup(
     @Res({ passthrough: true }) res: Response,
     @Body() dto: EmailAndPasswordSignupDto,
