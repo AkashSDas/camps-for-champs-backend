@@ -1,0 +1,7 @@
+export function accessTokenStub() {
+  return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImphbWVzQGdtYWlsLmNvbSIsImlhdCI6MTY3MzI1MDEzNywiZXhwIjoxNjczMjUwNDM3fQ.u4ulNIxOfYKqjYFWUQzXoqWb0YCkKxRVxfPeHvDOI6k";
+}
+
+export function refreshTokenStub() {
+  return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImphbWVzQGdtYWlsLmNvbSIsImlhdCI6MTY3MzI1MDEzNywiZXhwIjoxNjczMjUwNDM3fQ.u4ulNIxOfYKqjYFWUQzXoqWb0YCkKxRVxfPeHvDOI6k";
+}

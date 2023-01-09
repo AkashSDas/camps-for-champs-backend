@@ -3,7 +3,8 @@ import { Test } from "@nestjs/testing";
 
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
-import { userDtoStub } from "./test/stubs";
+// eslint-disable-next-line prettier/prettier
+import { accessTokenStub, refreshTokenStub, userDtoStub, userStub } from "./test/stubs";
 
 jest.mock("./auth.service");
 
@@ -47,13 +48,16 @@ describe("AuthController", () => {
   });
 
   describe("signup with email", () => {
-    it("with right data & unique email create & login the user", async () => {
+    it("with successful signup it should return user, access token & have a refresh token in res.headers", async () => {
       var response = await controller.emailAndPasswordSignup(
         res,
         userDtoStub(),
       );
 
-      console.log(response);
+      expect(response.user).toBeDefined();
+      expect(response.user).toEqual(userStub());
+      expect(response.accessToken).toEqual(accessTokenStub());
+      expect(res.headers).toMatchObject({ refreshToken: refreshTokenStub() });
     });
   });
 });
