@@ -1,3 +1,5 @@
+import * as cookieParser from "cookie-parser";
+import * as session from "express-session";
 import * as morgan from "morgan";
 
 import { ValidationPipe } from "@nestjs/common";
@@ -15,6 +17,15 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   app.use(morgan("dev"));
+
+  app.use(cookieParser());
+  app.use(
+    session({
+      secret: process.env.COOKIE_SESSION_SECRET,
+      resave: true,
+      saveUninitialized: true,
+    }),
+  );
 
   await app.listen(process.env.PORT || 8000);
 }
