@@ -3,8 +3,10 @@ import { isEmail } from "class-validator";
 import { createHash, randomBytes } from "crypto";
 import { Document } from "mongoose";
 import { generate } from "randomstring";
+import { AccessTokenPayload, RefreshTokenPayload } from "src/auth/strategy";
 import { UserRole } from "src/utils/user";
 
+import { JwtService } from "@nestjs/jwt";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
 import { OAuthProvider, oauthProvidersSchema } from "./oauth-provider.schema";
@@ -94,6 +96,8 @@ export class User extends Document {
   generateVerificationToken!: () => string;
   generatePasswordResetToken!: () => string;
   verifyPassword!: (password: string) => Promise<boolean>;
+  getAccessToken!: (jwt: JwtService) => string;
+  getRefreshToken!: (jwt: JwtService) => string;
 }
 
 export var userSchema = SchemaFactory.createForClass(User);
@@ -130,6 +134,22 @@ userSchema.methods.generatePasswordResetToken = function createToken(): string {
 
 userSchema.methods.verifyPassword = function (pwd: string): Promise<boolean> {
   return argon.verify(this.password, pwd);
+};
+
+userSchema.methods.getAccessToken = function (jwt: JwtService): string {
+  var payload: AccessTokenPayload = { email: this.email };
+  return jwt.sign(payload, {
+    secret: process.env.ACCESS_TOKEN_SECRET,
+    expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN,
+  });
+};
+
+userSchema.methods.getRefreshToken = function (jwt: JwtService): string {
+  var payload: RefreshTokenPayload = { _id: this._id, email: this.email };
+  return jwt.sign(payload, {
+    secret: process.env.REFRESH_TOKEN_SECRET,
+    expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN,
+  });
 };
 
 // =====================================

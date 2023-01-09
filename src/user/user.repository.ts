@@ -21,13 +21,8 @@ export class UserRepository {
     return this.model.exists(filter);
   }
 
-  async create(data: Partial<User>) {
-    try {
-      let user = await this.model.create(data);
-      return { user, error: null };
-    } catch (error) {
-      return { user: null, error };
-    }
+  create(data: Partial<User>) {
+    return this.model.create(data);
   }
 
   async save(user: User) {
