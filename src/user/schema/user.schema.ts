@@ -1,4 +1,4 @@
-import * as argon from "argon2";
+import { verify } from "argon2";
 import { isEmail } from "class-validator";
 import { createHash, randomBytes } from "crypto";
 import { Document } from "mongoose";
@@ -133,7 +133,7 @@ userSchema.methods.generatePasswordResetToken = function createToken(): string {
 };
 
 userSchema.methods.verifyPassword = function (pwd: string): Promise<boolean> {
-  return argon.verify(this.password, pwd);
+  return verify(this.passwordDigest, pwd);
 };
 
 userSchema.methods.getAccessToken = function (jwt: JwtService): string {

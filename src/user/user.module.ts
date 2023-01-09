@@ -1,4 +1,4 @@
-import * as argon from "argon2";
+import { hash } from "argon2";
 
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
@@ -12,7 +12,7 @@ var userFeatureAsync = {
     userSchema.pre("save", async function preMongooseSave(next) {
       // If password is modified then hash it
       if (this.isModified("passwordDigest")) {
-        this.passwordDigest = await argon.hash(this.passwordDigest);
+        this.passwordDigest = await hash(this.passwordDigest);
       }
 
       // Validate email uniqueness (could add other field which needs to be unique)
