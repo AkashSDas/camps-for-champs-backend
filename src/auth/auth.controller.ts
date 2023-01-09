@@ -2,13 +2,14 @@ import { Response } from "express";
 
 // eslint-disable-next-line prettier/prettier
 import { BadRequestException, Body, Controller, InternalServerErrorException, Post, Res } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 
 import { AuthService } from "./auth.service";
 import { EmailAndPasswordSignupDto } from "./dto";
 
 @Controller("/v2/auth")
 export class AuthController {
-  constructor(private service: AuthService) {}
+  constructor(private service: AuthService, private config: ConfigService) {}
 
   // =====================================
   // Signup
@@ -35,7 +36,9 @@ export class AuthController {
       httpOnly: true,
       secure: true,
       sameSite: "none",
-      maxAge: Number(process.env.REFRESH_TOKEN_EXPIRES_IN.replace(/(m|h)/, "")),
+      maxAge: Number(
+        this.config.get("REFRESH_TOKEN_EXPIRES_IN").replace(/(m|h)/, ""),
+      ),
     });
 
     return { user: result.user, accessToken: result.accessToken };

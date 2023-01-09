@@ -29,7 +29,6 @@ export class AuthService {
         if (!user) return Error("Failed to create user");
         return user;
       } catch (error) {
-        console.log(error);
         if (error instanceof Error) {
           let msg = error.message;
           if (msg == "Email already exists" || msg == "Duplicate fields") {
