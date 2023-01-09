@@ -126,14 +126,24 @@ describe("/v2/auth", () => {
         });
       });
 
-      it.only("when user entered correct password then login the user", async () => {
+      // TODO: Fix this - { statusCode: 400, message: 'Wrong password', error: 'Bad Request' }
+      it("when user entered correct password then login the user", async () => {
         let response = await request(app.getHttpServer())
           .post("/v2/auth/email-login")
           .send({ email: "james@gmail.com", password: "testingTEST@123" });
 
-        console.log(response.body);
         expect(response.status).toEqual(200);
-        expect(response.body).toMatchSnapshot();
+
+        expect(response.body).toMatchSnapshot({
+          accessToken: expect.any(String),
+          user: {
+            ...response.body.user,
+            _id: expect.any(String),
+            userId: expect.any(String),
+            createdAt: expect.any(String),
+            updatedAt: expect.any(String),
+          },
+        });
 
         expect(
           response.headers["set-cookie"].find((cookie: string) =>
