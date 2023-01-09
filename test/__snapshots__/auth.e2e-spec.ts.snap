@@ -20,3 +20,11 @@ Object {
   },
 }
 `;
+
+exports[`/v2/auth email signup user already exists if user already then given an user exists error 1`] = `
+Object {
+  "error": "Bad Request",
+  "message": "User already exists",
+  "statusCode": 400,
+}
+`;

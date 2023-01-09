@@ -84,5 +84,23 @@ describe("/v2/auth", () => {
         ),
       ).toBeDefined();
     });
+
+    describe("user already exists", () => {
+      beforeEach(async () => {
+        await userModel.create({
+          email: "james@gmail.com",
+          passwordDigest: "testingTEST@123",
+        });
+      });
+
+      it("if user already then given an user exists error", async () => {
+        let response = await request(app.getHttpServer())
+          .post("/v2/auth/email-signup")
+          .send({ email: "james@gmail.com", password: "testingTEST@123" });
+
+        expect(response.status).toEqual(400);
+        expect(response.body).toMatchSnapshot();
+      });
+    });
   });
 });
