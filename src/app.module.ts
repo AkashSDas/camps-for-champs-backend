@@ -3,6 +3,7 @@ import { ConfigModule } from "@nestjs/config";
 import { MongooseModule } from "@nestjs/mongoose";
 
 import { AuthModule } from "./auth/auth.module";
+import { CampModule } from "./camp/camp.module";
 import { TestingModule } from "./testing/testing.module";
 import { UserModule } from "./user/user.module";
 
@@ -15,6 +16,7 @@ import { UserModule } from "./user/user.module";
     TestingModule,
     UserModule,
     AuthModule,
+    CampModule,
   ],
   controllers: [],
   providers: [],

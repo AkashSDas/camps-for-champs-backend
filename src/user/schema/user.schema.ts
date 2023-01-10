@@ -156,6 +156,6 @@ userSchema.methods.getRefreshToken = function (jwt: JwtService): string {
 // Utilities
 // =====================================
 
-function dateShouldBeInFuture(v: Date) {
+export function dateShouldBeInFuture(v: Date) {
   return v > new Date(Date.now());
 }
