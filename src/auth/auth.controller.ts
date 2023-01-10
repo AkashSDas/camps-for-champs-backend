@@ -2,8 +2,9 @@ import { Response } from "express";
 import { User } from "src/user/schema";
 
 // eslint-disable-next-line prettier/prettier
-import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, InternalServerErrorException, NotFoundException, Post, Req, Res } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, InternalServerErrorException, NotFoundException, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { AuthGuard } from "@nestjs/passport";
 
 import { AuthService } from "./auth.service";
 import { EmailAndPasswordLoginDto, EmailAndPasswordSignupDto } from "./dto";
@@ -49,15 +50,17 @@ export class AuthController {
   // GOOGLE
 
   @Get("google-signup")
+  @UseGuards(AuthGuard("google-signup"))
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   initializeGoogleSignup() {}
 
   @Get("google-signup/redirect")
+  @UseGuards(AuthGuard("google-signup"))
   async googleSignupRedirect(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    var refreshToken = this.service.oauthSignip(req.user as User);
+    var refreshToken = this.service.oauthSignip((req as any).user as User);
 
     if (refreshToken) {
       return res.redirect(this.config.get("OAUTH_SIGNUP_SUCCESS_REDIRECT_URL"));
