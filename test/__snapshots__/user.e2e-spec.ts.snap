@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`/v2/user me if the user is not logged in then return 401 1`] = `
+Object {
+  "message": "Unauthorized",
+  "statusCode": 401,
+}
+`;
+
+exports[`/v2/user me if user is logged in then return that user info 1`] = `
+Object {
+  "user": Object {
+    "__v": 0,
+    "_id": Any<String>,
+    "active": false,
+    "banned": false,
+    "createdAt": Any<String>,
+    "email": "james@gmail.com",
+    "oauthProviders": Array [],
+    "roles": Array [
+      "base",
+    ],
+    "updatedAt": Any<String>,
+    "userId": Any<String>,
+    "verified": false,
+  },
+}
+`;

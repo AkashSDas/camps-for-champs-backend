@@ -1,9 +1,10 @@
 import { Profile, Strategy, VerifyCallback } from "passport-google-oauth20";
-import { AvailableOAuthProvider } from "src/user/schema/oauth-provider.schema";
-import { UserRepository } from "src/user/user.repository";
 
 import { Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
+
+import { AvailableOAuthProvider } from "../../user/schema/oauth-provider.schema";
+import { UserRepository } from "../../user/user.repository";
 
 @Injectable()
 export class GoogleSignupStrategy extends PassportStrategy(

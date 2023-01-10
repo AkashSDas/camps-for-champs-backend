@@ -1,8 +1,8 @@
 import { Request } from "express";
-import { AccessTokenGuard } from "src/auth/guard";
 
 import { Controller, Get, Req, UseGuards } from "@nestjs/common";
 
+import { AccessTokenGuard } from "../auth/guard";
 import { UserService } from "./user.service";
 
 @Controller("/v2/user")

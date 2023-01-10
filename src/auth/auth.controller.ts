@@ -1,11 +1,11 @@
-import { Response } from "express";
-import { User } from "src/user/schema";
+import { Request, Response } from "express";
 
 // eslint-disable-next-line prettier/prettier
 import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, InternalServerErrorException, NotFoundException, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { AuthGuard } from "@nestjs/passport";
 
+import { User } from "../user/schema";
 import { AuthService } from "./auth.service";
 import { EmailAndPasswordLoginDto, EmailAndPasswordSignupDto } from "./dto";
 import { AccessTokenGuard } from "./guard";
