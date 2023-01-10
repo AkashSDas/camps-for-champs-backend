@@ -8,6 +8,7 @@ import { AuthGuard } from "@nestjs/passport";
 
 import { AuthService } from "./auth.service";
 import { EmailAndPasswordLoginDto, EmailAndPasswordSignupDto } from "./dto";
+import { AccessTokenGuard } from "./guard";
 
 @Controller("/v2/auth")
 export class AuthController {
@@ -154,6 +155,7 @@ export class AuthController {
   // =====================================
 
   @Post("logout")
+  @UseGuards(AccessTokenGuard)
   async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     if ((req as any).cookies?.refreshToken) {
       res.clearCookie("refreshToken", {
