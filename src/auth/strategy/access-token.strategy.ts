@@ -25,7 +25,7 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, "jwt") {
    * that are guarded by AuthGuard('jwt')
    */
   async validate(_req: Request, payload: AccessTokenPayload) {
-    var user = this.repository.get({ email: payload.email });
+    var user = await this.repository.get({ email: payload.email });
     return user;
   }
 }

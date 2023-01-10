@@ -101,13 +101,16 @@ describe("/v2/user", () => {
     });
 
     describe("if the user doesn't exists", () => {
-      beforeEach(() => {
-        user = null;
+      beforeEach(async () => {
+        await userModel.deleteOne({ _id: user._id });
       });
 
-      it("then return 404", async () => {
-        let response = await request(app.getHttpServer()).get("/v2/user/me");
-        expect(response.status).toEqual(404);
+      it("then return 401", async () => {
+        let response = await request(app.getHttpServer())
+          .get("/v2/user/me")
+          .set("Authorization", `Bearer ${accessToken}`);
+
+        expect(response.status).toEqual(401);
         expect(response.body).toMatchSnapshot();
       });
     });
