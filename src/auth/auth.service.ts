@@ -58,6 +58,13 @@ export class AuthService {
     }
   }
 
+  oauthSignip(user?: User): string | undefined {
+    if (user instanceof User) {
+      let refreshToken = user.getRefreshToken(this.jwt);
+      return refreshToken;
+    }
+  }
+
   // =====================================
   // Login
   // =====================================

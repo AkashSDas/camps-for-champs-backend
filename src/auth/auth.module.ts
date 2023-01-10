@@ -5,11 +5,16 @@ import { UserModule } from "../user/user.module";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { RefreshTokenGuard } from "./guard";
-import { AccessTokenStrategy } from "./strategy";
+import { AccessTokenStrategy, GoogleSignupStrategy } from "./strategy";
 
 @Module({
   imports: [UserModule, JwtModule.register({})],
   controllers: [AuthController],
-  providers: [AuthService, AccessTokenStrategy, RefreshTokenGuard],
+  providers: [
+    AuthService,
+    AccessTokenStrategy,
+    RefreshTokenGuard,
+    GoogleSignupStrategy,
+  ],
 })
 export class AuthModule {}

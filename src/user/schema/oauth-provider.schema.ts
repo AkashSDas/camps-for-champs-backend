@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
-enum AvailableOAuthProvider {
+export enum AvailableOAuthProvider {
   GOOGLE = "google",
   TWITTER = "twitter",
   FACEBOOK = "facebook",
