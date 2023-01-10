@@ -102,4 +102,40 @@ export class AuthController {
 
     return { user: result.user, accessToken: result.accessToken };
   }
+
+  // GOOGLE
+
+  @Get("google-login")
+  @UseGuards(AuthGuard("google-login"))
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  initializeGoogleLogin() {}
+
+  @Get("google-login/redirect")
+  @UseGuards(AuthGuard("google-login"))
+  @HttpCode(HttpStatus.PERMANENT_REDIRECT)
+  async googleLoginRedirect(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    var refreshToken = this.service.oauthLogin((req as any).user as User);
+
+    // Login user
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: Number(
+        this.config.get("REFRESH_TOKEN_EXPIRES_IN").replace(/(m|h)/, ""),
+      ),
+    });
+
+    if (refreshToken) {
+      return res.redirect(this.config.get("OAUTH_LOGIN_SUCCESS_REDIRECT_URL"));
+    }
+
+    return res.redirect(
+      this.config.get("OAUTH_LOGIN_FAILURE_REDIRECT_URL") +
+        "?info=invalid-signup",
+    );
+  }
 }

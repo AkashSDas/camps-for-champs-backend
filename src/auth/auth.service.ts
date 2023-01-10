@@ -93,4 +93,11 @@ export class AuthService {
       return { accessToken, refreshToken, user };
     }
   }
+
+  oauthLogin(user?: User): string | undefined {
+    if (user instanceof User) {
+      let accessToken = user.getRefreshToken(this.jwt);
+      return accessToken;
+    }
+  }
 }
