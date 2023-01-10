@@ -4,7 +4,9 @@ import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
 import { User, userSchema } from "./schema";
+import { UserController } from "./user.controller";
 import { UserRepository } from "./user.repository";
+import { UserService } from "./user.service";
 
 var userFeatureAsync = {
   name: User.name,
@@ -44,6 +46,7 @@ var userFeatureAsync = {
 @Module({
   imports: [MongooseModule.forFeatureAsync([userFeatureAsync])],
   exports: [UserRepository],
-  providers: [UserRepository],
+  providers: [UserRepository, UserService],
+  controllers: [UserController],
 })
 export class UserModule {}
