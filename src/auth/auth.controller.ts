@@ -148,4 +148,29 @@ export class AuthController {
         "?info=invalid-signup",
     );
   }
+
+  // =====================================
+  // Others
+  // =====================================
+
+  @Post("logout")
+  async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    if ((req as any).cookies?.refreshToken) {
+      res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: Number(
+          this.config.get("REFRESH_TOKEN_EXPIRES_IN").replace(/(m|h)/, ""),
+        ),
+      });
+    }
+
+    if ((req as any).logOut) {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      (req as any).logOut(function successfulOAuthLogout() {});
+    }
+
+    return { message: "Logged out successfully" };
+  }
 }
