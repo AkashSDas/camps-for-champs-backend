@@ -132,8 +132,10 @@ userSchema.methods.generatePasswordResetToken = function createToken(): string {
   return token;
 };
 
-userSchema.methods.verifyPassword = function (pwd: string): Promise<boolean> {
-  return verify(this.passwordDigest, pwd);
+userSchema.methods.verifyPassword = async function (
+  pwd: string,
+): Promise<boolean> {
+  return await verify(this.passwordDigest, pwd);
 };
 
 userSchema.methods.getAccessToken = function (jwt: JwtService): string {

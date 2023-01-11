@@ -13,6 +13,21 @@ var userFeatureAsync = {
   useFactory: function () {
     userSchema.pre("save", async function preMongooseSave(next) {
       // If password is modified then hash it
+      // console.log(this.isNew, this.passwordDigest, this);
+
+      // The second check is to prevent hashing the password twice (this occurs
+      // only in testing). https://github.com/kpfromer/nestjs-typegoose/issues/61
+      //
+      // The gist of the issue is that during testing since beforeEach & afterEach
+      // are used for loading creating & deleting model, jest's ts-node transpiler,
+      // it loads user.model.ts twice causing the hook to be added twice
+      //
+      // Another way to solve this issue is instead of using beforeEach & afterEach
+      // in the global scope in `auth.e2e-spec.ts`, use beforeAll & afterAll (in that
+      // case all tests have to be updated)
+      //
+      // I've used the second way but I'm leaving this comment here for future reference
+      // if (this.isModified("passwordDigest") && this.passwordDigest?.startsWith("$argon2id$") == false)
       if (this.isModified("passwordDigest")) {
         this.passwordDigest = await hash(this.passwordDigest);
       }

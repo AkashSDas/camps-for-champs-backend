@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`/v2/auth email login when user doesn't exists given a 404 response 1`] = `
+exports[`auth email-login when user doesn't exists then give a 404 response 1`] = `
 Object {
   "error": "Not Found",
   "message": "User doesn't exists",
@@ -8,7 +8,7 @@ Object {
 }
 `;
 
-exports[`/v2/auth email signup successful signup with valid data 1`] = `
+exports[`auth email-login when user exists then successfully login 1`] = `
 Object {
   "accessToken": Any<String>,
   "user": Object {
@@ -29,10 +29,31 @@ Object {
 }
 `;
 
-exports[`/v2/auth email signup user already exists if user already then given an user exists error 1`] = `
+exports[`auth email-signup when user already exists then given an 400 error 1`] = `
 Object {
   "error": "Bad Request",
   "message": "User already exists",
   "statusCode": 400,
+}
+`;
+
+exports[`auth email-signup when user doesn't exists then successfully do a signup 1`] = `
+Object {
+  "accessToken": Any<String>,
+  "user": Object {
+    "__v": 0,
+    "_id": Any<String>,
+    "active": false,
+    "banned": false,
+    "createdAt": Any<String>,
+    "email": "james@gmail.com",
+    "oauthProviders": Array [],
+    "roles": Array [
+      "base",
+    ],
+    "updatedAt": Any<String>,
+    "userId": Any<String>,
+    "verified": false,
+  },
 }
 `;
