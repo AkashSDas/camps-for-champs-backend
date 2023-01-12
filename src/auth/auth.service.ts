@@ -59,7 +59,7 @@ export class AuthService {
   }
 
   oauthSignip(user?: User): string | undefined {
-    if (user instanceof User) {
+    if (user) {
       let refreshToken = user.getRefreshToken(this.jwt);
       return refreshToken;
     }
@@ -112,7 +112,7 @@ export class AuthService {
   }
 
   oauthLogin(user?: User): string | undefined {
-    if (user instanceof User) {
+    if (user) {
       let accessToken = user.getRefreshToken(this.jwt);
       return accessToken;
     }

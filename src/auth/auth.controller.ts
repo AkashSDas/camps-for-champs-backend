@@ -62,17 +62,15 @@ export class AuthController {
   ) {
     var refreshToken = this.service.oauthSignip((req as any).user as User);
 
-    // Login user
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: Number(
-        this.config.get("REFRESH_TOKEN_EXPIRES_IN").replace(/(m|h)/, ""),
-      ),
-    });
-
     if (refreshToken) {
+      // Login user
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: Number(this.config.get("REFRESH_TOKEN_EXPIRES_IN_MS")),
+      });
+
       return res.redirect(this.config.get("OAUTH_SIGNUP_SUCCESS_REDIRECT_URL"));
     }
     return res.redirect(this.config.get("OAUTH_SIGNUP_FAILURE_REDIRECT_URL"));
@@ -142,17 +140,15 @@ export class AuthController {
   ) {
     var refreshToken = this.service.oauthLogin((req as any).user as User);
 
-    // Login user
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: Number(
-        this.config.get("REFRESH_TOKEN_EXPIRES_IN").replace(/(m|h)/, ""),
-      ),
-    });
-
     if (refreshToken) {
+      // Login user
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: Number(this.config.get("REFRESH_TOKEN_EXPIRES_IN_MS")),
+      });
+
       return res.redirect(this.config.get("OAUTH_LOGIN_SUCCESS_REDIRECT_URL"));
     }
 
