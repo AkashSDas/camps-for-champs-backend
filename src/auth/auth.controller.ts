@@ -40,9 +40,7 @@ export class AuthController {
       httpOnly: true,
       secure: true,
       sameSite: "none",
-      maxAge: Number(
-        this.config.get("REFRESH_TOKEN_EXPIRES_IN").replace(/(m|h)/, ""),
-      ),
+      maxAge: Number(this.config.get("REFRESH_TOKEN_EXPIRES_IN_MS")),
     });
 
     return { user: result.user, accessToken: result.accessToken };
@@ -106,9 +104,7 @@ export class AuthController {
       httpOnly: true,
       secure: true,
       sameSite: "none",
-      maxAge: Number(
-        this.config.get("REFRESH_TOKEN_EXPIRES_IN").replace(/(m|h)/, ""),
-      ),
+      maxAge: Number(this.config.get("REFRESH_TOKEN_EXPIRES_IN_MS")),
     });
 
     return { user: result.user, accessToken: result.accessToken };
