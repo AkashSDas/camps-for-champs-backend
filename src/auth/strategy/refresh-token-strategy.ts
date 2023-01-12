@@ -19,11 +19,11 @@ export class RefreshTokenStrategy extends PassportStrategy(
 
   /**
    * The return value from here will be appened to req.user for routes
-   * that are guarded by AuthGuard('jwt')
+   * that are guarded by AuthGuard('jwt-refresh')
    */
   async validate(req: Request, payload: RefreshTokenPayload) {
     var refreshToken = req.cookies?.refreshToken;
-    return { user: { _id: payload._id, email: payload.email }, refreshToken };
+    return { ...payload, refreshToken };
   }
 }
 

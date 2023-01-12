@@ -89,7 +89,7 @@ export class AuthService {
     {
       // Login user
       let accessToken = user.getAccessToken(this.jwt);
-      let refreshToken = user.getAccessToken(this.jwt);
+      let refreshToken = user.getRefreshToken(this.jwt);
       return { accessToken, refreshToken, user };
     }
   }
