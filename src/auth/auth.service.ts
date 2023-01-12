@@ -94,6 +94,23 @@ export class AuthService {
     }
   }
 
+  async getNewAccessToken(refreshToken: string) {
+    try {
+      let decoded = this.jwt.verify(refreshToken, {
+        secret: process.env.REFRESH_TOKEN_SECRET,
+      });
+      if (!decoded) return new Error("Invalid refresh token");
+
+      let user = await this.repository.get({ _id: decoded._id });
+      if (!user) return new Error("User not found");
+
+      let accessToken = user.getAccessToken(this.jwt);
+      return { user, accessToken };
+    } catch (error) {
+      return new Error("Invalid refresh token");
+    }
+  }
+
   oauthLogin(user?: User): string | undefined {
     if (user instanceof User) {
       let accessToken = user.getRefreshToken(this.jwt);

@@ -1,9 +1,12 @@
+import * as cookieParser from "cookie-parser";
+import * as session from "express-session";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import { connect, Connection, Document, Model } from "mongoose";
 import * as request from "supertest";
 
 import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { JwtService } from "@nestjs/jwt";
 // eslint-disable-next-line prettier/prettier
 import { getModelToken, MongooseModule } from "@nestjs/mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
@@ -17,6 +20,7 @@ describe("auth", () => {
   let mongod: MongoMemoryServer;
   let mongoConnection: Connection;
   let userModel: Model<User & Document>;
+  let jwt: JwtService;
 
   beforeAll(async () => {
     mongod = await MongoMemoryServer.create();
@@ -34,8 +38,19 @@ describe("auth", () => {
     }).compile();
 
     userModel = module.get<Model<User & Document>>(getModelToken(User.name));
+    jwt = module.get<JwtService>(JwtService);
+
     app = module.createNestApplication();
     app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+    app.use(cookieParser());
+    app.use(
+      session({
+        secret: process.env.COOKIE_SESSION_SECRET,
+        resave: true,
+        saveUninitialized: true,
+      }),
+    );
+
     await app.init();
   });
 
@@ -45,15 +60,15 @@ describe("auth", () => {
     await mongod.stop();
   });
 
+  afterEach(async () => {
+    await userModel.deleteMany({});
+  });
+
   // =====================================
   // Signup
   // =====================================
 
   describe("email-signup", () => {
-    afterEach(async () => {
-      await userModel.deleteMany({});
-    });
-
     describe("when user doesn't exists", () => {
       it("then successfully do a signup", async () => {
         let response = await request(app.getHttpServer())
@@ -150,6 +165,40 @@ describe("auth", () => {
             cookie.includes("refreshToken"),
           ),
         ).toBeDefined();
+      });
+    });
+  });
+
+  describe("access-token", () => {
+    let refreshToken: string;
+
+    beforeEach(async () => {
+      let user = await userModel.create({
+        email: "james@gmail.com",
+        passwordDigest: "testingTEST@123",
+      });
+
+      refreshToken = user.getRefreshToken(jwt);
+    });
+
+    describe("when refresh token is valid", () => {
+      it("then successfully get a new access token", async () => {
+        let response = await request(app.getHttpServer())
+          .get("/v2/auth/access-token")
+          .set("Cookie", [`refreshToken=${refreshToken}`]);
+
+        expect(response.status).toEqual(200);
+
+        expect(response.body).toMatchSnapshot({
+          accessToken: expect.any(String),
+          user: {
+            ...response.body.user,
+            _id: expect.any(String),
+            userId: expect.any(String),
+            createdAt: expect.any(String),
+            updatedAt: expect.any(String),
+          },
+        });
       });
     });
   });

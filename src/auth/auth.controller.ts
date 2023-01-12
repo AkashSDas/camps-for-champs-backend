@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
 
 // eslint-disable-next-line prettier/prettier
-import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, InternalServerErrorException, NotFoundException, Post, Req, Res, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, InternalServerErrorException, NotFoundException, Post, Req, Res, UnauthorizedException, UseGuards } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { AuthGuard } from "@nestjs/passport";
 
 import { User } from "../user/schema";
 import { AuthService } from "./auth.service";
 import { EmailAndPasswordLoginDto, EmailAndPasswordSignupDto } from "./dto";
-import { AccessTokenGuard } from "./guard";
+import { AccessTokenGuard, RefreshTokenGuard } from "./guard";
 
 @Controller("/v2/auth")
 export class AuthController {
@@ -110,6 +110,22 @@ export class AuthController {
         this.config.get("REFRESH_TOKEN_EXPIRES_IN").replace(/(m|h)/, ""),
       ),
     });
+
+    return { user: result.user, accessToken: result.accessToken };
+  }
+
+  @Get("access-token")
+  @UseGuards(RefreshTokenGuard)
+  async getNewAccessToken(@Req() req: Request) {
+    var refreshToken = req.cookies?.refreshToken;
+    if (!refreshToken) throw new UnauthorizedException("You're not logged in");
+
+    var result = await this.service.getNewAccessToken(refreshToken);
+    if (result instanceof Error) {
+      if (result.message.includes("Invalid")) {
+        throw new UnauthorizedException("You're not logged in");
+      } else throw new NotFoundException("User not found");
+    }
 
     return { user: result.user, accessToken: result.accessToken };
   }

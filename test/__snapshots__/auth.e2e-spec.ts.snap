@@ -1,5 +1,26 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`auth access-token when refresh token is valid then successfully get a new access token 1`] = `
+Object {
+  "accessToken": Any<String>,
+  "user": Object {
+    "__v": 0,
+    "_id": Any<String>,
+    "active": false,
+    "banned": false,
+    "createdAt": Any<String>,
+    "email": "james@gmail.com",
+    "oauthProviders": Array [],
+    "roles": Array [
+      "base",
+    ],
+    "updatedAt": Any<String>,
+    "userId": Any<String>,
+    "verified": false,
+  },
+}
+`;
+
 exports[`auth email-login when user doesn't exists then give a 404 response 1`] = `
 Object {
   "error": "Not Found",
