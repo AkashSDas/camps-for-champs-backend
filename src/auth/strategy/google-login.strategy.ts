@@ -30,7 +30,7 @@ export class GoogleLoginStrategy extends PassportStrategy(
 
     // If the user doesn't exists OR the user exists but the
     // signup process isn't completed yet
-    if (!user || (user && !user.email)) return done(null, null);
+    if (!user || !user?.email) return done(null, null);
 
     // Log the user in
     return done(null, user);

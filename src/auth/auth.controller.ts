@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 // eslint-disable-next-line prettier/prettier
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, InternalServerErrorException, NotFoundException, Post, Put, Req, Res, UnauthorizedException, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, InternalServerErrorException, NotFoundException, Post, Put, Req, Res, UnauthorizedException, UseFilters, UseGuards } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { AuthGuard } from "@nestjs/passport";
 
@@ -9,6 +9,7 @@ import { User } from "../user/schema";
 import { AuthService } from "./auth.service";
 // eslint-disable-next-line prettier/prettier
 import { CompleteOAuthSignupDto, EmailAndPasswordLoginDto, EmailAndPasswordSignupDto } from "./dto";
+import { InvalidOAuthLoginFilter } from "./filter";
 import { AccessTokenGuard, RefreshTokenGuard } from "./guard";
 
 @Controller("/v2/auth")
@@ -173,8 +174,13 @@ export class AuthController {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   initializeGoogleLogin() {}
 
+  /**
+   * This will only redirect to success url because if the user is not registered
+   * then filter will handle the error and redirect to failure url
+   */
   @Get("google-login/redirect")
   @UseGuards(AuthGuard("google-login"))
+  @UseFilters(InvalidOAuthLoginFilter)
   @HttpCode(HttpStatus.PERMANENT_REDIRECT)
   async googleLoginRedirect(
     @Req() req: Request,

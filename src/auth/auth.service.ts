@@ -131,7 +131,8 @@ export class AuthService {
   }
 
   oauthLogin(user?: User): string | undefined {
-    if (user) {
+    // Conditional to consider user as signed up
+    if (user && user.email) {
       let accessToken = user.getRefreshToken(this.jwt);
       return accessToken;
     }
