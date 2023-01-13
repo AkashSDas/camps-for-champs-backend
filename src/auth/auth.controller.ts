@@ -111,9 +111,6 @@ export class AuthController {
         secure: true,
         sameSite: "none",
         maxAge: Number(this.config.get("REFRESH_TOKEN_EXPIRES_IN_MS")),
-        expires: new Date(
-          Date.now() + Number(this.config.get("REFRESH_TOKEN_EXPIRES_IN_MS")),
-        ),
       });
 
       return res.redirect(this.config.get("OAUTH_SIGNUP_SUCCESS_REDIRECT_URL"));
