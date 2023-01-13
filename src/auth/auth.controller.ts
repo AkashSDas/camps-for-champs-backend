@@ -10,6 +10,7 @@ import { User } from "../user/schema";
 import { AuthService } from "./auth.service";
 // eslint-disable-next-line prettier/prettier
 import { CompleteOAuthSignupDto, EmailAndPasswordLoginDto, EmailAndPasswordSignupDto } from "./dto";
+import { CreateOauthSession } from "./dto/create-oauth-session.dto";
 import { InvalidOAuthLoginFilter } from "./filter";
 import { AccessTokenGuard, RefreshTokenGuard } from "./guard";
 
@@ -120,7 +121,7 @@ export class AuthController {
       //
       // In the front-end make a call request to the back-end & if the hash
       // if valid then set refresh token in the cookie, clear it in the user
-      // document & remove the param in the front-end.
+      // document & remove the param in the front-end. This will be new refresh token
       //
       // This is only for oauth signup, not for email/pwd auth.
 
@@ -134,6 +135,25 @@ export class AuthController {
       );
     }
     return res.redirect(this.config.get("OAUTH_SIGNUP_FAILURE_REDIRECT_URL"));
+  }
+
+  @Post("oauth-session")
+  async createOauthSession(
+    @Body() dto: CreateOauthSession,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    var result = await this.service.createOauthSession(dto);
+    if (result instanceof Error) throw new UnauthorizedException();
+
+    // Login user
+    res.cookie("refreshToken", result.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: Number(this.config.get("REFRESH_TOKEN_EXPIRES_IN_MS")),
+    });
+
+    return { user: result.user, accessToken: result.accessToken };
   }
 
   // =====================================

@@ -8,6 +8,7 @@ import { User } from "../user/schema/index";
 import { UserRepository } from "../user/user.repository";
 // eslint-disable-next-line prettier/prettier
 import { CompleteOAuthSignupDto, EmailAndPasswordLoginDto, EmailAndPasswordSignupDto } from "./dto";
+import { CreateOauthSession } from "./dto/create-oauth-session.dto";
 
 type EmailAndPasswordLogin = {
   user?: User & { _id: Types.ObjectId };
@@ -82,6 +83,25 @@ export class AuthService {
       let refreshToken = user.getRefreshToken(this.jwt);
       return refreshToken;
     }
+  }
+
+  async createOauthSession(dto: CreateOauthSession) {
+    var user = await this.repository.getWithSelect(
+      { sessionTokenDigest: dto.token },
+      "+sessionTokenDigest",
+    );
+    if (!user) return new Error("User not found");
+
+    var accessToken = user.getAccessToken(this.jwt);
+    var refreshToken = user.getRefreshToken(this.jwt);
+
+    // Remove session token
+    user = (await this.repository.update(
+      { _id: user._id },
+      { sessionTokenDigest: undefined },
+    )) as any;
+
+    return { user, accessToken, refreshToken };
   }
 
   // =====================================
