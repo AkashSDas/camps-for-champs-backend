@@ -107,13 +107,15 @@ export class AuthController {
     if (refreshToken) {
       // Login user
       res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
+        // httpOnly: true,
         secure: true,
         sameSite: "none",
         maxAge: Number(this.config.get("REFRESH_TOKEN_EXPIRES_IN_MS")),
       });
 
-      return res.redirect(this.config.get("OAUTH_SIGNUP_SUCCESS_REDIRECT_URL"));
+      return res.redirect(
+        this.config.get("OAUTH_SIGNUP_SUCCESS_REDIRECT_URL") + "?signup=true",
+      );
     }
     return res.redirect(this.config.get("OAUTH_SIGNUP_FAILURE_REDIRECT_URL"));
   }
