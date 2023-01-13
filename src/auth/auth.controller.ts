@@ -98,7 +98,7 @@ export class AuthController {
 
   @Get("google-signup/redirect")
   @UseGuards(AuthGuard("google-signup"))
-  @HttpCode(HttpStatus.FOUND)
+  @HttpCode(HttpStatus.PERMANENT_REDIRECT)
   async googleSignupRedirect(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
