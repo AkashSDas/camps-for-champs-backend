@@ -106,6 +106,12 @@ export class AuthController {
     var refreshToken = this.service.oauthSignip((req as any).user as User);
 
     if (refreshToken) {
+      console.log(
+        refreshToken,
+        Number(this.config.get("REFRESH_TOKEN_EXPIRES_IN_MS")),
+        this.config.get("OAUTH_SIGNUP_SUCCESS_REDIRECT_URL"),
+      );
+
       // Login user
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
