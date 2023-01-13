@@ -37,7 +37,7 @@ export class UserRepository {
     return this.model.updateOne(filter, update, { new: true });
   }
 
-  deleteUser(filter: FilterQuery<User>) {
+  delete(filter: FilterQuery<User>) {
     return this.model.deleteOne(filter);
   }
 }

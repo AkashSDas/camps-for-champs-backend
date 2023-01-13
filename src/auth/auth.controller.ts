@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 // eslint-disable-next-line prettier/prettier
-import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, InternalServerErrorException, NotFoundException, Post, Put, Req, Res, UnauthorizedException, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, InternalServerErrorException, NotFoundException, Post, Put, Req, Res, UnauthorizedException, UseGuards } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { AuthGuard } from "@nestjs/passport";
 
@@ -66,6 +66,26 @@ export class AuthController {
     });
 
     return { user: req.user, accessToken: result.accessToken };
+  }
+
+  @Delete("cancel-oauth-signup")
+  @UseGuards(AccessTokenGuard)
+  async cancelOauthSignup(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    var result = await this.service.cancelOauthSignup(req.user as User);
+    if (result instanceof Error) throw new NotFoundException(result.message);
+
+    // Remove cookie
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: Number(this.config.get("REFRESH_TOKEN_EXPIRES_IN_MS")),
+    });
+
+    return { message: "Signup cancelled" };
   }
 
   // GOOGLE

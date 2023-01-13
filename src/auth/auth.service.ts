@@ -71,6 +71,12 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
+  async cancelOauthSignup(user: User) {
+    var deletedUser = await this.repository.delete({ _id: user._id });
+    if (!deletedUser) return new Error("User not found");
+    return true;
+  }
+
   oauthSignip(user?: User): string | undefined {
     if (user) {
       let refreshToken = user.getRefreshToken(this.jwt);
