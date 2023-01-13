@@ -227,15 +227,14 @@ export class AuthController {
     var refreshToken = this.service.oauthLogin((req as any).user as User);
 
     if (refreshToken) {
-      // Login user
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: Number(this.config.get("REFRESH_TOKEN_EXPIRES_IN_MS")),
-      });
+      let token = await hash(refreshToken);
+      ((req as any).user as User).sessionTokenDigest = token;
+      await ((req as any).user as User).save();
 
-      return res.redirect(this.config.get("OAUTH_LOGIN_SUCCESS_REDIRECT_URL"));
+      return res.redirect(
+        this.config.get("OAUTH_SIGNUP_SUCCESS_REDIRECT_URL") +
+          `?token=${encodeURIComponent(token)}`,
+      );
     }
 
     return res.redirect(
