@@ -98,7 +98,7 @@ export class AuthController {
 
   @Get("google-signup/redirect")
   @UseGuards(AuthGuard("google-signup"))
-  @HttpCode(HttpStatus.PERMANENT_REDIRECT)
+  @HttpCode(HttpStatus.FOUND)
   async googleSignupRedirect(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
@@ -181,7 +181,7 @@ export class AuthController {
   @Get("google-login/redirect")
   @UseGuards(AuthGuard("google-login"))
   @UseFilters(InvalidOAuthLoginFilter)
-  @HttpCode(HttpStatus.PERMANENT_REDIRECT)
+  @HttpCode(HttpStatus.FOUND)
   async googleLoginRedirect(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
