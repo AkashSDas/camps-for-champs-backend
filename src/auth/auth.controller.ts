@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
 
 // eslint-disable-next-line prettier/prettier
-import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, InternalServerErrorException, NotFoundException, Post, Req, Res, UnauthorizedException, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, InternalServerErrorException, NotFoundException, Post, Put, Req, Res, UnauthorizedException, UseGuards } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { AuthGuard } from "@nestjs/passport";
 
 import { User } from "../user/schema";
 import { AuthService } from "./auth.service";
-import { EmailAndPasswordLoginDto, EmailAndPasswordSignupDto } from "./dto";
+// eslint-disable-next-line prettier/prettier
+import { CompleteOAuthSignupDto, EmailAndPasswordLoginDto, EmailAndPasswordSignupDto } from "./dto";
 import { AccessTokenGuard, RefreshTokenGuard } from "./guard";
 
 @Controller("/v2/auth")
@@ -44,6 +45,27 @@ export class AuthController {
     });
 
     return { user: result.user, accessToken: result.accessToken };
+  }
+
+  @Put("complete-oauth-signup")
+  @UseGuards(AccessTokenGuard)
+  async completeOauthSignup(
+    @Body() dto: CompleteOAuthSignupDto,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    var result = await this.service.completeOauthSignup(req.user as User, dto);
+    if (result instanceof Error) throw new NotFoundException(result.message);
+
+    // Login user
+    res.cookie("refreshToken", result.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: Number(this.config.get("REFRESH_TOKEN_EXPIRES_IN_MS")),
+    });
+
+    return { user: req.user, accessToken: result.accessToken };
   }
 
   // GOOGLE

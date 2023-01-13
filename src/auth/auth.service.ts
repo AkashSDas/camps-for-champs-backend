@@ -6,7 +6,8 @@ import { JwtService } from "@nestjs/jwt";
 
 import { User } from "../user/schema/index";
 import { UserRepository } from "../user/user.repository";
-import { EmailAndPasswordLoginDto, EmailAndPasswordSignupDto } from "./dto";
+// eslint-disable-next-line prettier/prettier
+import { CompleteOAuthSignupDto, EmailAndPasswordLoginDto, EmailAndPasswordSignupDto } from "./dto";
 
 type EmailAndPasswordLogin = {
   user?: User & { _id: Types.ObjectId };
@@ -56,6 +57,18 @@ export class AuthService {
       user.passwordDigest = undefined; // rm password has from response
       return { user, accessToken, refreshToken, error: null };
     }
+  }
+
+  async completeOauthSignup(user: User, dto: CompleteOAuthSignupDto) {
+    var updatedUser = await this.repository.update(
+      { _id: user._id },
+      { email: dto.email },
+    );
+    if (!updatedUser) return new Error("User not found");
+
+    var accessToken = user.getAccessToken(this.jwt);
+    var refreshToken = user.getRefreshToken(this.jwt);
+    return { accessToken, refreshToken };
   }
 
   oauthSignip(user?: User): string | undefined {

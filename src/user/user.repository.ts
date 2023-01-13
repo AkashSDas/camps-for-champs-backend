@@ -33,6 +33,10 @@ export class UserRepository {
     return this.model.findOneAndUpdate(filter, update, { new: true });
   }
 
+  update(filter: FilterQuery<User>, update: Partial<User>) {
+    return this.model.updateOne(filter, update, { new: true });
+  }
+
   deleteUser(filter: FilterQuery<User>) {
     return this.model.deleteOne(filter);
   }
