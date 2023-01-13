@@ -1,3 +1,4 @@
+import { hash } from "argon2";
 import { Request, Response } from "express";
 
 // eslint-disable-next-line prettier/prettier
@@ -108,12 +109,29 @@ export class AuthController {
       // Login user
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        // secure: true,
+        secure: true,
         sameSite: "lax",
         maxAge: Number(this.config.get("REFRESH_TOKEN_EXPIRES_IN_MS")),
       });
 
-      return res.redirect(this.config.get("OAUTH_SIGNUP_SUCCESS_REDIRECT_URL"));
+      // Incase of front-end having a different domain (which is in this case)
+      // hashing the refresh token & then saving in the user doc & then
+      // adding the hash in the redirect URL param.
+      //
+      // In the front-end make a call request to the back-end & if the hash
+      // if valid then set refresh token in the cookie, clear it in the user
+      // document & remove the param in the front-end.
+      //
+      // This is only for oauth signup, not for email/pwd auth.
+
+      let token = await hash(refreshToken);
+      ((req as any).user as User).sessionTokenDigest = token;
+      await ((req as any).user as User).save();
+
+      return res.redirect(
+        this.config.get("OAUTH_SIGNUP_SUCCESS_REDIRECT_URL") +
+          `?token=${token}`,
+      );
     }
     return res.redirect(this.config.get("OAUTH_SIGNUP_FAILURE_REDIRECT_URL"));
   }

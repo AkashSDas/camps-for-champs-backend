@@ -89,6 +89,9 @@ export class User extends Document {
   @Prop({ type: String, select: false })
   stripeCustomerId?: string;
 
+  @Prop({ type: String, select: false })
+  sessionTokenDigest?: string;
+
   // =====================================
   // Instance Methods
   // =====================================
