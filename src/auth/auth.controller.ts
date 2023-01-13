@@ -110,7 +110,7 @@ export class AuthController {
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "strict",
+        sameSite: "none",
         maxAge: Number(this.config.get("REFRESH_TOKEN_EXPIRES_IN_MS")),
       });
 
@@ -193,7 +193,7 @@ export class AuthController {
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "strict",
+        sameSite: "none",
         maxAge: Number(this.config.get("REFRESH_TOKEN_EXPIRES_IN_MS")),
       });
 
@@ -218,9 +218,7 @@ export class AuthController {
         httpOnly: true,
         secure: true,
         sameSite: "none",
-        maxAge: Number(
-          this.config.get("REFRESH_TOKEN_EXPIRES_IN").replace(/(m|h)/, ""),
-        ),
+        maxAge: Number(this.config.get("REFRESH_TOKEN_EXPIRES_IN_MS")),
       });
     }
 
