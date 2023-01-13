@@ -22,8 +22,8 @@ async function bootstrap() {
   app.use(
     session({
       secret: process.env.COOKIE_SESSION_SECRET,
-      resave: true,
-      saveUninitialized: true,
+      resave: false,
+      saveUninitialized: false,
     }),
   );
 
