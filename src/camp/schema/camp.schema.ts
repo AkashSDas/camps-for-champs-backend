@@ -8,7 +8,7 @@ import { Accessibility, Amenity, CampStatus } from "../../utils/camp";
 // eslint-disable-next-line prettier/prettier
 import { CancellationPolicy, cancellationPolicySchema } from "./cancellation-policy.schema";
 import { Image, imageSchema } from "./image.schema";
-import { locationSchema } from "./location.schema";
+import { Location, locationSchema } from "./location.schema";
 
 @Schema({ timestamps: true })
 export class Camp extends Document {
