@@ -87,7 +87,7 @@ export class AuthService {
 
   async createOauthSession(dto: CreateOauthSession) {
     var user = await this.repository.getWithSelect(
-      { sessionTokenDigest: dto.token },
+      { sessionTokenDigest: decodeURIComponent(dto.token) },
       "+sessionTokenDigest",
     );
     if (!user) return new Error("User not found");
@@ -96,11 +96,12 @@ export class AuthService {
     var refreshToken = user.getRefreshToken(this.jwt);
 
     // Remove session token
-    user = (await this.repository.update(
+    await this.repository.update(
       { _id: user._id },
       { sessionTokenDigest: undefined },
-    )) as any;
+    );
 
+    user.sessionTokenDigest = undefined;
     return { user, accessToken, refreshToken };
   }
 

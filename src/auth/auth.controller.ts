@@ -108,12 +108,12 @@ export class AuthController {
 
     if (refreshToken) {
       // Login user
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "lax",
-        maxAge: Number(this.config.get("REFRESH_TOKEN_EXPIRES_IN_MS")),
-      });
+      // res.cookie("refreshToken", refreshToken, {
+      //   httpOnly: true,
+      //   secure: true,
+      //   sameSite: "lax",
+      //   maxAge: Number(this.config.get("REFRESH_TOKEN_EXPIRES_IN_MS")),
+      // });
 
       // Incase of front-end having a different domain (which is in this case)
       // hashing the refresh token & then saving in the user doc & then
@@ -131,13 +131,15 @@ export class AuthController {
 
       return res.redirect(
         this.config.get("OAUTH_SIGNUP_SUCCESS_REDIRECT_URL") +
-          `?token=${token}`,
+          `?token=${encodeURIComponent(token)}`,
       );
     }
+
     return res.redirect(this.config.get("OAUTH_SIGNUP_FAILURE_REDIRECT_URL"));
   }
 
   @Post("oauth-session")
+  @HttpCode(HttpStatus.OK)
   async createOauthSession(
     @Body() dto: CreateOauthSession,
     @Res({ passthrough: true }) res: Response,
