@@ -103,14 +103,7 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    console.log((req as any).user);
     var refreshToken = this.service.oauthSignip((req as any).user as User);
-
-    console.log(
-      refreshToken,
-      Number(this.config.get("REFRESH_TOKEN_EXPIRES_IN_MS")),
-      this.config.get("OAUTH_SIGNUP_SUCCESS_REDIRECT_URL"),
-    );
 
     if (refreshToken) {
       // Login user
