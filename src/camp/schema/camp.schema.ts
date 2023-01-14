@@ -1,5 +1,6 @@
 import { isURL } from "class-validator";
 import { Document, Types } from "mongoose";
+import { generate } from "randomstring";
 
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
@@ -75,6 +76,17 @@ export class Camp extends Document {
 
   @Prop({ type: cancellationPolicySchema })
   cancellationPolicy?: CancellationPolicy;
+
+  @Prop({
+    type: String,
+    required: true,
+    default: function createId() {
+      var id = generate({ length: 16 });
+      id = "camp_" + id;
+      return id;
+    },
+  })
+  campId: string;
 }
 
 export var campSchema = SchemaFactory.createForClass(Camp);

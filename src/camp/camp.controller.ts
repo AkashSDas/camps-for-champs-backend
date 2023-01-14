@@ -28,7 +28,7 @@ export class CampController {
     return { camp };
   }
 
-  @Delete("")
+  @Delete(":campId")
   @UseRole(UserRole.ADMIN)
   @UseGuards(RoleGuard)
   @UseGuards(AccessTokenGuard)
