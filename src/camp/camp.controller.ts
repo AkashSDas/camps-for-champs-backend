@@ -9,7 +9,8 @@ import { RoleGuard } from "../user/guard/role.guard";
 import { User } from "../user/schema";
 import { UserRole } from "../utils/user";
 import { CampService } from "./camp.service";
-import { UpdateLocationDto, UpdateSettingsDto, UpdateTimingDto } from "./dto";
+// eslint-disable-next-line prettier/prettier
+import { UpdateCancellationPolicyDto, UpdateLocationDto, UpdateSettingsDto, UpdateTimingDto } from "./dto";
 
 @Controller("/v2/camp")
 export class CampController {
@@ -62,6 +63,23 @@ export class CampController {
     @Body() dto: UpdateLocationDto,
   ) {
     var result = await this.service.updateLocation(res.locals.camp as any, dto);
+    if (!result) throw new NotFoundException("Camp not found");
+    return { camp: result };
+  }
+
+  @Put(":campId/cancellation-policy")
+  @UseRole(UserRole.ADMIN)
+  @UseGuards(RoleGuard)
+  @UseGuards(AccessTokenGuard)
+  async updateCancellationPolicy(
+    @Res({ passthrough: true }) res: Response,
+    @Body() dto: UpdateCancellationPolicyDto,
+  ) {
+    var result = await this.service.updateCancellationPolicy(
+      res.locals.camp as any,
+      dto,
+    );
+
     if (!result) throw new NotFoundException("Camp not found");
     return { camp: result };
   }

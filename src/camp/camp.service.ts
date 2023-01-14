@@ -2,7 +2,8 @@ import { Injectable } from "@nestjs/common";
 
 import { User } from "../user/schema";
 import { CampRepository } from "./camp.repository";
-import { UpdateLocationDto, UpdateTimingDto } from "./dto";
+// eslint-disable-next-line prettier/prettier
+import { UpdateCancellationPolicyDto, UpdateLocationDto, UpdateTimingDto } from "./dto";
 import { UpdateSettingsDto } from "./dto/update-settings.dto";
 import { Camp } from "./schema";
 
@@ -36,6 +37,15 @@ export class CampService {
       { _id: camp._id },
       coordinates ? { ...dto, location: camp.location } : dto,
     );
+    return updatedCamp;
+  }
+
+  async updateCancellationPolicy(camp: Camp, dto: UpdateCancellationPolicyDto) {
+    var updatedCamp = await this.repository.update(
+      { _id: camp._id },
+      { cancellationPolicy: dto },
+    );
+
     return updatedCamp;
   }
 }
