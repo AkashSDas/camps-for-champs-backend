@@ -1,7 +1,8 @@
 import { Response } from "express";
+import { CampStatus } from "src/utils/camp";
 
 // eslint-disable-next-line prettier/prettier
-import { BadRequestException, Body, Controller, Delete, NotFoundException, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, NotFoundException, Post, Put, Req, Res, UnauthorizedException, UseGuards } from "@nestjs/common";
 
 import { AccessTokenGuard } from "../auth/guard";
 import { UseRole } from "../user/decorator";
@@ -11,6 +12,7 @@ import { UserRole } from "../utils/user";
 import { CampService } from "./camp.service";
 // eslint-disable-next-line prettier/prettier
 import { UpdateCancellationPolicyDto, UpdateLocationDto, UpdateSettingsDto, UpdateStatusDto, UpdateTimingDto } from "./dto";
+import { Camp } from "./schema";
 
 @Controller("/v2/camp")
 export class CampController {
@@ -37,6 +39,27 @@ export class CampController {
     if (!result) throw new NotFoundException("Camp not found");
     if (result instanceof BadRequestException) throw result;
     return { camp: result };
+  }
+
+  @Get("public/:campId")
+  async getPublicCamp(@Res({ passthrough: true }) res: Response) {
+    var camp = res.locals.camp as Camp;
+
+    if (camp.status == CampStatus.DRAFT) {
+      throw new UnauthorizedException("Camp isn't public");
+    } else if (camp.status == CampStatus.INACTIVE) {
+      throw new BadRequestException("Camp is inactive");
+    }
+
+    return { camp };
+  }
+
+  @Get(":campId")
+  @UseRole(UserRole.ADMIN)
+  @UseGuards(RoleGuard)
+  @UseGuards(AccessTokenGuard)
+  async getCamp(@Res({ passthrough: true }) res: Response) {
+    return { camp: res.locals.camp as Camp };
   }
 
   // =====================================
