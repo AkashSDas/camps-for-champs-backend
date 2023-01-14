@@ -1,6 +1,7 @@
 import { CampStatus } from "src/utils/camp";
 
-import { BadRequestException, Injectable } from "@nestjs/common";
+// eslint-disable-next-line prettier/prettier
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 
 import { User } from "../user/schema";
 import { CampRepository } from "./camp.repository";
@@ -17,6 +18,16 @@ export class CampService {
     var camp = await this.repository.create({ user: user._id });
     return camp;
   }
+
+  async deleteCamp(camp: Camp) {
+    var result = await this.repository.delete({ _id: camp._id });
+    if (!result) return new NotFoundException("Camp not found");
+    return result;
+  }
+
+  // =====================================
+  // Update Camp Settings Services
+  // =====================================
 
   async updateSettings(camp: Camp, dto: UpdateSettingsDto) {
     var updatedCamp = await this.repository.update({ _id: camp._id }, dto);

@@ -1,7 +1,7 @@
 import { Response } from "express";
 
 // eslint-disable-next-line prettier/prettier
-import { BadRequestException, Body, Controller, NotFoundException, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, NotFoundException, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
 
 import { AccessTokenGuard } from "../auth/guard";
 import { UseRole } from "../user/decorator";
@@ -27,6 +27,21 @@ export class CampController {
     var camp = await this.service.createCamp((req as any).user as User);
     return { camp };
   }
+
+  @Delete("")
+  @UseRole(UserRole.ADMIN)
+  @UseGuards(RoleGuard)
+  @UseGuards(AccessTokenGuard)
+  async deleteCamp(@Res({ passthrough: true }) res: Response) {
+    var result = await this.service.deleteCamp(res.locals.camp as any);
+    if (!result) throw new NotFoundException("Camp not found");
+    if (result instanceof BadRequestException) throw result;
+    return { camp: result };
+  }
+
+  // =====================================
+  // UPDATE CAMP SETTINGS
+  // =====================================
 
   @Put(":campId/settings")
   @UseRole(UserRole.ADMIN)
