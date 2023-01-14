@@ -1,7 +1,7 @@
 import { Response } from "express";
 
 // eslint-disable-next-line prettier/prettier
-import { Body, Controller, NotFoundException, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, NotFoundException, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
 
 import { AccessTokenGuard } from "../auth/guard";
 import { UseRole } from "../user/decorator";
@@ -10,7 +10,7 @@ import { User } from "../user/schema";
 import { UserRole } from "../utils/user";
 import { CampService } from "./camp.service";
 // eslint-disable-next-line prettier/prettier
-import { UpdateCancellationPolicyDto, UpdateLocationDto, UpdateSettingsDto, UpdateTimingDto } from "./dto";
+import { UpdateCancellationPolicyDto, UpdateLocationDto, UpdateSettingsDto, UpdateStatusDto, UpdateTimingDto } from "./dto";
 
 @Controller("/v2/camp")
 export class CampController {
@@ -81,6 +81,20 @@ export class CampController {
     );
 
     if (!result) throw new NotFoundException("Camp not found");
+    return { camp: result };
+  }
+
+  @Put(":campId/status")
+  @UseRole(UserRole.ADMIN)
+  @UseGuards(RoleGuard)
+  @UseGuards(AccessTokenGuard)
+  async updateStatus(
+    @Res({ passthrough: true }) res: Response,
+    @Body() dto: UpdateStatusDto,
+  ) {
+    var result = await this.service.updateStatus(res.locals.camp as any, dto);
+    if (!result) throw new NotFoundException("Camp not found");
+    if (result instanceof BadRequestException) throw result;
     return { camp: result };
   }
 }
