@@ -62,6 +62,21 @@ export class CampController {
     return { camp: res.locals.camp as Camp };
   }
 
+  @Get("public")
+  async getPublicCamps() {
+    var camps = await this.service.getPublicCamps();
+    return { camps };
+  }
+
+  @Get("")
+  @UseRole(UserRole.ADMIN)
+  @UseGuards(RoleGuard)
+  @UseGuards(AccessTokenGuard)
+  async getCamps() {
+    var camps = await this.service.getCamps();
+    return { camps };
+  }
+
   // =====================================
   // UPDATE CAMP SETTINGS
   // =====================================

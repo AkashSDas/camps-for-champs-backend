@@ -36,4 +36,8 @@ export class CampRepository {
   delete(filter: FilterQuery<Camp>) {
     return this.model.deleteOne(filter);
   }
+
+  find(filter: FilterQuery<Camp>) {
+    return this.model.find(filter);
+  }
 }

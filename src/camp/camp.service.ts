@@ -25,6 +25,21 @@ export class CampService {
     return result;
   }
 
+  async getPublicCamps() {
+    var camps = await this.repository.find({
+      status: {
+        $or: [{ $ne: CampStatus.DRAFT }, { $ne: CampStatus.INACTIVE }],
+      },
+    });
+
+    return camps;
+  }
+
+  async getCamps() {
+    var camps = await this.repository.find({});
+    return camps;
+  }
+
   // =====================================
   // Update Camp Settings Services
   // =====================================
