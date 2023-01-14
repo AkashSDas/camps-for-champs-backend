@@ -9,7 +9,7 @@ import { RoleGuard } from "../user/guard/role.guard";
 import { User } from "../user/schema";
 import { UserRole } from "../utils/user";
 import { CampService } from "./camp.service";
-import { UpdateSettingsDto } from "./dto/update-settings.dto";
+import { UpdateSettingsDto, UpdateTimingDto } from "./dto";
 
 @Controller("/v2/camp")
 export class CampController {
@@ -36,6 +36,19 @@ export class CampController {
     @Body() dto: UpdateSettingsDto,
   ) {
     var result = await this.service.updateSettings(res.locals.camp as any, dto);
+    if (!result) throw new NotFoundException("Camp not found");
+    return { camp: result };
+  }
+
+  @Put(":campId/timing")
+  @UseRole(UserRole.ADMIN)
+  @UseGuards(RoleGuard)
+  @UseGuards(AccessTokenGuard)
+  async updateTiming(
+    @Res({ passthrough: true }) res: Response,
+    @Body() dto: UpdateTimingDto,
+  ) {
+    var result = await this.service.updateTiming(res.locals.camp as any, dto);
     if (!result) throw new NotFoundException("Camp not found");
     return { camp: result };
   }
