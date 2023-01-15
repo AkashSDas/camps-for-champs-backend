@@ -102,7 +102,14 @@ export class CampController {
     @Res({ passthrough: true }) res: Response,
     @Body() dto: UpdateTimingDto,
   ) {
-    var result = await this.service.updateTiming(res.locals.camp as any, dto);
+    var update = {};
+    if (dto.startDate) update["startDate"] = new Date(dto.startDate);
+    if (dto.endDate) update["endDate"] = new Date(dto.endDate);
+
+    var result = await this.service.updateTiming(
+      res.locals.camp as any,
+      update,
+    );
     if (!result) throw new NotFoundException("Camp not found");
     return { camp: result };
   }

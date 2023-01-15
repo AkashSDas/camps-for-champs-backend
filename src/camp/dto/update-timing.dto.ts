@@ -1,11 +1,11 @@
-import { IsDate, IsOptional } from "class-validator";
+import { IsDateString, IsOptional } from "class-validator";
 
 export class UpdateTimingDto {
-  @IsDate()
+  @IsDateString()
   @IsOptional()
   startDate?: Date;
 
-  @IsDate()
+  @IsDateString()
   @IsOptional()
   endDate?: Date;
 }
