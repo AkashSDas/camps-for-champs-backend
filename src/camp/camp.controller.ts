@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { CampStatus } from "src/utils/camp";
 
 // eslint-disable-next-line prettier/prettier
