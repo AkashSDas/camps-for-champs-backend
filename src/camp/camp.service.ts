@@ -61,11 +61,11 @@ export class CampService {
       else camp.location.coordinates = coordinates;
     }
 
-    var updatedCamp = await this.repository.update(
-      { _id: camp._id },
-      coordinates ? { ...dto, location: camp.location } : dto,
-    );
-    return updatedCamp;
+    if (dto.address) camp.address = dto.address;
+    if (dto.googleMapURL) camp.googleMapURL = dto.googleMapURL;
+
+    await camp.save();
+    return camp;
   }
 
   async updateCancellationPolicy(camp: Camp, dto: UpdateCancellationPolicyDto) {
