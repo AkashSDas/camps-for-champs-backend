@@ -1,9 +1,8 @@
-import { CampStatus } from "src/utils/camp";
-
 // eslint-disable-next-line prettier/prettier
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 
 import { User } from "../user/schema";
+import { CampStatus } from "../utils/camp";
 import { CampRepository } from "./camp.repository";
 // eslint-disable-next-line prettier/prettier
 import { UpdateCancellationPolicyDto, UpdateLocationDto, UpdateStatusDto, UpdateTimingDto } from "./dto";

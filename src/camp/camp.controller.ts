@@ -14,9 +14,36 @@ import { CampService } from "./camp.service";
 import { UpdateCancellationPolicyDto, UpdateLocationDto, UpdateSettingsDto, UpdateStatusDto, UpdateTimingDto } from "./dto";
 import { Camp } from "./schema";
 
-@Controller("/v2/camp")
+@Controller(["/v2/camp", "/v2/public-camps"])
 export class CampController {
   constructor(private service: CampService) {}
+
+  // =====================================
+  // /v2/public-camps
+  // =====================================
+
+  @Get("")
+  async getPublicCamps() {
+    var camps = await this.service.getPublicCamps();
+    return { camps };
+  }
+
+  @Get(":campId")
+  async getPublicCamp(@Res({ passthrough: true }) res: Response) {
+    var camp = res.locals.camp as Camp;
+
+    if (camp.status == CampStatus.DRAFT) {
+      throw new UnauthorizedException("Camp isn't public");
+    } else if (camp.status == CampStatus.INACTIVE) {
+      throw new BadRequestException("Camp is inactive");
+    }
+
+    return { camp };
+  }
+
+  // =====================================
+  // /v2/camp
+  // =====================================
 
   // https://stackoverflow.com/questions/68789602/guard-says-user-is-undefined-in-nestjs
   // When using two of the same decorators, the order, if I recall, is the lowest decorator
@@ -41,31 +68,12 @@ export class CampController {
     return { camp: result };
   }
 
-  @Get("public/:campId")
-  async getPublicCamp(@Res({ passthrough: true }) res: Response) {
-    var camp = res.locals.camp as Camp;
-
-    if (camp.status == CampStatus.DRAFT) {
-      throw new UnauthorizedException("Camp isn't public");
-    } else if (camp.status == CampStatus.INACTIVE) {
-      throw new BadRequestException("Camp is inactive");
-    }
-
-    return { camp };
-  }
-
   @Get(":campId")
   @UseRole(UserRole.ADMIN)
   @UseGuards(RoleGuard)
   @UseGuards(AccessTokenGuard)
   async getCamp(@Res({ passthrough: true }) res: Response) {
     return { camp: res.locals.camp as Camp };
-  }
-
-  @Get("public")
-  async getPublicCamps() {
-    var camps = await this.service.getPublicCamps();
-    return { camps };
   }
 
   @Get("")

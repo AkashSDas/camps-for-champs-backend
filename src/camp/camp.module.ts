@@ -18,7 +18,7 @@ import { Camp, campSchema } from "./schema";
 export class CampModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(ValidateCampMiddleware).forRoutes({
-      path: "v2/camp/(:campId*|(public/:campId*))",
+      path: "v2/camp/:campId",
       method: RequestMethod.ALL,
     });
   }
