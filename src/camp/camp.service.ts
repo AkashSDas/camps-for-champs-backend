@@ -27,9 +27,7 @@ export class CampService {
 
   async getPublicCamps() {
     var camps = await this.repository.find({
-      status: {
-        $or: [{ $ne: CampStatus.DRAFT }, { $ne: CampStatus.INACTIVE }],
-      },
+      status: { $eq: CampStatus.ACTIVE },
     });
 
     return camps;
