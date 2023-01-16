@@ -14,36 +14,13 @@ import { CampService } from "./camp.service";
 import { UpdateCancellationPolicyDto, UpdateLocationDto, UpdateSettingsDto, UpdateStatusDto, UpdateTimingDto } from "./dto";
 import { Camp } from "./schema";
 
+// Using an alias for the route with public, since the ValidateCampMiddleware
+// runs before on the route (:campId, but also on public), before the ordering
+// precedence could take place. So having different route avoid to hit the middleware
+// & then according to the ctrl ordering we hit the public route
 @Controller(["/v2/camp", "/v2/public-camps"])
 export class CampController {
   constructor(private service: CampService) {}
-
-  // =====================================
-  // /v2/public-camps
-  // =====================================
-
-  @Get("")
-  async getPublicCamps() {
-    var camps = await this.service.getPublicCamps();
-    return { camps };
-  }
-
-  @Get(":campId")
-  async getPublicCamp(@Res({ passthrough: true }) res: Response) {
-    var camp = res.locals.camp as Camp;
-
-    if (camp.status == CampStatus.DRAFT) {
-      throw new UnauthorizedException("Camp isn't public");
-    } else if (camp.status == CampStatus.INACTIVE) {
-      throw new BadRequestException("Camp is inactive");
-    }
-
-    return { camp };
-  }
-
-  // =====================================
-  // /v2/camp
-  // =====================================
 
   // https://stackoverflow.com/questions/68789602/guard-says-user-is-undefined-in-nestjs
   // When using two of the same decorators, the order, if I recall, is the lowest decorator
@@ -66,6 +43,25 @@ export class CampController {
     if (!result) throw new NotFoundException("Camp not found");
     if (result instanceof BadRequestException) throw result;
     return { camp: result };
+  }
+
+  @Get("public/:campId")
+  async getPublicCamp(@Res({ passthrough: true }) res: Response) {
+    var camp = res.locals.camp as Camp;
+
+    if (camp.status == CampStatus.DRAFT) {
+      throw new UnauthorizedException("Camp isn't public");
+    } else if (camp.status == CampStatus.INACTIVE) {
+      throw new BadRequestException("Camp is inactive");
+    }
+
+    return { camp };
+  }
+
+  @Get("public")
+  async getPublicCamps() {
+    var camps = await this.service.getPublicCamps();
+    return { camps };
   }
 
   @Get(":campId")
