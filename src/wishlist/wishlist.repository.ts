@@ -20,4 +20,8 @@ export class WishlistRepository {
   delete(filter: FilterQuery<Wishlist>) {
     return this.model.deleteOne(filter);
   }
+
+  exists(filter: FilterQuery<Wishlist>) {
+    return this.model.exists(filter);
+  }
 }
