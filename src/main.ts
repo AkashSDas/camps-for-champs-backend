@@ -1,4 +1,5 @@
 import * as cookieParser from "cookie-parser";
+import * as fileUpload from "express-fileupload";
 import * as session from "express-session";
 import * as morgan from "morgan";
 
@@ -17,6 +18,8 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   app.use(morgan("dev"));
+
+  app.use(fileUpload({ useTempFiles: true, tempFileDir: "/tmp/" }));
 
   app.use(cookieParser());
   app.use(

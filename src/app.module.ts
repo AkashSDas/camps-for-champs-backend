@@ -4,6 +4,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 
 import { AuthModule } from "./auth/auth.module";
 import { CampModule } from "./camp/camp.module";
+import { CloudinaryProvider } from "./cloudinary.provider";
 import { TestingModule } from "./testing/testing.module";
 import { UserModule } from "./user/user.module";
 
@@ -19,6 +20,6 @@ import { UserModule } from "./user/user.module";
     CampModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [CloudinaryProvider],
 })
 export class AppModule {}
