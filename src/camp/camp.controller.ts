@@ -12,7 +12,7 @@ import { User } from "../user/schema";
 import { UserRole } from "../utils/user";
 import { CampService } from "./camp.service";
 // eslint-disable-next-line prettier/prettier
-import { AddImageDto, UpdateCancellationPolicyDto, UpdateLocationDto, UpdateSettingsDto, UpdateStatusDto, UpdateTimingDto } from "./dto";
+import { AddImageDto, RemoveImageDto, UpdateCancellationPolicyDto, UpdateLocationDto, UpdateSettingsDto, UpdateStatusDto, UpdateTimingDto } from "./dto";
 import { Camp } from "./schema";
 
 // Using an alias for the route with public, since the ValidateCampMiddleware
@@ -200,5 +200,18 @@ export class CampController {
 
       return result;
     }
+  }
+
+  @Delete(":campId/image")
+  @UseRole(UserRole.ADMIN)
+  @UseGuards(RoleGuard)
+  @UseGuards(AccessTokenGuard)
+  async removeImage(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+    @Body() dto: RemoveImageDto,
+  ) {
+    var result = await this.service.removeImage(res.locals.camp as Camp, dto);
+    return { camp: result };
   }
 }

@@ -8,7 +8,7 @@ import { User } from "../user/schema";
 import { CampStatus } from "../utils/camp";
 import { CampRepository } from "./camp.repository";
 // eslint-disable-next-line prettier/prettier
-import { AddImageDto, UpdateCancellationPolicyDto, UpdateLocationDto, UpdateStatusDto, UpdateTimingDto } from "./dto";
+import { AddImageDto, RemoveImageDto, UpdateCancellationPolicyDto, UpdateLocationDto, UpdateStatusDto, UpdateTimingDto } from "./dto";
 import { UpdateSettingsDto } from "./dto/update-settings.dto";
 import { Camp, Image, ImageType } from "./schema";
 
@@ -164,5 +164,25 @@ export class CampService {
       camp.images.push(img);
       return { camp, image: camp.images[camp.images.length - 1] };
     }
+  }
+
+  async removeImage(camp: Camp, image: RemoveImageDto) {
+    if (!image.id) {
+      // Remove image using the URL
+      camp.images = camp.images.filter((img) => img.URL != image.URL);
+      await camp.save();
+    } else {
+      // Remove image using the ID
+      camp.images = camp.images.filter((img) => img.id != image.id);
+
+      Promise.all([
+        await camp.save(),
+        await v2.uploader.destroy(
+          `${process.env.CLOUDINARY_DIR_CAMP}/${image.id}`,
+        ),
+      ]);
+    }
+
+    return camp;
   }
 }
