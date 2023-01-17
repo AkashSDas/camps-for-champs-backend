@@ -34,4 +34,16 @@ export class WishlistService {
       camp: campExists._id,
     });
   }
+
+  async removeWishlistForUser(userId: Types.ObjectId, campId: string) {
+    // Check if the camp exists
+    var campExists = await this.campRepository.exists({ campId });
+    if (!campExists) return new Error("Camp not found");
+
+    // Check if the wishlist exists
+    return await this.repository.delete({
+      user: userId,
+      camp: campExists._id,
+    });
+  }
 }

@@ -3,7 +3,7 @@ import { AccessTokenGuard } from "src/auth/guard";
 import { User } from "src/user/schema";
 
 // eslint-disable-next-line prettier/prettier
-import { BadRequestException, Controller, Get, HttpCode, HttpStatus, InternalServerErrorException, Post, Req, UseGuards } from "@nestjs/common";
+import { BadRequestException, Controller, Delete, Get, HttpCode, HttpStatus, InternalServerErrorException, NotFoundException, Post, Req, UseGuards } from "@nestjs/common";
 
 import { WishlistService } from "./wishlist.service";
 
@@ -32,6 +32,19 @@ export class WishlistController {
     );
 
     if (result instanceof Error) throw new BadRequestException(result.message);
+    return { wishlist: result };
+  }
+
+  @Delete("camp/:campId")
+  @UseGuards(AccessTokenGuard)
+  async removeWishtllistForUser(@Req() req: Request) {
+    var result = await this.service.removeWishlistForUser(
+      (req.user as User)._id,
+      req.params.campId,
+    );
+
+    if (result instanceof Error) throw new BadRequestException(result.message);
+    if (!result) throw new NotFoundException("Wishlist not found");
     return { wishlist: result };
   }
 }
