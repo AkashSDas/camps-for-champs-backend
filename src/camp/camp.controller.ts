@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
+import { UploadedFile } from "express-fileupload";
 import { CampStatus } from "src/utils/camp";
 
 // eslint-disable-next-line prettier/prettier
-import { BadRequestException, Body, Controller, Delete, Get, NotFoundException, Post, Put, Req, Res, UnauthorizedException, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, InternalServerErrorException, NotFoundException, Post, Put, Req, Res, UnauthorizedException, UseGuards } from "@nestjs/common";
 
 import { AccessTokenGuard } from "../auth/guard";
 import { UseRole } from "../user/decorator";
@@ -11,7 +12,7 @@ import { User } from "../user/schema";
 import { UserRole } from "../utils/user";
 import { CampService } from "./camp.service";
 // eslint-disable-next-line prettier/prettier
-import { UpdateCancellationPolicyDto, UpdateLocationDto, UpdateSettingsDto, UpdateStatusDto, UpdateTimingDto } from "./dto";
+import { AddImageDto, UpdateCancellationPolicyDto, UpdateLocationDto, UpdateSettingsDto, UpdateStatusDto, UpdateTimingDto } from "./dto";
 import { Camp } from "./schema";
 
 // Using an alias for the route with public, since the ValidateCampMiddleware
@@ -160,5 +161,44 @@ export class CampController {
     if (!result) throw new NotFoundException("Camp not found");
     if (result instanceof BadRequestException) throw result;
     return { camp: result };
+  }
+
+  @Post(":campId/image")
+  @HttpCode(HttpStatus.OK)
+  @UseRole(UserRole.ADMIN)
+  @UseGuards(RoleGuard)
+  @UseGuards(AccessTokenGuard)
+  async addImage(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+    @Body() dto: AddImageDto,
+  ) {
+    if (!req.files) {
+      let result = await this.service.addImage(res.locals.camp as Camp, dto);
+
+      if (result instanceof Error) {
+        throw new BadRequestException(result.message);
+      }
+
+      return result;
+    }
+
+    var img = req.files.campImage as UploadedFile;
+    if (req.files) {
+      let result = await this.service.addImage(
+        res.locals.camp as Camp,
+        dto,
+        img,
+      );
+
+      if (result instanceof Error) {
+        if (result.message.includes("Failed")) {
+          throw new InternalServerErrorException(result.message);
+        }
+        throw new BadRequestException(result.message);
+      }
+
+      return result;
+    }
   }
 }

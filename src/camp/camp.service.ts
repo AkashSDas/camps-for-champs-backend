@@ -1,3 +1,6 @@
+import { v2 } from "cloudinary";
+import { UploadedFile } from "express-fileupload";
+
 // eslint-disable-next-line prettier/prettier
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 
@@ -5,9 +8,9 @@ import { User } from "../user/schema";
 import { CampStatus } from "../utils/camp";
 import { CampRepository } from "./camp.repository";
 // eslint-disable-next-line prettier/prettier
-import { UpdateCancellationPolicyDto, UpdateLocationDto, UpdateStatusDto, UpdateTimingDto } from "./dto";
+import { AddImageDto, UpdateCancellationPolicyDto, UpdateLocationDto, UpdateStatusDto, UpdateTimingDto } from "./dto";
 import { UpdateSettingsDto } from "./dto/update-settings.dto";
-import { Camp } from "./schema";
+import { Camp, Image, ImageType } from "./schema";
 
 @Injectable()
 export class CampService {
@@ -115,5 +118,51 @@ export class CampService {
 
     await camp.save();
     return camp;
+  }
+
+  async addImage(camp: Camp, dto: AddImageDto, file?: UploadedFile) {
+    // Remove old location img if it exists
+    if (dto.type == ImageType.LOCATION) {
+      let locationImage: Image;
+
+      camp.images = camp.images.filter((img) => {
+        if (img.type != ImageType.LOCATION) {
+          locationImage = img;
+          return false;
+        }
+        return false;
+      });
+
+      if (locationImage && locationImage.id) {
+        await v2.uploader.destroy(
+          `${process.env.CLOUDINARY_DIR_CAMP}/${locationImage.id}`,
+        );
+      }
+    }
+
+    if (!file) {
+      // Check for the URL for the image
+      if (!dto.URL) return new Error("Image URL not provided");
+      let img: Image = { type: dto.type, URL: dto.URL };
+      if (dto.description) img.description = dto.description;
+      camp.images.push(img);
+      await camp.save();
+
+      return { camp, image: camp.images[camp.images.length - 1] };
+    } else {
+      let result = await v2.uploader.upload(file.tempFilePath, {
+        folder: `${process.env.CLOUDINARY_DIR_CAMP}/${camp.campId}`,
+      });
+      if (!result) return new Error("Failed to upload image");
+
+      let img: Image = {
+        type: dto.type,
+        URL: result.secure_url,
+        id: result.public_id.split("/").pop(),
+      };
+      if (dto.description) img.description = dto.description;
+      camp.images.push(img);
+      return { camp, image: camp.images[camp.images.length - 1] };
+    }
   }
 }
