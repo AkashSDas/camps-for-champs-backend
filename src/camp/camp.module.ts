@@ -12,6 +12,7 @@ import { Camp, campSchema } from "./schema";
   imports: [
     MongooseModule.forFeature([{ name: Camp.name, schema: campSchema }]),
   ],
+  exports: [CampRepository],
   controllers: [CampController],
   providers: [CampService, CampRepository],
 })

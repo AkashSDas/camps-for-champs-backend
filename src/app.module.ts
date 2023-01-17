@@ -8,7 +8,6 @@ import { CloudinaryProvider } from "./cloudinary.provider";
 import { TestingModule } from "./testing/testing.module";
 import { UserModule } from "./user/user.module";
 import { WishlistModule } from "./wishlist/wishlist.module";
-import { ModuleController } from './module/module.controller';
 
 @Module({
   imports: [
@@ -22,7 +21,7 @@ import { ModuleController } from './module/module.controller';
     CampModule,
     WishlistModule,
   ],
-  controllers: [ModuleController],
+  controllers: [],
   providers: [CloudinaryProvider],
 })
 export class AppModule {}
