@@ -116,7 +116,11 @@ export class CampController {
     @Res({ passthrough: true }) res: Response,
     @Body() dto: UpdateSettingsDto,
   ) {
-    var result = await this.service.updateSettings(res.locals.camp as any, dto);
+    var result = await this.service.updateSettings(
+      res.locals.camp as Camp,
+      dto,
+    );
+
     if (!result) throw new NotFoundException("Camp not found");
     return { camp: result };
   }

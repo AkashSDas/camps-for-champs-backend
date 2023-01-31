@@ -17,7 +17,7 @@ import { ValidateCampMiddleware } from "./middleware";
 export class CampModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(ValidateCampMiddleware).forRoutes({
-      path: "v2/camp/:campId",
+      path: "v2/camp/:campId*",
       method: RequestMethod.ALL,
     });
   }
