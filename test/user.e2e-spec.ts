@@ -1,17 +1,18 @@
-import { MongoMemoryServer } from "mongodb-memory-server";
-import { Document, Model } from "mongoose";
 import * as request from "supertest";
-
-import { INestApplication, ValidationPipe } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
-import { JwtModule, JwtService } from "@nestjs/jwt";
-// eslint-disable-next-line prettier/prettier
-import { getModelToken, MongooseModule, MongooseModuleOptions } from "@nestjs/mongoose";
-import { Test, TestingModule } from "@nestjs/testing";
-
 import { AuthModule } from "../src/auth/auth.module";
+import { ConfigModule } from "@nestjs/config";
+import { Document, Model } from "mongoose";
+import { INestApplication, ValidationPipe } from "@nestjs/common";
+import { JwtModule, JwtService } from "@nestjs/jwt";
+import { MongoMemoryServer } from "mongodb-memory-server";
+import { Test, TestingModule } from "@nestjs/testing";
 import { User } from "../src/user/schema";
 import { UserModule } from "../src/user/user.module";
+import {
+  getModelToken,
+  MongooseModule,
+  MongooseModuleOptions,
+} from "@nestjs/mongoose";
 
 let mongod: MongoMemoryServer;
 

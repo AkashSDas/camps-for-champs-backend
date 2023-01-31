@@ -1,17 +1,14 @@
 import * as cookieParser from "cookie-parser";
-import * as session from "express-session";
-import { MongoMemoryServer } from "mongodb-memory-server";
-import { connect, Connection, Document, Model } from "mongoose";
 import * as request from "supertest";
-
-import { INestApplication, ValidationPipe } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
-import { JwtService } from "@nestjs/jwt";
-// eslint-disable-next-line prettier/prettier
-import { getModelToken, MongooseModule } from "@nestjs/mongoose";
-import { Test, TestingModule } from "@nestjs/testing";
-
+import * as session from "express-session";
 import { AuthModule } from "../src/auth/auth.module";
+import { ConfigModule } from "@nestjs/config";
+import { connect, Connection, Document, Model } from "mongoose";
+import { getModelToken, MongooseModule } from "@nestjs/mongoose";
+import { INestApplication, ValidationPipe } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { MongoMemoryServer } from "mongodb-memory-server";
+import { Test, TestingModule } from "@nestjs/testing";
 import { User } from "../src/user/schema";
 import { UserModule } from "../src/user/user.module";
 
