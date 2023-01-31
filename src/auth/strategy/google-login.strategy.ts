@@ -6,10 +6,7 @@ import { PassportStrategy } from "@nestjs/passport";
 import { UserRepository } from "../../user/user.repository";
 
 @Injectable()
-export class GoogleLoginStrategy extends PassportStrategy(
-  Strategy,
-  "google-login",
-) {
+export class GoogleLoginStrategy extends PassportStrategy(Strategy, "google-login") {
   constructor(private repository: UserRepository) {
     super({
       clientID: process.env.GOOGLE_OAUTH_CLIENT_ID,
@@ -19,12 +16,7 @@ export class GoogleLoginStrategy extends PassportStrategy(
     });
   }
 
-  async validate(
-    _accessToken: string,
-    _refreshToken: string,
-    profile: Profile,
-    done: VerifyCallback,
-  ) {
+  async validate(_accessToken: string, _refreshToken: string, profile: Profile, done: VerifyCallback) {
     var { email } = profile._json;
     var user = await this.repository.get({ email });
 

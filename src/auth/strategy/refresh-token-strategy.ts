@@ -5,10 +5,7 @@ import { PassportStrategy } from "@nestjs/passport";
 
 export type RefreshTokenPayload = { _id: string; email: string };
 
-export class RefreshTokenStrategy extends PassportStrategy(
-  Strategy,
-  "jwt-refresh",
-) {
+export class RefreshTokenStrategy extends PassportStrategy(Strategy, "jwt-refresh") {
   constructor() {
     super({
       jwtFromRequest: cookieExtractor,

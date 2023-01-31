@@ -1,6 +1,5 @@
 import { Response } from "express";
 
-// eslint-disable-next-line prettier/prettier
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, UnauthorizedException } from "@nestjs/common";
 
 @Catch(UnauthorizedException)
@@ -10,10 +9,6 @@ export class InvalidOAuthLoginFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus();
 
-    response
-      .status(status)
-      .redirect(
-        `${process.env.OAUTH_LOGIN_FAILURE_REDIRECT_URL}?info=signup-invalid`,
-      );
+    response.status(status).redirect(`${process.env.OAUTH_LOGIN_FAILURE_REDIRECT_URL}?info=signup-invalid`);
   }
 }
