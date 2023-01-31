@@ -54,10 +54,7 @@ describe("AuthController", () => {
 
   describe("email signup", () => {
     it("with successful signup it should return user, access token & have a refresh token in res.headers", async () => {
-      let response = await controller.emailAndPasswordSignup(
-        res,
-        userDtoStub(),
-      );
+      let response = await controller.emailAndPasswordSignup(res, userDtoStub());
 
       expect(response.user).toBeDefined();
       expect(response.user).toEqual(userStub());
@@ -66,20 +63,18 @@ describe("AuthController", () => {
     });
 
     it("with user already exists error it should throw an error", async () => {
-      jest
-        .spyOn(service, "emailAndPasswordSignup")
-        .mockImplementationOnce(async () => {
-          return {
-            user: null,
-            refreshToken: null,
-            accessToken: null,
-            error: Error("User already exists"),
-          };
-        });
+      jest.spyOn(service, "emailAndPasswordSignup").mockImplementationOnce(async () => {
+        return {
+          user: null,
+          refreshToken: null,
+          accessToken: null,
+          error: Error("User already exists"),
+        };
+      });
 
-      await expect(() =>
-        controller.emailAndPasswordSignup(res, userDtoStub()),
-      ).rejects.toThrow(new BadRequestException("User already exists"));
+      await expect(() => controller.emailAndPasswordSignup(res, userDtoStub())).rejects.toThrow(
+        new BadRequestException("User already exists"),
+      );
     });
   });
 });
