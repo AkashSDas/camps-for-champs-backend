@@ -1,5 +1,4 @@
 import { IsEnum, IsString, Length } from "class-validator";
-
 import { PolicyType } from "../../utils/camp";
 
 export class UpdateCancellationPolicyDto {

@@ -1,5 +1,10 @@
-// eslint-disable-next-line prettier/prettier
-import { IsLatLong, IsOptional, IsString, IsUrl, Length } from "class-validator";
+import {
+  IsLatLong,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Length,
+} from "class-validator";
 
 export class UpdateLocationDto {
   @Length(0, 128)

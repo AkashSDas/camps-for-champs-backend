@@ -1,7 +1,14 @@
-// eslint-disable-next-line prettier/prettier
-import { IsArray, IsEnum, IsInt, IsNumber, IsOptional, IsString, Length, Min } from "class-validator";
-
 import { Accessibility, Amenity } from "../../utils/camp";
+import {
+  IsArray,
+  IsEnum,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Length,
+  Min,
+} from "class-validator";
 
 export class UpdateSettingsDto {
   @Length(0, 128)

@@ -1,6 +1,5 @@
-import { IsEnum, IsOptional, IsString, IsUrl, Length } from "class-validator";
-
 import { ImageType } from "../schema";
+import { IsEnum, IsOptional, IsString, IsUrl, Length } from "class-validator";
 
 export class AddImageDto {
   @IsEnum(ImageType)
