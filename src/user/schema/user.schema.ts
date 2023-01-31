@@ -135,9 +135,7 @@ userSchema.methods.generatePasswordResetToken = function createToken(): string {
   return token;
 };
 
-userSchema.methods.verifyPassword = async function (
-  pwd: string,
-): Promise<boolean> {
+userSchema.methods.verifyPassword = async function (pwd: string): Promise<boolean> {
   return await verify(this.passwordDigest, pwd);
 };
 

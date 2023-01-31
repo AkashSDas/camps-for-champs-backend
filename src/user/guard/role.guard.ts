@@ -7,9 +7,7 @@ import { Reflector } from "@nestjs/core";
 export class RoleGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     var role = this.reflector.get<string>("role", context.getHandler());
 
     // If there is no role, then it is public
