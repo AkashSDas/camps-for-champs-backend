@@ -1,11 +1,21 @@
-import { Request } from "express";
 import { AccessTokenGuard } from "src/auth/guard";
+import { Request } from "express";
 import { User } from "src/user/schema";
-
-// eslint-disable-next-line prettier/prettier
-import { BadRequestException, Controller, Delete, Get, HttpCode, HttpStatus, InternalServerErrorException, NotFoundException, Post, Req, UseGuards } from "@nestjs/common";
-
 import { WishlistService } from "./wishlist.service";
+
+import {
+  BadRequestException,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  InternalServerErrorException,
+  NotFoundException,
+  Post,
+  Req,
+  UseGuards,
+} from "@nestjs/common";
 
 @Controller("/v2/wishlist")
 export class WishlistController {

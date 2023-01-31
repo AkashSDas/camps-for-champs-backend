@@ -1,8 +1,6 @@
-import { Document, Types } from "mongoose";
-
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-
 import { Camp } from "../../camp/schema";
+import { Document, Types } from "mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { User } from "../../user/schema";
 
 @Schema({ timestamps: true })
