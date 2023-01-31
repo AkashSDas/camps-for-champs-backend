@@ -28,11 +28,11 @@ export class CampRepository {
   }
 
   update(filter: FilterQuery<Camp>, update: Partial<Camp>) {
-    return this.model.updateOne(filter, update, { new: true });
+    return this.model.findOneAndUpdate(filter, update, { new: true });
   }
 
   delete(filter: FilterQuery<Camp>) {
-    return this.model.deleteOne(filter);
+    return this.model.findOneAndDelete(filter);
   }
 
   find(filter: FilterQuery<Camp>) {
