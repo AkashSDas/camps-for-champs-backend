@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
 export enum ImageType {
+  COVER = "cover",
   LOCATION = "location",
   FOOD = "food",
   ACTIVITY = "activity",

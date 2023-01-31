@@ -121,7 +121,8 @@ export class CampService {
         !camp.googleMapURL ||
         !camp.address ||
         !camp.name ||
-        !camp.about
+        !camp.about ||
+        camp.images.filter((img) => img.type == ImageType.COVER).length == 0
       ) {
         return new BadRequestException("Incomplete camp");
       }
