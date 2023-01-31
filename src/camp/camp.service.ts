@@ -2,9 +2,9 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { Camp, Image, ImageType } from "./schema";
 import { CampRepository } from "./camp.repository";
 import { CampStatus } from "../utils/camp";
+import { dateShouldBeInFuture, User } from "../user/schema";
 import { UpdateSettingsDto } from "./dto/update-settings.dto";
 import { UploadedFile } from "express-fileupload";
-import { User } from "../user/schema";
 import { v2 } from "cloudinary";
 
 import {
@@ -66,7 +66,20 @@ export class CampService {
   }
 
   async updateTiming(camp: Camp, dto: UpdateTimingDto) {
-    var updatedCamp = await this.repository.update({ _id: camp._id }, dto);
+    var update = {
+      startDate: new Date(dto.startDate),
+      endDate: new Date(dto.endDate),
+    };
+
+    if (!dateShouldBeInFuture(update.startDate)) {
+      return new Error("Start date should be in the future");
+    } else if (!dateShouldBeInFuture(update.endDate)) {
+      return new Error("End date should be in the future");
+    } else if (update.startDate > update.endDate) {
+      return new Error("Start date should be before end date");
+    }
+
+    var updatedCamp = await this.repository.update({ _id: camp._id }, update);
     return updatedCamp;
   }
 
