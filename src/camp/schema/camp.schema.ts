@@ -1,15 +1,16 @@
-import { isURL } from "class-validator";
+import { Accessibility, Amenity, CampStatus } from "../../utils/camp";
+import { dateShouldBeInFuture, User } from "../../user/schema";
 import { Document, Types } from "mongoose";
 import { generate } from "randomstring";
-
+import { Image, imageSchema } from "./image.schema";
+import { isURL } from "class-validator";
+import { Location, locationSchema } from "./location.schema";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
-import { dateShouldBeInFuture, User } from "../../user/schema";
-import { Accessibility, Amenity, CampStatus } from "../../utils/camp";
-// eslint-disable-next-line prettier/prettier
-import { CancellationPolicy, cancellationPolicySchema } from "./cancellation-policy.schema";
-import { Image, imageSchema } from "./image.schema";
-import { Location, locationSchema } from "./location.schema";
+import {
+  CancellationPolicy,
+  cancellationPolicySchema,
+} from "./cancellation-policy.schema";
 
 @Schema({ timestamps: true })
 export class Camp extends Document {

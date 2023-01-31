@@ -1,8 +1,6 @@
-import { NextFunction, Request, Response } from "express";
-
-import { Injectable, NestMiddleware, NotFoundException } from "@nestjs/common";
-
 import { CampRepository } from "../camp.repository";
+import { Injectable, NestMiddleware, NotFoundException } from "@nestjs/common";
+import { NextFunction, Request, Response } from "express";
 
 @Injectable()
 export class ValidateCampMiddleware implements NestMiddleware {

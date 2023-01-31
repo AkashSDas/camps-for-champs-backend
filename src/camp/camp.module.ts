@@ -1,12 +1,10 @@
-// eslint-disable-next-line prettier/prettier
-import { MiddlewareConsumer, Module, RequestMethod } from "@nestjs/common";
-import { MongooseModule } from "@nestjs/mongoose";
-
+import { Camp, campSchema } from "./schema";
 import { CampController } from "./camp.controller";
 import { CampRepository } from "./camp.repository";
 import { CampService } from "./camp.service";
+import { MiddlewareConsumer, Module, RequestMethod } from "@nestjs/common";
+import { MongooseModule } from "@nestjs/mongoose";
 import { ValidateCampMiddleware } from "./middleware";
-import { Camp, campSchema } from "./schema";
 
 @Module({
   imports: [
