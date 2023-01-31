@@ -41,7 +41,7 @@ import {
 // runs before on the route (:campId, but also on public), before the ordering
 // precedence could take place. So having different route avoid to hit the middleware
 // & then according to the ctrl ordering we hit the public route
-@Controller(["/v2/camp", "/v2/public-camps"])
+@Controller(["/v2/camp", "/v2/public-camp"])
 export class CampController {
   constructor(private service: CampService) {}
 
@@ -68,8 +68,9 @@ export class CampController {
   }
 
   @Get("public/:campId")
-  async getPublicCamp(@Res({ passthrough: true }) res: Response) {
-    var camp = res.locals.camp as Camp;
+  async getPublicCamp(@Req() req: Request) {
+    var camp = await this.service.getCamp(req.params.campId);
+    if (!camp) throw new NotFoundException("Camp not found");
 
     if (camp.status == CampStatus.DRAFT) {
       throw new UnauthorizedException("Camp isn't public");

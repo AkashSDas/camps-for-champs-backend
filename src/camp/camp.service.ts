@@ -51,6 +51,11 @@ export class CampService {
     return camps;
   }
 
+  async getCamp(campId: string) {
+    var camp = await this.repository.get({ campId });
+    return camp;
+  }
+
   // =====================================
   // Update Camp Settings Services
   // =====================================
