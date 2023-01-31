@@ -1,6 +1,5 @@
 import { Request } from "express";
 
-// eslint-disable-next-line prettier/prettier
 import { BadRequestException, Body, Controller, Get, Put, Req, UseGuards } from "@nestjs/common";
 
 import { AccessTokenGuard } from "../auth/guard";

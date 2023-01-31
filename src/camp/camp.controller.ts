@@ -7,7 +7,7 @@ import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatu
 
 import { AccessTokenGuard } from "../auth/guard";
 import { UseRole } from "../user/decorator";
-import { RoleGuard } from "../user/guard/role.guard";
+import { RoleGuard } from "../user/guard";
 import { User } from "../user/schema";
 import { UserRole } from "../utils/user";
 import { CampService } from "./camp.service";
