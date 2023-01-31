@@ -202,6 +202,14 @@ export class CampService {
   }
 
   async removeImage(camp: Camp, image: RemoveImageDto) {
+    var img = camp.images.find((img) => img.id == image.id);
+    if (
+      camp.status == CampStatus.ACTIVE &&
+      (img.type == ImageType.COVER || img.type == ImageType.LOCATION)
+    ) {
+      return new Error("Cannot remove image you can only replace it");
+    }
+
     if (!image.id) {
       // Remove image using the URL
       camp.images = camp.images.filter((img) => img.URL != image.URL);
@@ -213,7 +221,7 @@ export class CampService {
       Promise.all([
         await camp.save(),
         await v2.uploader.destroy(
-          `${process.env.CLOUDINARY_DIR_CAMP}/${image.id}`,
+          `${process.env.CLOUDINARY_DIR_CAMP}/${camp.campId}/${image.id}`,
         ),
       ]);
     }

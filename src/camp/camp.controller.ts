@@ -214,11 +214,11 @@ export class CampController {
   @UseGuards(RoleGuard)
   @UseGuards(AccessTokenGuard)
   async removeImage(
-    @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
     @Body() dto: RemoveImageDto,
   ) {
     var result = await this.service.removeImage(res.locals.camp as Camp, dto);
+    if (result instanceof Error) throw new BadRequestException(result.message);
     return { camp: result };
   }
 }
