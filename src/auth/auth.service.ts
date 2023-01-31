@@ -1,12 +1,15 @@
-import { Types } from "mongoose";
-
+import { CreateOauthSession } from "./dto/create-oauth-session.dto";
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-
+import { Types } from "mongoose";
 import { User } from "../user/schema/index";
 import { UserRepository } from "../user/user.repository";
-import { CompleteOAuthSignupDto, EmailAndPasswordLoginDto, EmailAndPasswordSignupDto } from "./dto";
-import { CreateOauthSession } from "./dto/create-oauth-session.dto";
+
+import {
+  CompleteOAuthSignupDto,
+  EmailAndPasswordLoginDto,
+  EmailAndPasswordSignupDto,
+} from "./dto";
 
 type EmailAndPasswordLogin = {
   user?: User & { _id: Types.ObjectId };
@@ -59,7 +62,10 @@ export class AuthService {
   }
 
   async completeOauthSignup(user: User, dto: CompleteOAuthSignupDto) {
-    var updatedUser = await this.repository.update({ _id: user._id }, { email: dto.email });
+    var updatedUser = await this.repository.update(
+      { _id: user._id },
+      { email: dto.email },
+    );
     if (!updatedUser) return new Error("User not found");
 
     var accessToken = user.getAccessToken(this.jwt);
@@ -91,7 +97,10 @@ export class AuthService {
     var refreshToken = user.getRefreshToken(this.jwt);
 
     // Remove session token
-    await this.repository.update({ _id: user._id }, { sessionTokenDigest: undefined });
+    await this.repository.update(
+      { _id: user._id },
+      { sessionTokenDigest: undefined },
+    );
 
     user.sessionTokenDigest = undefined;
     return { user, accessToken, refreshToken };
@@ -101,8 +110,13 @@ export class AuthService {
   // Login
   // =====================================
 
-  async emailAndPasswordLogin(dto: EmailAndPasswordLoginDto): Promise<EmailAndPasswordLogin> {
-    var user = await this.repository.getWithSelect({ email: dto.email }, "+passwordDigest");
+  async emailAndPasswordLogin(
+    dto: EmailAndPasswordLoginDto,
+  ): Promise<EmailAndPasswordLogin> {
+    var user = await this.repository.getWithSelect(
+      { email: dto.email },
+      "+passwordDigest",
+    );
 
     if (!user) return { error: Error("User not found") };
 

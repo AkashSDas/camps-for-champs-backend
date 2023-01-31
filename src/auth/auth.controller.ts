@@ -1,17 +1,37 @@
-import { hash } from "argon2";
-import { Request, Response } from "express";
-
-// eslint-disable-next-line prettier/prettier
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, InternalServerErrorException, NotFoundException, Post, Put, Req, Res, UnauthorizedException, UseFilters, UseGuards } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { AuthGuard } from "@nestjs/passport";
-
-import { User } from "../user/schema";
-import { AuthService } from "./auth.service";
-import { CompleteOAuthSignupDto, EmailAndPasswordLoginDto, EmailAndPasswordSignupDto } from "./dto";
-import { CreateOauthSession } from "./dto/create-oauth-session.dto";
-import { InvalidOAuthLoginFilter } from "./filter";
 import { AccessTokenGuard, RefreshTokenGuard } from "./guard";
+import { AuthGuard } from "@nestjs/passport";
+import { AuthService } from "./auth.service";
+import { ConfigService } from "@nestjs/config";
+import { CreateOauthSession } from "./dto/create-oauth-session.dto";
+import { hash } from "argon2";
+import { InvalidOAuthLoginFilter } from "./filter";
+import { Request, Response } from "express";
+import { User } from "../user/schema";
+
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  InternalServerErrorException,
+  NotFoundException,
+  Post,
+  Put,
+  Req,
+  Res,
+  UnauthorizedException,
+  UseFilters,
+  UseGuards,
+} from "@nestjs/common";
+
+import {
+  CompleteOAuthSignupDto,
+  EmailAndPasswordLoginDto,
+  EmailAndPasswordSignupDto,
+} from "./dto";
 
 @Controller("/v2/auth")
 export class AuthController {
@@ -23,7 +43,10 @@ export class AuthController {
 
   @Post("email-signup")
   @HttpCode(HttpStatus.CREATED)
-  async emailAndPasswordSignup(@Res({ passthrough: true }) res: Response, @Body() dto: EmailAndPasswordSignupDto) {
+  async emailAndPasswordSignup(
+    @Res({ passthrough: true }) res: Response,
+    @Body() dto: EmailAndPasswordSignupDto,
+  ) {
     var result = await this.service.emailAndPasswordSignup(dto);
 
     if (result.error instanceof Error) {
@@ -69,7 +92,10 @@ export class AuthController {
 
   @Delete("cancel-oauth-signup")
   @UseGuards(AccessTokenGuard)
-  async cancelOauthSignup(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+  async cancelOauthSignup(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     var result = await this.service.cancelOauthSignup(req.user as User);
     if (result instanceof Error) throw new NotFoundException(result.message);
 
@@ -93,7 +119,10 @@ export class AuthController {
 
   @Get("google-signup/redirect")
   @UseGuards(AuthGuard("google-signup"))
-  async googleSignupRedirect(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+  async googleSignupRedirect(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     var refreshToken = this.service.oauthSignip((req as any).user as User);
 
     if (refreshToken) {
@@ -119,7 +148,10 @@ export class AuthController {
       ((req as any).user as User).sessionTokenDigest = token;
       await ((req as any).user as User).save();
 
-      return res.redirect(this.config.get("OAUTH_SIGNUP_SUCCESS_REDIRECT_URL") + `?token=${encodeURIComponent(token)}`);
+      return res.redirect(
+        this.config.get("OAUTH_SIGNUP_SUCCESS_REDIRECT_URL") +
+          `?token=${encodeURIComponent(token)}`,
+      );
     }
 
     return res.redirect(this.config.get("OAUTH_SIGNUP_FAILURE_REDIRECT_URL"));
@@ -127,7 +159,10 @@ export class AuthController {
 
   @Post("oauth-session")
   @HttpCode(HttpStatus.OK)
-  async createOauthSession(@Body() dto: CreateOauthSession, @Res({ passthrough: true }) res: Response) {
+  async createOauthSession(
+    @Body() dto: CreateOauthSession,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     var result = await this.service.createOauthSession(dto);
     if (result instanceof Error) throw new UnauthorizedException();
 
@@ -148,7 +183,10 @@ export class AuthController {
 
   @Post("email-login")
   @HttpCode(HttpStatus.OK)
-  async emailAndPasswordLogin(@Res({ passthrough: true }) res: Response, @Body() dto: EmailAndPasswordLoginDto) {
+  async emailAndPasswordLogin(
+    @Res({ passthrough: true }) res: Response,
+    @Body() dto: EmailAndPasswordLoginDto,
+  ) {
     var result = await this.service.emailAndPasswordLogin(dto);
 
     if (result.error instanceof Error) {
@@ -201,7 +239,10 @@ export class AuthController {
   @Get("google-login/redirect")
   @UseGuards(AuthGuard("google-login"))
   @UseFilters(InvalidOAuthLoginFilter)
-  async googleLoginRedirect(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+  async googleLoginRedirect(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     var refreshToken = this.service.oauthLogin((req as any).user as User);
 
     if (refreshToken) {
@@ -209,10 +250,16 @@ export class AuthController {
       ((req as any).user as User).sessionTokenDigest = token;
       await ((req as any).user as User).save();
 
-      return res.redirect(this.config.get("OAUTH_SIGNUP_SUCCESS_REDIRECT_URL") + `?token=${encodeURIComponent(token)}`);
+      return res.redirect(
+        this.config.get("OAUTH_SIGNUP_SUCCESS_REDIRECT_URL") +
+          `?token=${encodeURIComponent(token)}`,
+      );
     }
 
-    return res.redirect(this.config.get("OAUTH_LOGIN_FAILURE_REDIRECT_URL") + "?info=invalid-signup");
+    return res.redirect(
+      this.config.get("OAUTH_LOGIN_FAILURE_REDIRECT_URL") +
+        "?info=invalid-signup",
+    );
   }
 
   // =====================================

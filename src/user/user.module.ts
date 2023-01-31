@@ -1,8 +1,6 @@
 import { hash } from "argon2";
-
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-
 import { User, userSchema } from "./schema";
 import { UserController } from "./user.controller";
 import { UserRepository } from "./user.repository";

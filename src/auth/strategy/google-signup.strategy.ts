@@ -1,13 +1,14 @@
-import { Profile, Strategy, VerifyCallback } from "passport-google-oauth20";
-
+import { AvailableOAuthProvider } from "../../user/schema/oauth-provider.schema";
 import { Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
-
-import { AvailableOAuthProvider } from "../../user/schema/oauth-provider.schema";
+import { Profile, Strategy, VerifyCallback } from "passport-google-oauth20";
 import { UserRepository } from "../../user/user.repository";
 
 @Injectable()
-export class GoogleSignupStrategy extends PassportStrategy(Strategy, "google-signup") {
+export class GoogleSignupStrategy extends PassportStrategy(
+  Strategy,
+  "google-signup",
+) {
   constructor(private repository: UserRepository) {
     super({
       clientID: process.env.GOOGLE_OAUTH_CLIENT_ID,
@@ -18,7 +19,13 @@ export class GoogleSignupStrategy extends PassportStrategy(Strategy, "google-sig
     });
   }
 
-  async validate(_req: Request, _accessToken: string, _refreshToken: string, profile: Profile, done: VerifyCallback) {
+  async validate(
+    _req: Request,
+    _accessToken: string,
+    _refreshToken: string,
+    profile: Profile,
+    done: VerifyCallback,
+  ) {
     var { email, sub, email_verified } = profile._json;
     var user = await this.repository.get({ email });
 
@@ -27,7 +34,12 @@ export class GoogleSignupStrategy extends PassportStrategy(Strategy, "google-sig
 
     // Signup the user
     try {
-      let verified = typeof email_verified == "boolean" ? email_verified : email_verified == "true" ? true : false;
+      let verified =
+        typeof email_verified == "boolean"
+          ? email_verified
+          : email_verified == "true"
+          ? true
+          : false;
 
       let newUser = await this.repository.create({
         email: email,

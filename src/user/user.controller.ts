@@ -1,12 +1,19 @@
-import { Request } from "express";
-
-import { BadRequestException, Body, Controller, Get, Put, Req, UseGuards } from "@nestjs/common";
-
 import { AccessTokenGuard } from "../auth/guard";
-import { capitalize } from "../utils";
 import { AddRoleDto } from "./dto";
+import { capitalize } from "../utils";
+import { Request } from "express";
 import { User } from "./schema";
 import { UserService } from "./user.service";
+
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Put,
+  Req,
+  UseGuards,
+} from "@nestjs/common";
 
 @Controller("/v2/user")
 export class UserController {

@@ -1,9 +1,7 @@
-import { Request } from "express";
 import { ExtractJwt, Strategy } from "passport-jwt";
-
 import { Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
-
+import { Request } from "express";
 import { UserRepository } from "../../user/user.repository";
 
 export type AccessTokenPayload = { email: string };

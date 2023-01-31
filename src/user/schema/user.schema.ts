@@ -1,15 +1,13 @@
-import { verify } from "argon2";
-import { isEmail } from "class-validator";
+import { AccessTokenPayload, RefreshTokenPayload } from "../../auth/strategy";
 import { createHash, randomBytes } from "crypto";
 import { Document } from "mongoose";
 import { generate } from "randomstring";
-
+import { isEmail } from "class-validator";
 import { JwtService } from "@nestjs/jwt";
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-
-import { AccessTokenPayload, RefreshTokenPayload } from "../../auth/strategy";
-import { UserRole } from "../../utils/user";
 import { OAuthProvider, oauthProvidersSchema } from "./oauth-provider.schema";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { UserRole } from "../../utils/user";
+import { verify } from "argon2";
 
 @Schema({ timestamps: true })
 export class User extends Document {
@@ -135,7 +133,9 @@ userSchema.methods.generatePasswordResetToken = function createToken(): string {
   return token;
 };
 
-userSchema.methods.verifyPassword = async function (pwd: string): Promise<boolean> {
+userSchema.methods.verifyPassword = async function (
+  pwd: string,
+): Promise<boolean> {
   return await verify(this.passwordDigest, pwd);
 };
 

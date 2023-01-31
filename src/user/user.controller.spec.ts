@@ -1,8 +1,6 @@
-import { MongoMemoryServer } from "mongodb-memory-server";
 import { Model } from "mongoose";
-
+import { MongoMemoryServer } from "mongodb-memory-server";
 import { Test } from "@nestjs/testing";
-
 import { UserController } from "./user.controller";
 import { UserService } from "./user.service";
 

@@ -1,9 +1,7 @@
-import { UserRole } from "src/utils/user";
-
 import { Injectable } from "@nestjs/common";
-
 import { User } from "./schema";
 import { UserRepository } from "./user.repository";
+import { UserRole } from "src/utils/user";
 
 @Injectable()
 export class UserService {
