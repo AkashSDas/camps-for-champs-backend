@@ -1,19 +1,41 @@
-import { Request, Response } from "express";
-import { UploadedFile } from "express-fileupload";
-import { CampStatus } from "src/utils/camp";
-
-// eslint-disable-next-line prettier/prettier
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, InternalServerErrorException, NotFoundException, Post, Put, Req, Res, UnauthorizedException, UseGuards } from "@nestjs/common";
-
 import { AccessTokenGuard } from "../auth/guard";
-import { UseRole } from "../user/decorator";
-import { RoleGuard } from "../user/guard";
-import { User } from "../user/schema";
-import { UserRole } from "../utils/user";
-import { CampService } from "./camp.service";
-// eslint-disable-next-line prettier/prettier
-import { AddImageDto, RemoveImageDto, UpdateCancellationPolicyDto, UpdateLocationDto, UpdateSettingsDto, UpdateStatusDto, UpdateTimingDto } from "./dto";
 import { Camp } from "./schema";
+import { CampService } from "./camp.service";
+import { CampStatus } from "src/utils/camp";
+import { Request, Response } from "express";
+import { RoleGuard } from "../user/guard";
+import { UploadedFile } from "express-fileupload";
+import { User } from "../user/schema";
+import { UseRole } from "../user/decorator";
+import { UserRole } from "../utils/user";
+
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  InternalServerErrorException,
+  NotFoundException,
+  Post,
+  Put,
+  Req,
+  Res,
+  UnauthorizedException,
+  UseGuards,
+} from "@nestjs/common";
+
+import {
+  AddImageDto,
+  RemoveImageDto,
+  UpdateCancellationPolicyDto,
+  UpdateLocationDto,
+  UpdateSettingsDto,
+  UpdateStatusDto,
+  UpdateTimingDto,
+} from "./dto";
 
 // Using an alias for the route with public, since the ValidateCampMiddleware
 // runs before on the route (:campId, but also on public), before the ordering

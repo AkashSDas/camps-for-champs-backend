@@ -1,9 +1,7 @@
+import { Camp } from "./schema";
 import { FilterQuery, Model } from "mongoose";
-
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-
-import { Camp } from "./schema";
 
 @Injectable()
 export class CampRepository {
@@ -17,8 +15,8 @@ export class CampRepository {
     return this.model.exists(filter);
   }
 
-  create(data: Partial<Camp>) {
-    return this.model.create(data);
+  async create(data: Partial<Camp>) {
+    return await this.model.create(data);
   }
 
   async save(user: Camp) {

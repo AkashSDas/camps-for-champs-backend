@@ -1,16 +1,25 @@
-import { v2 } from "cloudinary";
-import { UploadedFile } from "express-fileupload";
-
-// eslint-disable-next-line prettier/prettier
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-
-import { User } from "../user/schema";
-import { CampStatus } from "../utils/camp";
-import { CampRepository } from "./camp.repository";
-// eslint-disable-next-line prettier/prettier
-import { AddImageDto, RemoveImageDto, UpdateCancellationPolicyDto, UpdateLocationDto, UpdateStatusDto, UpdateTimingDto } from "./dto";
-import { UpdateSettingsDto } from "./dto/update-settings.dto";
 import { Camp, Image, ImageType } from "./schema";
+import { CampRepository } from "./camp.repository";
+import { CampStatus } from "../utils/camp";
+import { UpdateSettingsDto } from "./dto/update-settings.dto";
+import { UploadedFile } from "express-fileupload";
+import { User } from "../user/schema";
+import { v2 } from "cloudinary";
+
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
+
+import {
+  AddImageDto,
+  RemoveImageDto,
+  UpdateCancellationPolicyDto,
+  UpdateLocationDto,
+  UpdateStatusDto,
+  UpdateTimingDto,
+} from "./dto";
 
 @Injectable()
 export class CampService {
