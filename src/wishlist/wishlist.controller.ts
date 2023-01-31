@@ -21,7 +21,7 @@ import {
 export class WishlistController {
   constructor(private service: WishlistService) {}
 
-  @Get("user/:userId")
+  @Get("user")
   @UseGuards(AccessTokenGuard)
   async getWishlistForUser(@Req() req: Request) {
     var result = await this.service.getWishlistForUser((req.user as User)._id);
