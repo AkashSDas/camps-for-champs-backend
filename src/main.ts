@@ -1,12 +1,10 @@
 import * as cookieParser from "cookie-parser";
 import * as fileUpload from "express-fileupload";
-import * as session from "express-session";
 import * as morgan from "morgan";
-
-import { ValidationPipe } from "@nestjs/common";
-import { NestFactory } from "@nestjs/core";
-
+import * as session from "express-session";
 import { AppModule } from "./app.module";
+import { NestFactory } from "@nestjs/core";
+import { ValidationPipe } from "@nestjs/common";
 
 async function bootstrap() {
   var app = await NestFactory.create(AppModule);
