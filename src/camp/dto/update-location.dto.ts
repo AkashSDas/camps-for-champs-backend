@@ -4,6 +4,7 @@ import {
   IsString,
   IsUrl,
   Length,
+  Matches,
 } from "class-validator";
 
 export class UpdateLocationDto {
@@ -18,5 +19,8 @@ export class UpdateLocationDto {
 
   @IsUrl()
   @IsOptional()
+  @Matches(/https:\/\/goo.gl\/maps\/.+/, {
+    message: "Invalid Google Map URL",
+  })
   googleMapURL?: string;
 }
