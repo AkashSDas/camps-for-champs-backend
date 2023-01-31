@@ -63,7 +63,6 @@ export class CampController {
   @UseGuards(AccessTokenGuard)
   async deleteCamp(@Res({ passthrough: true }) res: Response) {
     var result = await this.service.deleteCamp(res.locals.camp as any);
-    if (!result) throw new NotFoundException("Camp not found");
     if (result instanceof BadRequestException) throw result;
     return { camp: result };
   }

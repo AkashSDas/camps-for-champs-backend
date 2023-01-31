@@ -1,3 +1,4 @@
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { Camp, Image, ImageType } from "./schema";
 import { CampRepository } from "./camp.repository";
 import { CampStatus } from "../utils/camp";
@@ -5,12 +6,6 @@ import { UpdateSettingsDto } from "./dto/update-settings.dto";
 import { UploadedFile } from "express-fileupload";
 import { User } from "../user/schema";
 import { v2 } from "cloudinary";
-
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
 
 import {
   AddImageDto,
@@ -31,8 +26,15 @@ export class CampService {
   }
 
   async deleteCamp(camp: Camp) {
+    var imgsPromises = camp.images
+      .filter((img) => img.id != null)
+      .map((img) =>
+        v2.uploader.destroy(`${process.env.CLOUDINARY_DIR_CAMP}/${img.id}`),
+      );
+
+    await Promise.all(imgsPromises); // Wait for all the images to be deleted
+
     var result = await this.repository.delete({ _id: camp._id });
-    if (!result) return new NotFoundException("Camp not found");
     return result;
   }
 
