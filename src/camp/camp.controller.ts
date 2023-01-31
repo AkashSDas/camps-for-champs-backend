@@ -193,33 +193,20 @@ export class CampController {
     @Res({ passthrough: true }) res: Response,
     @Body() dto: AddImageDto,
   ) {
-    if (!req.files) {
-      let result = await this.service.addImage(res.locals.camp as Camp, dto);
+    let result = await this.service.addImage(
+      res.locals.camp as Camp,
+      dto,
+      req.files?.campImage as UploadedFile,
+    );
 
-      if (result instanceof Error) {
-        throw new BadRequestException(result.message);
+    if (result instanceof Error) {
+      if (result.message.includes("Failed")) {
+        throw new InternalServerErrorException(result.message);
       }
-
-      return result;
+      throw new BadRequestException(result.message);
     }
 
-    var img = req.files.campImage as UploadedFile;
-    if (req.files) {
-      let result = await this.service.addImage(
-        res.locals.camp as Camp,
-        dto,
-        img,
-      );
-
-      if (result instanceof Error) {
-        if (result.message.includes("Failed")) {
-          throw new InternalServerErrorException(result.message);
-        }
-        throw new BadRequestException(result.message);
-      }
-
-      return result;
-    }
+    return result;
   }
 
   @Delete(":campId/image")

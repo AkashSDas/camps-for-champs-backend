@@ -151,49 +151,54 @@ export class CampService {
   }
 
   async addImage(camp: Camp, dto: AddImageDto, file?: UploadedFile) {
-    // Remove old location img if it exists
-    if (dto.type == ImageType.LOCATION) {
-      let locationImage: Image;
+    await (async function removeOldImage() {
+      if (dto.type == ImageType.LOCATION || dto.type == ImageType.COVER) {
+        let deleteImage: Image;
 
-      camp.images = camp.images.filter((img) => {
-        if (img.type != ImageType.LOCATION) {
-          locationImage = img;
-          return false;
+        // Remove from camp.images list
+        camp.images = camp.images.filter((img) => {
+          if (img.type == ImageType.LOCATION || img.type == ImageType.COVER) {
+            deleteImage = img;
+            return false;
+          }
+          return true;
+        });
+
+        if (deleteImage && deleteImage.id) {
+          await v2.uploader.destroy(
+            `${process.env.CLOUDINARY_DIR_CAMP}/${camp.campId}/${deleteImage.id}`,
+          );
         }
-        return false;
-      });
-
-      if (locationImage && locationImage.id) {
-        await v2.uploader.destroy(
-          `${process.env.CLOUDINARY_DIR_CAMP}/${locationImage.id}`,
-        );
       }
-    }
+    })();
 
     if (!file) {
-      // Check for the URL for the image
+      // Add image URL
       if (!dto.URL) return new Error("Image URL not provided");
       let img: Image = { type: dto.type, URL: dto.URL };
       if (dto.description) img.description = dto.description;
       camp.images.push(img);
       await camp.save();
-
       return { camp, image: camp.images[camp.images.length - 1] };
-    } else {
-      let result = await v2.uploader.upload(file.tempFilePath, {
+    }
+
+    // Upload & append the image
+    return await (async function uploadImage() {
+      var result = await v2.uploader.upload(file.tempFilePath, {
         folder: `${process.env.CLOUDINARY_DIR_CAMP}/${camp.campId}`,
       });
       if (!result) return new Error("Failed to upload image");
 
-      let img: Image = {
+      var img: Image = {
         type: dto.type,
         URL: result.secure_url,
         id: result.public_id.split("/").pop(),
       };
       if (dto.description) img.description = dto.description;
       camp.images.push(img);
+      await camp.save();
       return { camp, image: camp.images[camp.images.length - 1] };
-    }
+    })();
   }
 
   async removeImage(camp: Camp, image: RemoveImageDto) {
