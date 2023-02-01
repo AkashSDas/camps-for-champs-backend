@@ -1,4 +1,5 @@
 import { AuthModule } from "./auth/auth.module";
+import { BookingModule } from "./booking/booking.module";
 import { CampModule } from "./camp/camp.module";
 import { CloudinaryProvider } from "./cloudinary.provider";
 import { ConfigModule } from "@nestjs/config";
@@ -17,6 +18,7 @@ import { WishlistModule } from "./wishlist/wishlist.module";
     AuthModule,
     CampModule,
     WishlistModule,
+    BookingModule,
   ],
   controllers: [],
   providers: [CloudinaryProvider],
