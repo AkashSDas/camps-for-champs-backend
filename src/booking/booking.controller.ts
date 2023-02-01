@@ -19,7 +19,7 @@ import {
 export class BookingController {
   constructor(private service: BookingService) {}
 
-  @Post("book-camp/:campId")
+  @Post("camp/:campId")
   @UseGuards(AccessTokenGuard)
   async bookCamp(
     @Body() dto: BookCampDto,
