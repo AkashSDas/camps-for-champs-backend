@@ -38,4 +38,8 @@ export class UserRepository {
   delete(filter: FilterQuery<User>) {
     return this.model.deleteOne(filter);
   }
+
+  findOne(filter: FilterQuery<User>) {
+    return this.model.findOne(filter);
+  }
 }
