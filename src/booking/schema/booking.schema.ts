@@ -59,7 +59,7 @@ export class Booking extends Document {
   amountCharged: number;
 
   @Prop({ type: Number, min: 0, required: true })
-  campUnitBooked: number;
+  campUnitsBooked: number;
 }
 
 export var bookingSchema = SchemaFactory.createForClass(Booking);
