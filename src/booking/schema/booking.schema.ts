@@ -1,8 +1,8 @@
 import { Camp } from "src/camp/schema";
 import { dateShouldBeInFuture, User } from "src/user/schema";
+import { Document, SchemaTypes, Types } from "mongoose";
 import { Guest, guestSchema } from "./member.schema";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { SchemaTypes, Types } from "mongoose";
 
 export enum BookingStatus {
   PENDING = "pending",
