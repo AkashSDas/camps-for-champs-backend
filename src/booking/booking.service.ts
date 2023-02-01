@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { BookCampDto } from "./dto";
 import { BookingRepository } from "./booking.repository";
+import { Camp } from "src/camp/schema";
 import { CampRepository } from "../camp/camp.repository";
-import { CampStatus } from "src/utils/camp";
 import { Guest } from "./schema";
 import { User } from "../user/schema";
 
@@ -13,64 +13,23 @@ export class BookingService {
     private campRepository: CampRepository,
   ) {}
 
-  async bookCamp(user: User, dto: BookCampDto) {
+  async bookCamp(user: User, camp: Camp, dto: BookCampDto) {
     // Check if the camp is already booked by the user
-    {
-      let exists = await this.repository.find({
-        user: user._id,
-        camp: dto.campId,
-      });
-
-      if (exists) {
-        return new BadRequestException("You've already booked this camp");
-      }
-    }
-
-    // Check if the camp exist & is available
-    var camp = await this.campRepository.findOne({
-      campId: dto.campId,
-      status: CampStatus.ACTIVE,
+    var exists = await this.repository.find({
+      user: user._id,
+      camp: dto.campId,
     });
 
-    if (!camp) {
-      return new BadRequestException(
-        "The camp doesn't exist or is not available",
-      );
-    }
-
-    if (camp.campLimit < dto.campUnitsBooked) {
-      return new BadRequestException("The camp is fully booked");
-    }
-
-    // Check if the check in & check out dates are valid
-    var dates: any = {};
-    dates["checkInDate"] = new Date(dto.checkIn);
-    dates["checkOutDate"] = new Date(dto.checkOut);
-
-    if (dates.checkInDate > dates.checkOutDate) {
-      return new BadRequestException("Invalid check in & check out dates");
-    } else if (dates.checkInDate < new Date(Date.now())) {
-      return new BadRequestException("Invalid check in date");
-    } else if (dates.checkOutDate < new Date(Date.now())) {
-      return new BadRequestException("Invalid check out date");
-    } else if (
-      dates.checkInDate < camp.startDate ||
-      dates.checkInDate > camp.endDate
-    ) {
-      return new BadRequestException("Invalid check in date");
-    } else if (
-      dates.checkOutDate < camp.startDate ||
-      dates.checkOutDate > camp.endDate
-    ) {
-      return new BadRequestException("Invalid check out date");
+    if (exists) {
+      return new BadRequestException("You've already booked this camp");
     }
 
     // Create a booking
     var booking = await this.repository.create({
       user: user._id,
       camp: camp._id,
-      checkIn: dates.checkInDate,
-      checkOut: dates.checkOutDate,
+      checkIn: new Date(dto.checkIn),
+      checkOut: new Date(dto.checkOut),
       guests: dto.guests as Guest[],
       amountCharged: Math.min(Math.max(dto.amountToCharge, 19), 99999999),
       campUnitsBooked: dto.campUnitsBooked,

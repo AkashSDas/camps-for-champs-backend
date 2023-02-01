@@ -3,11 +3,19 @@ import { BookingRepository } from "./booking.repository";
 import { BookingService } from "./booking.service";
 import { CampModule } from "../camp/camp.module";
 import { CampRepository } from "../camp/camp.repository";
-import { Module } from "@nestjs/common";
+import { MiddlewareConsumer, Module, RequestMethod } from "@nestjs/common";
+import { ValidateCampMiddleware } from "src/camp/middleware";
 
 @Module({
   imports: [CampModule],
   providers: [BookingRepository, BookingService, CampRepository],
   controllers: [BookingController],
 })
-export class BookingModule {}
+export class BookingModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(ValidateCampMiddleware).forRoutes({
+      path: "v2/booking/**/:campId*",
+      method: RequestMethod.ALL,
+    });
+  }
+}
