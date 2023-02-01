@@ -88,6 +88,9 @@ export class Camp extends Document {
     },
   })
   campId: string;
+
+  @Prop({ type: Number, default: 0, min: 0, required: true })
+  bookings: number;
 }
 
 export var campSchema = SchemaFactory.createForClass(Camp);

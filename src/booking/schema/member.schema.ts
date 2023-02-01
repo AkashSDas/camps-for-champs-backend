@@ -12,7 +12,7 @@ export class Guest {
   type: GuestType;
 
   @Prop({ type: Number, required: true, min: 1 })
-  count: GuestType;
+  count: number;
 }
 
 export var guestSchema = SchemaFactory.createForClass(Guest);

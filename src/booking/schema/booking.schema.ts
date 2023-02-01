@@ -1,6 +1,7 @@
 import { Camp } from "src/camp/schema";
 import { dateShouldBeInFuture, User } from "src/user/schema";
 import { Document, SchemaTypes, Types } from "mongoose";
+import { generate } from "randomstring";
 import { Guest, guestSchema } from "./member.schema";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
@@ -60,6 +61,17 @@ export class Booking extends Document {
 
   @Prop({ type: Number, min: 0, required: true })
   campUnitsBooked: number;
+
+  @Prop({
+    type: String,
+    required: true,
+    default: function createId() {
+      var id = generate({ length: 16 });
+      id = "book_" + id;
+      return id;
+    },
+  })
+  bookingId: string;
 }
 
 export var bookingSchema = SchemaFactory.createForClass(Booking);
