@@ -17,7 +17,7 @@ export class BookingService {
     // Check if the camp is already booked by the user
     var exists = await this.repository.find({
       user: user._id,
-      camp: dto.campId,
+      camp: camp._id,
     });
 
     if (exists) {
@@ -36,14 +36,9 @@ export class BookingService {
     });
 
     // Update camp bookings & available units
-    var updatedCamp = await this.campRepository.findAndSet(
-      { campId: dto.campId },
-      {
-        bookings: camp.bookings + 1,
-        campLimit: camp.campLimit - dto.campUnitsBooked,
-      },
-    );
-
-    return { booking, updatedCamp };
+    camp.bookings = camp.bookings + 1;
+    camp.campLimit = camp.campLimit - dto.campUnitsBooked;
+    await camp.save();
+    return { booking, camp };
   }
 }

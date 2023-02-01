@@ -5,15 +5,11 @@ import {
   IsArray,
   IsDateString,
   IsNumber,
-  IsString,
   Min,
   ValidateNested,
 } from "class-validator";
 
 export class BookCampDto {
-  @IsString()
-  campId: string;
-
   @IsDateString()
   checkIn: string;
 
