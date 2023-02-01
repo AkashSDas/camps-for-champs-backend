@@ -101,4 +101,18 @@ export class PaymentService {
       return null;
     }
   }
+
+  async getInvoices(userId: Types.ObjectId) {
+    try {
+      let customer = await this.getOrCreateCustomer(userId);
+      let invoices = await this.stripe.invoices.list({
+        customer: customer.id,
+        limit: 10,
+      });
+
+      return invoices;
+    } catch (error) {
+      return null;
+    }
+  }
 }

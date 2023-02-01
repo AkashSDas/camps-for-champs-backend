@@ -62,4 +62,16 @@ export class PaymentController {
 
     return { paymentIntent };
   }
+
+  @Get("/invoices")
+  @UseGuards(AccessTokenGuard)
+  async getInvoices(@Req() req: Request) {
+    var invoices = await this.service.getInvoices((req.user as User)._id);
+
+    if (!invoices) {
+      throw new InternalServerErrorException("Failed to create payment intent");
+    }
+
+    return { invoices };
+  }
 }
