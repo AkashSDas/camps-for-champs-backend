@@ -15,7 +15,7 @@ export class BookingService {
 
   async bookCamp(user: User, camp: Camp, dto: BookCampDto) {
     // Check if the camp is already booked by the user
-    var exists = await this.repository.find({
+    var exists = await this.repository.findOne({
       user: user._id,
       camp: camp._id,
     });
@@ -38,7 +38,7 @@ export class BookingService {
     // Update camp bookings & available units
     camp.bookings = camp.bookings + 1;
     camp.campLimit = camp.campLimit - dto.campUnitsBooked;
-    await camp.save();
+    await camp.save({ validateModifiedOnly: true });
     return { booking, camp };
   }
 }

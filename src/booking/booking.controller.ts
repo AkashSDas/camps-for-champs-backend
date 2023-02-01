@@ -24,7 +24,7 @@ export class BookingController {
   async bookCamp(
     @Body() dto: BookCampDto,
     @Req() req: Request,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
   ) {
     if ((req.user as User).banned) {
       throw new BadRequestException("You are banned");
@@ -43,21 +43,21 @@ export class BookingController {
     dates["checkOutDate"] = new Date(dto.checkOut);
 
     if (dates.checkInDate > dates.checkOutDate) {
-      return new BadRequestException("Invalid check in & check out dates");
+      throw new BadRequestException("Invalid check in & check out dates");
     } else if (dates.checkInDate < new Date(Date.now())) {
-      return new BadRequestException("Invalid check in date");
+      throw new BadRequestException("Invalid check in date");
     } else if (dates.checkOutDate < new Date(Date.now())) {
-      return new BadRequestException("Invalid check out date");
+      throw new BadRequestException("Invalid check out date");
     } else if (
       dates.checkInDate < camp.startDate ||
       dates.checkInDate > camp.endDate
     ) {
-      return new BadRequestException("Invalid check in date");
+      throw new BadRequestException("Invalid check in date");
     } else if (
       dates.checkOutDate < camp.startDate ||
       dates.checkOutDate > camp.endDate
     ) {
-      return new BadRequestException("Invalid check out date");
+      throw new BadRequestException("Invalid check out date");
     }
 
     var result = await this.service.bookCamp(req.user as User, camp, dto);

@@ -18,4 +18,8 @@ export class BookingRepository {
   find(filter: FilterQuery<Booking>) {
     return this.model.find(filter);
   }
+
+  findOne(filter: FilterQuery<Booking>) {
+    return this.model.findOne(filter);
+  }
 }
