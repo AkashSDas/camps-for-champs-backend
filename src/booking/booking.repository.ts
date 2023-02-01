@@ -1,7 +1,7 @@
 import { Booking } from "./schema";
+import { FilterQuery, Model } from "mongoose";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
 
 @Injectable()
 export class BookingRepository {
@@ -13,5 +13,9 @@ export class BookingRepository {
 
   async save(booking: Booking) {
     return await booking.save();
+  }
+
+  find(filter: FilterQuery<Booking>) {
+    return this.model.find(filter);
   }
 }

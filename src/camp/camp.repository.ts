@@ -38,4 +38,8 @@ export class CampRepository {
   find(filter: FilterQuery<Camp>) {
     return this.model.find(filter);
   }
+
+  findOne(filter: FilterQuery<Camp>) {
+    return this.model.findOne(filter);
+  }
 }
