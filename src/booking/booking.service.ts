@@ -4,6 +4,7 @@ import { BookingRepository } from "./booking.repository";
 import { Camp } from "src/camp/schema";
 import { CampRepository } from "../camp/camp.repository";
 import { Guest } from "./schema";
+import { Types } from "mongoose";
 import { User } from "../user/schema";
 
 @Injectable()
@@ -40,5 +41,15 @@ export class BookingService {
     camp.campLimit = camp.campLimit - dto.campUnitsBooked;
     await camp.save({ validateModifiedOnly: true });
     return { booking, camp };
+  }
+
+  async getUserBookings(userId: Types.ObjectId) {
+    var bookings = await this.repository.find({ user: userId });
+    return bookings;
+  }
+
+  async getCampBookings(campId: Types.ObjectId) {
+    var bookings = await this.repository.find({ camp: campId });
+    return bookings;
   }
 }

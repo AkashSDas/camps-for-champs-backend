@@ -4,11 +4,15 @@ import { BookingService } from "./booking.service";
 import { Camp } from "../camp/schema";
 import { CampStatus } from "src/utils/camp";
 import { Request, Response } from "express";
+import { RoleGuard } from "src/user/guard";
 import { User } from "../user/schema";
+import { UseRole } from "src/user/decorator";
+import { UserRole } from "src/utils/user";
 import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   Post,
   Req,
   Res,
@@ -63,5 +67,23 @@ export class BookingController {
     var result = await this.service.bookCamp(req.user as User, camp, dto);
     if (result instanceof Error) throw result;
     return result;
+  }
+
+  @Get("user")
+  @UseGuards(AccessTokenGuard)
+  async getUserBookings(@Req() req: Request) {
+    var bookings = await this.service.getUserBookings((req.user as User)._id);
+    return { bookings };
+  }
+
+  @Get("camp/:campId")
+  @UseRole(UserRole.ADMIN)
+  @UseGuards(RoleGuard)
+  @UseGuards(AccessTokenGuard)
+  async getCampBookings(@Res({ passthrough: true }) res: Response) {
+    var bookings = await this.service.getCampBookings(
+      (res.locals.camp as Camp)._id,
+    );
+    return { bookings };
   }
 }
