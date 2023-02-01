@@ -5,6 +5,7 @@ import { CloudinaryProvider } from "./cloudinary.provider";
 import { ConfigModule } from "@nestjs/config";
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+import { PaymentModule } from "./payment/payment.module";
 import { TestingModule } from "./testing/testing.module";
 import { UserModule } from "./user/user.module";
 import { WishlistModule } from "./wishlist/wishlist.module";
@@ -19,6 +20,7 @@ import { WishlistModule } from "./wishlist/wishlist.module";
     CampModule,
     WishlistModule,
     BookingModule,
+    PaymentModule,
   ],
   controllers: [],
   providers: [CloudinaryProvider],
