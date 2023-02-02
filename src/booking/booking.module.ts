@@ -7,6 +7,7 @@ import { CampModule } from "../camp/camp.module";
 import { CampRepository } from "../camp/camp.repository";
 import { MiddlewareConsumer, Module, RequestMethod } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+import { ValidateBookingMiddleware } from "./middleware";
 import { ValidateCampMiddleware } from "../camp/middleware";
 
 @Module({
@@ -24,6 +25,16 @@ export class BookingModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(ValidateCampMiddleware).forRoutes({
       path: "v2/booking/camp/:campId*",
+      method: RequestMethod.ALL,
+    });
+
+    consumer.apply(ValidateCampMiddleware).forRoutes({
+      path: "v2/booking/*/:bookingId/camp/:campId*",
+      method: RequestMethod.ALL,
+    });
+
+    consumer.apply(ValidateBookingMiddleware).forRoutes({
+      path: "v2/booking/*/:bookingId",
       method: RequestMethod.ALL,
     });
   }
