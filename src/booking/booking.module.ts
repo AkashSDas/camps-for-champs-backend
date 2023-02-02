@@ -34,7 +34,7 @@ export class BookingModule {
     });
 
     consumer.apply(ValidateBookingMiddleware).forRoutes({
-      path: "v2/booking/*/:bookingId",
+      path: "v2/booking/status/:bookingId",
       method: RequestMethod.ALL,
     });
   }

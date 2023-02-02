@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 export enum GuestType {
   ADULT = "adult",
   CHILD = "child",
-  INFANT = "infant",
+  PET = "pet",
 }
 
 @Schema({ _id: false })
