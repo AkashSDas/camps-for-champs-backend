@@ -1,11 +1,16 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
-import { BookCampDto } from "./dto";
+import { BookCampDto, UpdateBookingStatusDto } from "./dto";
+import { Booking, BookingStatus, Guest } from "./schema";
 import { BookingRepository } from "./booking.repository";
 import { Camp } from "src/camp/schema";
 import { CampRepository } from "../camp/camp.repository";
-import { Guest } from "./schema";
 import { Types } from "mongoose";
 import { User } from "../user/schema";
+import { UserRole } from "src/utils/user";
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from "@nestjs/common";
 
 @Injectable()
 export class BookingService {
@@ -51,5 +56,31 @@ export class BookingService {
   async getCampBookings(campId: Types.ObjectId) {
     var bookings = await this.repository.find({ camp: campId });
     return bookings;
+  }
+
+  async updateBookingStatus(
+    booking: Booking,
+    camp: Camp,
+    dto: UpdateBookingStatusDto,
+    userRoles: UserRole[],
+  ) {
+    var isAdmin = userRoles.includes(UserRole.ADMIN);
+    var isStaff = userRoles.includes(UserRole.STAFF);
+    if (isAdmin || isStaff) {
+      return new ForbiddenException("You don't have that permission");
+    }
+
+    // Update camp units limit
+    if (
+      dto.status == BookingStatus.FULFILLED ||
+      dto.status == BookingStatus.CANCELLED
+    ) {
+      camp.campLimit = camp.campLimit + booking.campUnitsBooked;
+      await camp.save({ validateModifiedOnly: true });
+    }
+
+    booking.status = dto.status;
+    await booking.save({ validateModifiedOnly: true });
+    return { booking };
   }
 }

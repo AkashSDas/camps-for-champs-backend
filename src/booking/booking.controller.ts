@@ -1,5 +1,6 @@
 import { AccessTokenGuard } from "../auth/guard";
-import { BookCampDto } from "./dto";
+import { BookCampDto, UpdateBookingStatusDto } from "./dto";
+import { Booking } from "./schema";
 import { BookingService } from "./booking.service";
 import { Camp } from "../camp/schema";
 import { CampStatus } from "src/utils/camp";
@@ -14,6 +15,7 @@ import {
   Controller,
   Get,
   Post,
+  Put,
   Req,
   Res,
   UseGuards,
@@ -85,5 +87,30 @@ export class BookingController {
       (res.locals.camp as Camp)._id,
     );
     return { bookings };
+  }
+
+  @Put("status/:bookingId/camp/campId")
+  @UseGuards(AccessTokenGuard)
+  async updateBookingStatus(
+    @Res({ passthrough: true }) res: Response,
+    @Req() req: Request,
+    @Body() dto: UpdateBookingStatusDto,
+  ) {
+    var booking = res.locals.booking as Booking;
+    var user = req.user as User;
+    var camp = res.locals.camp as Camp;
+
+    if (camp.status != CampStatus.ACTIVE) {
+      throw new BadRequestException("The camp is not available");
+    }
+
+    var result = await this.service.updateBookingStatus(
+      booking,
+      camp,
+      dto,
+      user.roles,
+    );
+    if (result instanceof Error) throw result;
+    return result;
   }
 }

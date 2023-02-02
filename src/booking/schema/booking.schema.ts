@@ -7,7 +7,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
 export enum BookingStatus {
   PENDING = "pending",
-  CONFIRMED = "confirmed",
+  FULFILLED = "fulfilled",
   CANCELLED = "cancelled",
 }
 
