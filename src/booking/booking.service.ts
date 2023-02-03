@@ -49,7 +49,7 @@ export class BookingService {
   }
 
   async getUserBookings(userId: Types.ObjectId) {
-    var bookings = await this.repository.find({ user: userId });
+    var bookings = await this.repository.findUserBookings({ user: userId });
     return bookings;
   }
 

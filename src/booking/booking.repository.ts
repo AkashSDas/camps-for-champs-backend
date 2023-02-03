@@ -22,4 +22,10 @@ export class BookingRepository {
   findOne(filter: FilterQuery<Booking>) {
     return this.model.findOne(filter);
   }
+
+  findUserBookings(filter: FilterQuery<Booking>) {
+    return this.model
+      .find(filter)
+      .populate("camp", "name images address campId location googleMapURL");
+  }
 }
