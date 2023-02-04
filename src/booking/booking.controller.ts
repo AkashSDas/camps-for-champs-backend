@@ -116,13 +116,10 @@ export class BookingController {
 
   @Get("user/:campId")
   @UseGuards(AccessTokenGuard)
-  async checkActiveBooking(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async checkActiveBooking(@Req() req: Request) {
     var booking = await this.service.checkActiveBooking(
       req.params.campId,
-      (res.locals.user as User)._id,
+      req.user as User,
     );
     return { booking };
   }
