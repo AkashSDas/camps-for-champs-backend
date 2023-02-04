@@ -83,4 +83,19 @@ export class BookingService {
     await booking.save({ validateModifiedOnly: true });
     return { booking };
   }
+
+  async checkActiveBooking(campId: string, user: User) {
+    var camp = await this.campRepository.exists({ campId });
+    if (!camp) return new Error("Camp not found");
+
+    var booking = await this.repository.findOne({
+      user: user._id,
+      camp: camp._id,
+      status: BookingStatus.PENDING,
+      checkOut: { $gte: new Date(Date.now()) },
+    });
+
+    if (!booking) return null;
+    return { booking };
+  }
 }

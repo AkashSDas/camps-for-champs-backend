@@ -113,4 +113,17 @@ export class BookingController {
     if (result instanceof Error) throw result;
     return result;
   }
+
+  @Get("user/:campId")
+  @UseGuards(AccessTokenGuard)
+  async checkActiveBooking(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    var booking = await this.service.checkActiveBooking(
+      req.params.campId,
+      (res.locals.user as User)._id,
+    );
+    return { booking };
+  }
 }
