@@ -17,7 +17,7 @@ export class BookingService {
   constructor(
     private repository: BookingRepository,
     private campRepository: CampRepository,
-  ) { }
+  ) {}
 
   async bookCamp(user: User, camp: Camp, dto: BookCampDto) {
     // Check if the camp is already booked by the user
