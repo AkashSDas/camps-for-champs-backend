@@ -67,21 +67,21 @@ export class BookingService {
     var isAdmin = userRoles.includes(UserRole.ADMIN);
     var isStaff = userRoles.includes(UserRole.STAFF);
     if (isAdmin || isStaff) {
-      return new ForbiddenException("You don't have that permission");
+      // Update camp units limit
+      if (
+        dto.status == BookingStatus.FULFILLED ||
+        dto.status == BookingStatus.CANCELLED
+      ) {
+        camp.campLimit = camp.campLimit + booking.campUnitsBooked;
+        await camp.save({ validateModifiedOnly: true });
+      }
+
+      booking.status = dto.status;
+      await booking.save({ validateModifiedOnly: true });
+      return { booking };
     }
 
-    // Update camp units limit
-    if (
-      dto.status == BookingStatus.FULFILLED ||
-      dto.status == BookingStatus.CANCELLED
-    ) {
-      camp.campLimit = camp.campLimit + booking.campUnitsBooked;
-      await camp.save({ validateModifiedOnly: true });
-    }
-
-    booking.status = dto.status;
-    await booking.save({ validateModifiedOnly: true });
-    return { booking };
+    return new ForbiddenException("You don't have that permission");
   }
 
   async checkActiveBooking(campId: string, user: User) {

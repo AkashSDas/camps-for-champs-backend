@@ -89,7 +89,7 @@ export class BookingController {
     return { bookings };
   }
 
-  @Put("status/:bookingId/camp/campId")
+  @Put("status/:bookingId/camp/:campId")
   @UseGuards(AccessTokenGuard)
   async updateBookingStatus(
     @Res({ passthrough: true }) res: Response,
