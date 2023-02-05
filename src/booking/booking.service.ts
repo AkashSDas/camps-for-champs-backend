@@ -1,6 +1,6 @@
 import { BookCampDto, UpdateBookingStatusDto } from "./dto";
-import { Booking, BookingStatus, Guest } from "./schema";
 import { BookingRepository } from "./booking.repository";
+import { BookingStatus, Guest } from "./schema";
 import { Camp } from "src/camp/schema";
 import { CampRepository } from "../camp/camp.repository";
 import { Types } from "mongoose";
@@ -59,7 +59,7 @@ export class BookingService {
   }
 
   async updateBookingStatus(
-    booking: Booking,
+    bookingId: string,
     camp: Camp,
     dto: UpdateBookingStatusDto,
     userRoles: UserRole[],
@@ -67,6 +67,9 @@ export class BookingService {
     var isAdmin = userRoles.includes(UserRole.ADMIN);
     var isStaff = userRoles.includes(UserRole.STAFF);
     if (isAdmin || isStaff) {
+      let booking = await this.repository.findOne({ bookingId });
+      if (!booking) return new BadRequestException("Booking not found");
+
       // Update camp units limit
       if (
         dto.status == BookingStatus.FULFILLED ||

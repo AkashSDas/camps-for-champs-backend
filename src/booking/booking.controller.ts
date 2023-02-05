@@ -1,6 +1,5 @@
 import { AccessTokenGuard } from "../auth/guard";
 import { BookCampDto, UpdateBookingStatusDto } from "./dto";
-import { Booking } from "./schema";
 import { BookingService } from "./booking.service";
 import { Camp } from "../camp/schema";
 import { CampStatus } from "src/utils/camp";
@@ -96,7 +95,6 @@ export class BookingController {
     @Req() req: Request,
     @Body() dto: UpdateBookingStatusDto,
   ) {
-    var booking = res.locals.booking as Booking;
     var user = req.user as User;
     var camp = res.locals.camp as Camp;
 
@@ -105,7 +103,7 @@ export class BookingController {
     }
 
     var result = await this.service.updateBookingStatus(
-      booking,
+      req.params.bookingId,
       camp,
       dto,
       user.roles,

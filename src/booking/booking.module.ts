@@ -28,8 +28,9 @@ export class BookingModule {
       method: RequestMethod.ALL,
     });
 
+    // Not working
     consumer.apply(ValidateCampMiddleware).forRoutes({
-      path: "v2/booking/*/:bookingId/camp/:campId*",
+      path: "v2/booking/status/:bookingId/camp/:campId*",
       method: RequestMethod.ALL,
     });
 
