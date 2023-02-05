@@ -5,7 +5,7 @@ import { InjectModel } from "@nestjs/mongoose";
 
 @Injectable()
 export class BookingRepository {
-  constructor(@InjectModel(Booking.name) private model: Model<Booking>) {}
+  constructor(@InjectModel(Booking.name) private model: Model<Booking>) { }
 
   async create(data: Partial<Booking>) {
     return await this.model.create(data);
@@ -15,8 +15,8 @@ export class BookingRepository {
     return await booking.save();
   }
 
-  find(filter: FilterQuery<Booking>) {
-    return this.model.find(filter);
+  findCampBookings(filter: FilterQuery<Booking>) {
+    return this.model.find(filter).populate("user", "email userId");
   }
 
   findOne(filter: FilterQuery<Booking>) {

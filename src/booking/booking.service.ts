@@ -17,7 +17,7 @@ export class BookingService {
   constructor(
     private repository: BookingRepository,
     private campRepository: CampRepository,
-  ) {}
+  ) { }
 
   async bookCamp(user: User, camp: Camp, dto: BookCampDto) {
     // Check if the camp is already booked by the user
@@ -54,7 +54,7 @@ export class BookingService {
   }
 
   async getCampBookings(campId: Types.ObjectId) {
-    var bookings = await this.repository.find({ camp: campId });
+    var bookings = await this.repository.findCampBookings({ camp: campId });
     return bookings;
   }
 
