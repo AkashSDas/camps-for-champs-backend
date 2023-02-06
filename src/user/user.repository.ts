@@ -42,4 +42,8 @@ export class UserRepository {
   findOne(filter: FilterQuery<User>) {
     return this.model.findOne(filter);
   }
+
+  findOneWithSelect(filter: FilterQuery<User>, select: string) {
+    return this.model.findOne(filter).select(select);
+  }
 }

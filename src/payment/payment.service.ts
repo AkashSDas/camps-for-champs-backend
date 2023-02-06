@@ -23,7 +23,10 @@ export class PaymentService {
     params?: Stripe.CustomerCreateParams,
   ) {
     try {
-      let user = await this.userRepository.findOne({ _id: userId });
+      let user = await this.userRepository.findOneWithSelect(
+        { _id: userId },
+        "stripeCustomerId",
+      );
 
       // If user does not have a stripe customer id, create one
       if (!user.stripeCustomerId) {
