@@ -102,6 +102,17 @@ export class PaymentService {
     }
   }
 
+  async createInvoice(userId: Types.ObjectId) {
+    try {
+      let customer = await this.getOrCreateCustomer(userId);
+      return await this.stripe.invoices.create({
+        customer: customer.id,
+      });
+    } catch (error) {
+      return null;
+    }
+  }
+
   async getInvoices(userId: Types.ObjectId) {
     try {
       let customer = await this.getOrCreateCustomer(userId);

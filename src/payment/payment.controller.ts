@@ -60,7 +60,8 @@ export class PaymentController {
       throw new InternalServerErrorException("Failed to create payment intent");
     }
 
-    return { paymentIntent };
+    var invoice = await this.service.createInvoice((req.user as User)._id);
+    return { paymentIntent, invoice };
   }
 
   @Get("/invoices")
