@@ -25,7 +25,7 @@ export class PaymentService {
     try {
       let user = await this.userRepository.findOneWithSelect(
         { _id: userId },
-        "stripeCustomerId",
+        "+stripeCustomerId",
       );
 
       // If user does not have a stripe customer id, create one
@@ -93,6 +93,7 @@ export class PaymentService {
   ) {
     try {
       let customer = await this.getOrCreateCustomer(userId);
+      console.log(customer);
       return await this.stripe.paymentIntents.create({
         amount: amountToCharge,
         currency: "inr",
@@ -101,6 +102,7 @@ export class PaymentService {
         ...params,
       });
     } catch (error) {
+      console.log(error);
       return null;
     }
   }
